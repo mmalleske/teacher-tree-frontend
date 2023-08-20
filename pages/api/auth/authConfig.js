@@ -22,8 +22,6 @@ const authOptions = {
 
           const user = await res.json();
 
-          console.log(user, "USER")
-
           if (res.ok && user) {
             // Return the user data
             // return Promise.resolve(user);

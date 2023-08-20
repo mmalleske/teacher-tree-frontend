@@ -20,14 +20,15 @@ const LoginForm = () => {
                 await signIn('credentials', {
                     email: values.email,
                     password: values.password,
-                    redirect: false
-                    // redirect: userType === "teacher" ? "/teacherProfile" : "/teachers/favorites", // Redirect is handled after successful login
+                    redirect: false,
+                    action: "login",
+                    userType
                 });
 
                 if (userType === "teacher") {
                     router.push('/teacherProfile');
                 } else {
-                    router.push('/teachers/favorites');
+                    router.push('/teacher/favorites');
                 }
                
             } catch (error) {

@@ -1,11 +1,13 @@
-import { Form, Input, Button, message, Segmented, Space } from 'antd';
+import { Form, Input, Button, message, Segmented } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { useFormik } from 'formik';
 import axios from 'axios';
 import { useState } from 'react';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const RegisterForm = () => {
-
+    const router = useRouter();
     const [userType, setUserType] = useState("teacher");
 
     const formik = useFormik({
@@ -16,13 +18,25 @@ const RegisterForm = () => {
         },
         onSubmit: async (values, { setSubmitting }) => {
             try {
-                const response = await axios.post(`http://localhost:8000/api/register?userType=${userType}`, values);
+                const response = await axios.post(`${process.env.API_BASE_URL}/auth/register?userType=${userType}`, values);
                 const { data } = response;
                 setSubmitting(false);
 
                 // Check if the response indicates success
-                if (data && data.name) {
+                if (data) {
                     message.success('New Account Created');
+
+                    // After successful registration, sign in the user
+                    await signIn('credentials', {
+                        email: values.email,
+                        password: values.password,
+                        redirect: false
+                    });
+
+                    console.log("redirect now dangi")
+
+                    // Redirect the user after signing in
+                    router.push('/teacher/dashboard');
                 }
             } catch (error) {
                 setSubmitting(false);
@@ -44,13 +58,13 @@ const RegisterForm = () => {
         if(value === "Sign Up as Teacher") {
             setUserType("teacher")
         } else {
-            setUserType("parent")
+            setUserType("donor")
         }
     } 
 
     return (
         <>
-            <Segmented onChange={(value) => handleChange(value)} options={["Sign Up as Teacher", "Sign Up as Parent"]} />
+            <Segmented onChange={(value) => handleChange(value)} options={["Sign Up as a Teacher", "Sign Up as a Donor"]} />
             <Form layout='vertical' onFinish={formik.handleSubmit}>
                 <Form.Item
                     label="Email"
