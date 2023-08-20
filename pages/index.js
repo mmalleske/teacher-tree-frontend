@@ -12,6 +12,8 @@ export default function Home() {
       </Head>
 
       {/* <RegisterForm /> */}
+      <img src="/assets/images/teacher-tree-logo.webp" />
+      <h1>Teacher Tree</h1>
       <LoginForm />
      
     </div>

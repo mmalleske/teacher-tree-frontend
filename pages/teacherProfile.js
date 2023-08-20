@@ -5,10 +5,19 @@ import axios from 'axios';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 
-const LoginForm = () => {
+const TeacherProfile = () => {
     const router = useRouter();
     const [userType, setUserType] = useState("teacher");
+    const { data: session } = useSession();
+    
+    console.log(session, "SESS")
+
+    if(session) {
+        const { user } = session;
+        // console.log('User Data:', user);
+    }
 
     const formik = useFormik({
         initialValues: {
@@ -16,29 +25,15 @@ const LoginForm = () => {
             password: ''
         },
         onSubmit: async (values, { setSubmitting }) => {
-            try {
-                await signIn('credentials', {
-                    email: values.email,
-                    password: values.password,
-                    redirect: false
-                    // redirect: userType === "teacher" ? "/teacherProfile" : "/teachers/favorites", // Redirect is handled after successful login
-                });
-
-                if (userType === "teacher") {
-                    router.push('/teacherProfile');
-                } else {
-                    router.push('/teachers/favorites');
-                }
-               
-            } catch (error) {
-                console.log(error, "Error")
-                // Handle specific error codes
-                if (error.status === 401) {
-                    message.error('Incorrect email or password.');
-                } else {
-                    console.error("Login failed:", error);
-                    message.error('An error occurred during login. Please try again later.');
-                }
+            await signIn('credentials', {
+                email: values.email,
+                password: values.password,
+                redirect: false, // Redirect is handled after successful login
+            });
+            if(userType === "parent") {
+                router.push('/teachers/favorites');
+            } else {
+                router.push('/profile')
             }
         },
     });
@@ -47,14 +42,13 @@ const LoginForm = () => {
         if (value === "Login as Teacher") {
             setUserType("teacher")
         } else {
-            setUserType("donor")
+            setUserType("parent")
         }
     }
 
     return (
         <>
-            <Segmented onChange={(value) => handleChange(value)} options={["Login as Teacher", "Login as Parent"]} />
-            <br />
+            <h1>Please fill out your profile</h1>
             <Form layout='vertical' onFinish={formik.handleSubmit}>
                 <Form.Item
                     label="Email"
@@ -73,7 +67,7 @@ const LoginForm = () => {
                 </Form.Item>
 
                 <Form.Item
-                    label="Password"
+                    label="Reset Password"
                     name="password"
                     rules={[{ required: true, message: 'Please enter your password!' }]}
                 >
@@ -86,7 +80,7 @@ const LoginForm = () => {
                 </Form.Item>
 
                 <Form.Item>
-                    <Button block type="primary" htmlType="submit" loading={formik.isSubmitting}>
+                    <Button type="primary" htmlType="submit" loading={formik.isSubmitting}>
                         Login
                     </Button>
                 </Form.Item>
@@ -95,4 +89,4 @@ const LoginForm = () => {
     );
 };
 
-export default LoginForm;
+export default TeacherProfile;

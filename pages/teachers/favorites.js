@@ -1,38 +1,35 @@
 import { useEffect, useState } from "react"
 import axios from "axios";
+import { getServerSession } from "next-auth";
+import authOptions from "../api/auth/authConfig";
 
-const api = axios.create({
-    baseURL: 'http://localhost:8000/api',
-    withCredentials: true,
-});
+export async function getServerSideProps(context) {
+    const session = await getServerSession(context.req, context.res, authOptions);
+  
+    // if (!session) {
+    //   return {
+    //     redirect: {
+    //       destination: '/',
+    //       permanent: false,
+    //     },
+    //   };
+    // }
+  
+    return {
+      props: {
+        session,
+      },
+    };
+  }
 
-export default function Favorites() {
+export default function Favorites({session}) {
     const [studentParent, setStudentParent] = useState(null);
-
     useEffect(() => {
-        const fetchStudentParent = async () => {
-            try {
-                // Make a GET request to the /student-parent endpoint
-                const response = await axios.get('http://localhost:8000/api/student-parent', {
-                    withCredentials: true, // This ensures that the Laravel backend can access the session cookie set by Sanctum
-                });
-
-                const { data } = response;
-                if (data && data.studentParent) {
-                    // Update the state with the student parent data
-                    setStudentParent(data.studentParent);
-                }
-            } catch (error) {
-                // Handle errors
-                console.error('Error fetching student parent:', error);
-            }
-        };
-
-        fetchStudentParent();
-    }, []);
-
+        // Log the session
+        console.log('Session:', session);
+      }, [session]);
     return (
-        <div>
+        <div>                   
             <h3>Favorite Teachers</h3>
             <p>You currently have no teachers favorited</p>
         </div>
