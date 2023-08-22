@@ -10,14 +10,17 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
+    "@metahkg/react-link-preview": "^1.17.0",
     "antd": "^5.7.0",
+    "aws-sdk": "^2.1441.0",
     "axios": "^1.4.0",
     "formik": "^2.4.2",
     "next": "13.4.10",
     "next-auth": "^4.22.3",
     "react": "18.2.0",
     "react-auth-kit": "^2.12.6",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-preview-link": "^1.0.1"
   },
   "devDependencies": {
     "eslint": "8.45.0",

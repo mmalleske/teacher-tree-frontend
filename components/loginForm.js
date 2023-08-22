@@ -1,7 +1,6 @@
 import { Form, Input, Button, message, Segmented, Space } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { useFormik } from 'formik';
-import axios from 'axios';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
@@ -26,7 +25,7 @@ const LoginForm = () => {
                 });
 
                 if (userType === "teacher") {
-                    router.push('/teacherProfile');
+                    router.push('/teacher/profile');
                 } else {
                     router.push('/teacher/favorites');
                 }
