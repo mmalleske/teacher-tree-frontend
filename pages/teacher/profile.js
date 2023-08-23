@@ -21,43 +21,23 @@ const TeacherProfileForm = () => {
         try {
             const response = await axios.get(`${process.env.API_BASE_URL}/teachers/${userId}`); // Replace :userId with the actual user ID
             setTeacherProfile(response.data);
-            console.log(response.data, "teacher profile")
         } catch (error) {
             console.error('Error fetching teacher profile:', error);
         }
     };
 
     useEffect(() => {
-        console.log('yo')
         const userId = session?.user?._id
         if (userId) {
             fetchTeacherProfile(userId)
         }
     }, [session])
 
-    const handleSubmit = async (values, { setSubmitting }) => {
-        if (session.user) {
-            try {
-                const formData = {
-                    ...values,
-                    userId: session.user._id
-                };
-
-                // Send the form data to your API endpoint
-                await axios.post(`${process.env.API_BASE_URL}/teachers`, formData);
-                message.success('Profile created successfully!');
-            } catch (error) {
-                message.error('An error occurred while creating the profile.');
-            } finally {
-                setSubmitting(false);
-            }
-        }
-    };
-
+  
     return (
         <Layout>
             {teacherProfile ? (
-                <EditProfileForm teacherProfile={teacherProfile} onSubmit={handleSubmit} />
+                <EditProfileForm teacherProfile={teacherProfile} />
             ): (
                 <h1>Loading Teacher profile</h1>
             )} 

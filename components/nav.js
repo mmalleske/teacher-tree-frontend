@@ -2,7 +2,6 @@ import { useSession } from "next-auth/react";
 import { Button } from "antd";
 export default function Nav() {
     const { data: session } = useSession();
-    console.log(session, "SESS")
 
     return (
         <div>
