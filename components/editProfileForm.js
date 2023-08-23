@@ -35,16 +35,10 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
             }
         }
 
-        // setFieldValue('firstName', "oliver")
-
-        // setFieldValue('profilePhotoUrl', "https://teacher-tree.s3.us-east-2.amazonaws.com/mmpix7.jpg")
-
-        // console.log(values, "values")
-
-        const updatedValues = {
+        const updatedValues = s3Url ? {
             ...values,
             profilePhotoUrl: s3Url,
-        };
+        } : { ...values };
 
         try {
             const response = await axios.patch(`${process.env.API_BASE_URL}/teachers/${teacherProfile._id}`, updatedValues);
@@ -85,7 +79,7 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
                     <Field name="schoolDistrict" as={Input} />
 
                     <label>Grade Levels</label>
-                    <Field name="gradeLevels" as={Select} mode="multiple">
+                    <Field name="gradeLevels" component={Select} mode="multiple">
                         {[...Array(12)].map((_, index) => (
                             <Select.Option key={index + 1} value={(index + 1).toString()}>
                                 {index + 1}
@@ -94,7 +88,7 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
                     </Field>
 
                     <label>Birthdate</label>
-                    <Field name="birthdate" as={DatePicker} />
+                    <Field name="birthdate" component={DatePicker} />
 
                     <label>Interests</label>
                     <Field name="interests" as={Input} />
