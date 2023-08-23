@@ -3,7 +3,6 @@ import { Formik, Form, Field } from 'formik';
 import { Input, Button, Select, message } from 'antd';
 import axios from 'axios';
 import S3ImageUploader from './s3ImageUploader';
-import moment from 'moment';
 import * as Yup from 'yup';
 
 const EditProfileForm = ({ teacherProfile, onSubmit }) => {
@@ -114,7 +113,6 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
                             </div>
                         )}
                     </Field>
-
 
                     <label>Interests</label>
                     <Field name="interests" as={Input} />
