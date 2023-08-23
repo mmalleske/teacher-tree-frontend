@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AWS from 'aws-sdk';
 import { Upload, Button, Avatar, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
@@ -6,10 +6,14 @@ import { UploadOutlined } from '@ant-design/icons';
 const S3ImageUploader = ({ onUpload, teacherProfile }) => {
   const [file, setFile] = useState(null);
 
+  useEffect(() => {
+    if (file) {
+      handleFileUpload();
+    }
+  }, [file]);
+
   const handleFileUpload = async () => {
-    console.log(teacherProfile.profilePhotoUrl)
     if (!file) {
-      message.error('Please select an image before uploading.');
       return;
     }
 
@@ -24,6 +28,15 @@ const S3ImageUploader = ({ onUpload, teacherProfile }) => {
       });
 
       const s3 = new AWS.S3();
+
+      // Delete the old photo if a new one is being uploaded
+      if (teacherProfile.profilePhotoUrl && teacherProfile.profilePhotoUrl !== '') {
+        const oldPhotoKey = teacherProfile.profilePhotoUrl.split('/').pop();
+        await s3.deleteObject({
+          Bucket: 'teacher-tree',
+          Key: oldPhotoKey,
+        }).promise();
+      }
 
       // Upload the selected image to S3
       const params = {
@@ -64,12 +77,6 @@ const S3ImageUploader = ({ onUpload, teacherProfile }) => {
       >
         <Button icon={<UploadOutlined />}>Select Image</Button>
       </Upload>
-
-      {file && (
-        <Button type="primary" onClick={handleFileUpload}>
-          Upload to S3
-        </Button>
-      )}
     </div>
   );
 };
