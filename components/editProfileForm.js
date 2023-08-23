@@ -1,25 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
-import { Input, Button, Checkbox, DatePicker, Select, message, Upload, Avatar } from 'antd';
-import { UploadOutlined, UserOutlined } from '@ant-design/icons';
+import { Input, Button, Select, message } from 'antd';
 import axios from 'axios';
 import S3ImageUploader from './s3ImageUploader';
+import moment from 'moment';
+import * as Yup from 'yup';
 
 const EditProfileForm = ({ teacherProfile, onSubmit }) => {
     const [file, setFile] = useState(null);
     const [s3Url, setS3Url] = useState(null);
 
+    const validationSchema = Yup.object().shape({
+        birthdate: Yup.string()
+            .matches(
+                /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/,
+                'Please enter a valid date in MM/DD/YYYY format'
+            )
+            .required('Birthdate is required'),
+    });
+
     const initialValues = {
-        firstName: '',
-        lastName: '',
-        state: '',
-        schoolName: '',
-        schoolDistrict: '',
-        gradeLevels: [],
-        birthdate: null,
-        interests: '',
-        favoriteThings: {},
-        userId: '',
+        firstName: teacherProfile ? teacherProfile.firstName : '',
+        lastName: teacherProfile ? teacherProfile.lastName : '',
+        state: teacherProfile ? teacherProfile.state : '',
+        schoolName: teacherProfile ? teacherProfile.schoolName : '',
+        schoolDistrict: teacherProfile ? teacherProfile.schoolDistrict : '',
+        gradeLevels: teacherProfile ? teacherProfile.gradeLevels : [],
+        birthdate: teacherProfile ? teacherProfile.birthdate : '',
+        interests: teacherProfile ? teacherProfile.interests : '',
+        favoriteThings: teacherProfile ? teacherProfile.favoriteThings : {},
+        userId: teacherProfile.userId,
         profilePhotoUrl: teacherProfile.profilePhotoUrl
     };
 
@@ -52,15 +62,15 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
     const onUpload = (s3location) => {
         console.log(s3location, "frome child")
         setS3Url(s3location)
-    } 
-
+    }
 
     return (
-        <Formik initialValues={teacherProfile || initialValues} onSubmit={handleSubmit}>
+        <Formik initialValues={teacherProfile || initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
             {({ isSubmitting, setFieldValue }) => (
+                // <ConfigProvider locale={locale}>
                 <Form>
                     <label>Profile Photo</label>
-                    
+
                     <S3ImageUploader teacherProfile={teacherProfile} onUpload={onUpload} />
 
                     <label>First Name</label>
@@ -79,16 +89,32 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
                     <Field name="schoolDistrict" as={Input} />
 
                     <label>Grade Levels</label>
-                    <Field name="gradeLevels" component={Select} mode="multiple">
-                        {[...Array(12)].map((_, index) => (
-                            <Select.Option key={index + 1} value={(index + 1).toString()}>
-                                {index + 1}
-                            </Select.Option>
-                        ))}
+                    <Field name="gradeLevels">
+                        {({ field, form }) => (
+                            <Select
+                                mode="multiple"
+                                value={field.value}
+                                onChange={(value) => form.setFieldValue(field.name, value)}
+                            >
+                                {[...Array(12)].map((_, index) => (
+                                    <Select.Option key={index + 1} value={(index + 1).toString()}>
+                                        {index + 1}
+                                    </Select.Option>
+                                ))}
+                            </Select>
+                        )}
                     </Field>
 
-                    <label>Birthdate</label>
-                    <Field name="birthdate" component={DatePicker} />
+                    <label>Birthdate (MM/DD/YYYY)</label>
+                    <Field name="birthdate">
+                        {({ field, form }) => (
+                            <div>
+                                <Input {...field} placeholder="MM/DD/YYYY" />
+                                {form.errors.birthdate && form.touched.birthdate && <div>{form.errors.birthdate}</div>}
+                            </div>
+                        )}
+                    </Field>
+
 
                     <label>Interests</label>
                     <Field name="interests" as={Input} />
@@ -105,8 +131,6 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
                     <Field name="favoriteThings.dinner" as={Input} placeholder="Dinner Restaurant" />
                     <Field name="favoriteThings.stores" as={Input} placeholder="Stores & Gift Cards" />
                     <Field name="favoriteThings.notToReceive" as={Input} placeholder="I Prefer Not To Receive" />
-
-                    {/* Submit Button */}
                     <Button type="primary" htmlType="submit" loading={isSubmitting}>
                         Submit
                     </Button>
