@@ -1,5 +1,6 @@
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { Button } from "antd";
+
 export default function Nav() {
     const { data: session } = useSession();
 
@@ -8,7 +9,7 @@ export default function Nav() {
             {session && session.user && (
                 <>
                     <p>Logged in as {session.user.email}</p>
-                    <Button>Logout</Button>
+                    <Button onClick={() => signOut({ callbackUrl: '/login' })}>Logout</Button>
                 </>
             )}
         </div>
