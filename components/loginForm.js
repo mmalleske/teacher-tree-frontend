@@ -25,9 +25,9 @@ const LoginForm = () => {
                 });
 
                 if (userType === "teacher") {
-                    router.push('/teacher/profile');
+                    router.push('/teacher/dashboard');
                 } else {
-                    router.push('/teacher/favorites');
+                    router.push('/donor/favorites');
                 }
                
             } catch (error) {

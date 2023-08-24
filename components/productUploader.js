@@ -8,13 +8,11 @@ const ProductUploader = () => {
     const [form] = Form.useForm();
     const { data: session } = useSession();
 
-    console.log(session)
-
     const fetchProducts = async () => {
         const userId = session?.user?._id
         if (userId) {
             try {
-                const response = await axios.get(`http://localhost:8000/products/${userId}`); // Replace :userId with the actual user ID
+                const response = await axios.get(`${process.env.API_BASE_URL}/products/${userId}`); // Replace :userId with the actual user ID
                 setProducts(response.data);
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -25,16 +23,17 @@ const ProductUploader = () => {
 
     useEffect(() => {
         fetchProducts();
-    }, []);
+    }, [session]);
 
     const onFinish = async (values) => {
         const userId = session?.user?._id
 
         if (userId) {
             try {
-                const response = await axios.post('http://localhost:8000/products/new', {
-                    userId, // Replace with the actual user ID
+                const response = await axios.post(`${process.env.API_BASE_URL}/products/new`, {
+                    userId,
                     url: values.amazonLink,
+                    quantity: values.quantity
                 });
 
                 if (response.data) {
@@ -58,6 +57,25 @@ const ProductUploader = () => {
 
     return (
         <div>
+            <Form form={form} onFinish={onFinish}>
+                <Form.Item
+                    name="amazonLink"
+                    rules={[
+                        { required: true, message: 'Please enter an Amazon link' },
+                        { validator: validateAmazonLink },
+                    ]}
+                >
+                    <Input placeholder="Amazon Link" />
+                </Form.Item>
+                <Form.Item name="quantity">
+                    <Input placeholder='Quantity' type='number' />
+                </Form.Item>
+                <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                        Add Product
+                    </Button>
+                </Form.Item>
+            </Form>
             <List
                 dataSource={products}
                 renderItem={(product) => (
@@ -69,22 +87,6 @@ const ProductUploader = () => {
                     </List.Item>
                 )}
             />
-            <Form form={form} onFinish={onFinish}>
-                <Form.Item
-                    name="amazonLink"
-                    rules={[
-                        { required: true, message: 'Please enter an Amazon link' },
-                        { validator: validateAmazonLink },
-                    ]}
-                >
-                    <Input placeholder="Amazon Link" />
-                </Form.Item>
-                <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                        Add Product
-                    </Button>
-                </Form.Item>
-            </Form>
         </div>
     );
 };

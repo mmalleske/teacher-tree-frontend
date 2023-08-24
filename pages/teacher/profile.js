@@ -4,7 +4,27 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import EditProfileForm from '../../components/editProfileForm';
 
-const TeacherProfileForm = () => {
+import { getSession } from "next-auth/react";
+
+export async function getServerSideProps(context) {
+    const session = await getSession(context);
+
+    if (!session) {
+        return {
+            redirect: {
+                destination: '/login', // Redirect to login page
+                permanent: false,
+            },
+        };
+    }
+
+    // Continue loading the page normally
+    return {
+        props: {},
+    };
+}
+
+const TeacherProfilePage = () => {
     const { data: session } = useSession();
     const [teacherProfile, setTeacherProfile] = useState(null);
     const [loadingTeacher, setLoadingTeacher] = useState(false);
@@ -45,4 +65,4 @@ const TeacherProfileForm = () => {
     );
 };
 
-export default TeacherProfileForm;
+export default TeacherProfilePage;
