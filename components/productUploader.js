@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { List, Form, Input, Button, message } from 'antd';
+import { List, Form, Input, Button, message, Tabs, Card } from 'antd';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 
@@ -55,39 +55,75 @@ const ProductUploader = () => {
         return Promise.resolve();
     };
 
+    const Uploader = () => (
+        <Form form={form} onFinish={onFinish}>
+            <Form.Item
+                name="amazonLink"
+                rules={[
+                    { required: true, message: 'Please enter an Amazon link' },
+                    { validator: validateAmazonLink },
+                ]}
+            >
+                <Input placeholder="Amazon Link" />
+            </Form.Item>
+            <Form.Item name="quantity">
+                <Input placeholder='Quantity' type='number' />
+            </Form.Item>
+            <Form.Item>
+                <Button type="primary" htmlType="submit">
+                    Add Product
+                </Button>
+            </Form.Item>
+        </Form>
+    )
+
+
+    const WishList = () => (
+        <List
+            dataSource={products}
+            renderItem={(product) => (
+                <List.Item>
+                    <a target="_blank" href={product.affiliateLink}>
+                        <img src={product.imageUrl} />
+                        <p>{product.title}</p>
+                    </a>
+                </List.Item>
+            )}
+        />
+    )
+
+    const Consumables = () => (
+        <List
+            dataSource={products}
+            renderItem={(product) => (
+                <List.Item>
+                    <a target="_blank" href={product.affiliateLink}>
+                        <img src={product.imageUrl} />
+                        <p>{product.title}</p>
+                    </a>
+                </List.Item>
+            )}
+        />
+    )
+
     return (
-        <div>
-            <Form form={form} onFinish={onFinish}>
-                <Form.Item
-                    name="amazonLink"
-                    rules={[
-                        { required: true, message: 'Please enter an Amazon link' },
-                        { validator: validateAmazonLink },
-                    ]}
-                >
-                    <Input placeholder="Amazon Link" />
-                </Form.Item>
-                <Form.Item name="quantity">
-                    <Input placeholder='Quantity' type='number' />
-                </Form.Item>
-                <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                        Add Product
-                    </Button>
-                </Form.Item>
-            </Form>
-            <List
-                dataSource={products}
-                renderItem={(product) => (
-                    <List.Item>
-                        <a target="_blank" href={product.affiliateLink}>
-                            <img src={product.imageUrl} />
-                            <p>{product.title}</p>
-                        </a>
-                    </List.Item>
-                )}
-            />
-        </div>
+        <Card>
+            <Tabs
+                defaultActiveKey="wishlist"
+                items={[
+                    {
+                        label: 'Wishlist',
+                        key: 'wishlist',
+                        children: [<Uploader />, <WishList />],
+                    },
+                    {
+                        label: 'Consumables',
+                        key: 'consumables',
+                        children: [<Uploader />, <Consumables />]   
+                    },                   
+                ]}
+            />            
+        </Card>
     );
 };
 

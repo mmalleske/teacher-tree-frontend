@@ -3,9 +3,25 @@ import { Select, Input, Button, List, Avatar } from 'antd';
 import axios from 'axios';
 import { stateCodes } from '../../constants';
 import Layout from "../../components/layout";
+import { getSession } from 'next-auth/react';
 
-const { Option } = Select;
+export async function getServerSideProps(context) {
+    const session = await getSession(context);
 
+    if (!session) {
+        return {
+            redirect: {
+                destination: '/login', // Redirect to login page
+                permanent: false,
+            },
+        };
+    }
+
+    // Continue loading the page normally
+    return {
+        props: {},
+    };
+}
 const TeacherSearch = () => {
   const [state, setState] = useState('');
   const [schoolDistrict, setSchoolDistrict] = useState('');

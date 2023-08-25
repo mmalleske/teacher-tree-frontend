@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import LoginForm from '../components/loginForm'
+import { Divider, Card } from 'antd'
 
 export default function Login() {
   return (
@@ -8,12 +9,14 @@ export default function Login() {
       <Head>
         <title>Teacher Tree</title>
       </Head>
-
-      {/* <RegisterForm /> */}
-      <img src="/assets/images/teacher-tree-logo.webp" />
-      <h1>Teacher Tree</h1>
-      <LoginForm />
-     
+      <Card>
+          <img src="/assets/images/teacher-tree-logo.webp" />
+          <h1>Teacher Tree</h1>
+          {/* <Divider /> */}
+          <p>Connecting Communities With Classrooms</p>
+          <LoginForm />
+          <p>New to Teacher Tree? <a href="/register"><u>Create an Account.</u></a></p>
+      </Card>
     </div>
   )
 }
