@@ -4,10 +4,13 @@ import { Input, Button, Select, message } from 'antd';
 import axios from 'axios';
 import S3ImageUploader from './s3ImageUploader';
 import * as Yup from 'yup';
+import { useRouter } from 'next/router';
 
 const EditProfileForm = ({ teacherProfile, onSubmit }) => {
     const [file, setFile] = useState(null);
     const [s3Url, setS3Url] = useState(null);
+
+    const router = useRouter();
 
     const validationSchema = Yup.object().shape({
         birthdate: Yup.string()
@@ -55,6 +58,8 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
         } catch (error) {
             console.log(error);
             message.error('An error occurred while updating the profile.');
+        } finally {
+            router.push('/teacher/dashboard')
         }
     };
 

@@ -24,8 +24,17 @@ const ProfileSideBar = ({ teacherProfile }) => {
     if (!firstName && !lastName && !schoolName && !schoolDistrict) {
         return (
             <div className={styles.profileSideBar}>
-                <h4>You haven't completed your teacher profile!</h4>
-                <Button block href='/teacher/profile'>Edit Profile</Button>
+                <Card>
+                    <div className={styles.avatar}>
+                        {profilePhotoUrl ? (
+                            <Avatar size={100} src={profilePhotoUrl} />
+                        ) : (
+                            <Avatar size={100} icon={<UserOutlined />} />
+                        )}
+                        <p>You haven't completed your profile yet!</p>
+                    </div>
+                    <Button block href='/teacher/profile'>Edit Profile</Button>
+                </Card>
             </div>
         )
     }
@@ -37,7 +46,7 @@ const ProfileSideBar = ({ teacherProfile }) => {
                     {profilePhotoUrl ? (
                         <Avatar size={100} src={profilePhotoUrl} />
                     ) : (
-                        <Avatar size={100} icon={UserOutlined} />
+                        <Avatar size={100} icon={<UserOutlined />} />
                     )}
                     <p>{firstName} {lastName}</p>
                 </div>

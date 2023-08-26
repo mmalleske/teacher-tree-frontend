@@ -55,9 +55,11 @@ const RegisterForm = () => {
     });
 
     const handleChange = (value) => {
-        if(value === "Sign Up as Teacher") {
+        if(value === "Sign Up as a Teacher") {
             setUserType("teacher")
-        } else {
+        }
+
+        if(value === "Sign Up as a Donor") {
             setUserType("donor")
         }
     } 
@@ -119,8 +121,8 @@ const RegisterForm = () => {
                 </Form.Item>
 
                 <Form.Item>
-                    <Button type="primary" htmlType="submit" loading={formik.isSubmitting}>
-                        Register
+                    <Button block type="primary" htmlType="submit" loading={formik.isSubmitting}>
+                        Register as {userType.toUpperCase()}
                     </Button>
                 </Form.Item>
             </Form>

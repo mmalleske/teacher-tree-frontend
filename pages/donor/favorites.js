@@ -1,40 +1,39 @@
 import { useEffect, useState } from "react"
 import axios from "axios";
 import authOptions from "../api/auth/authConfig";
-import { useSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
+import { Card, Button } from "antd";
+import Layout from "../../components/layout"
 
-// export async function getServerSideProps(context) {
-//      const { data: session } = useSession();
-    
-//     console.log(session, "SESS")
-//     // if (!session) {
-//     //   return {
-//     //     redirect: {
-//     //       destination: '/',
-//     //       permanent: false,
-//     //     },
-//     //   };
-//     // }
-  
-//     return {
-//       props: {
-//         session,
-//       },
-//     };
-//   }
+export async function getServerSideProps(context) {
+    const session = await getSession(context);
+
+    if (!session) {
+        return {
+            redirect: {
+                destination: '/login', // Redirect to login page
+                permanent: false,
+            },
+        };
+    }
+
+    // Continue loading the page normally
+    return {
+        props: {},
+    };
+}
 
 export default function Favorites() {
     const [studentParent, setStudentParent] = useState(null);
     const { data: session } = useSession();
-    console.log(session, "SESS")
-    // useEffect(() => {
-    //     // Log the session
-    //     console.log('Session:', session);
-    //   }, [session]);
+
     return (
-        <div>                   
-            <h3>Favorite Teachers</h3>
-            <p>You currently have no teachers favorited</p>
-        </div>
+        <Layout>
+            <Card>
+                <h3>Favorite Teachers</h3>
+                <p>You currently have no saved teachers.</p>
+                <Button type="primary" href="/donor/teacherSearch">Search Teachers</Button>
+            </Card>
+        </Layout>
     )
 }

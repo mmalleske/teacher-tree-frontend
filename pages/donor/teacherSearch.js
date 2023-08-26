@@ -1,27 +1,30 @@
 import React, { useState } from 'react';
-import { Select, Input, Button, List, Avatar } from 'antd';
+import { Select, Input, Button, List, Avatar, Card, Divider } from 'antd';
 import axios from 'axios';
 import { stateCodes } from '../../constants';
 import Layout from "../../components/layout";
 import { getSession } from 'next-auth/react';
+import { CaretLeftOutlined } from '@ant-design/icons';
+import TeacherListItem from '../../components/teacherListItem';
 
 export async function getServerSideProps(context) {
-    const session = await getSession(context);
+  const session = await getSession(context);
 
-    if (!session) {
-        return {
-            redirect: {
-                destination: '/login', // Redirect to login page
-                permanent: false,
-            },
-        };
-    }
-
-    // Continue loading the page normally
+  if (!session) {
     return {
-        props: {},
+      redirect: {
+        destination: '/login', // Redirect to login page
+        permanent: false,
+      },
     };
+  }
+
+  // Continue loading the page normally
+  return {
+    props: {},
+  };
 }
+
 const TeacherSearch = () => {
   const [state, setState] = useState('');
   const [schoolDistrict, setSchoolDistrict] = useState('');
@@ -45,19 +48,24 @@ const TeacherSearch = () => {
 
   return (
     <Layout>
-      <h1>Search Teachers</h1>
-      <Select
-        placeholder="Select state"
-        style={{ width: 200, marginBottom: 16 }}
-        onChange={(value) => setState(value)}
-      >
-        {stateCodes.map(state => (
-          <Select.Option key={state.code} value={state.code}>
-            {state.name}
-          </Select.Option>
-        ))}
-      </Select>
-      {/* {state && ( */}
+      <Card>
+        <div>
+          <Button type="primary" href="/donor/favorites"><CaretLeftOutlined /> Back to Favorites</Button>
+          <h1>Search Teachers</h1>
+          <sub>*Please select a state and enter a school name and/or school district.</sub>
+        </div>
+        <Divider />
+        <Select
+          placeholder="Select state"
+          style={{ width: 200, marginBottom: 16 }}
+          onChange={(value) => setState(value)}
+        >
+          {stateCodes.map(state => (
+            <Select.Option key={state.code} value={state.code}>
+              {state.name}
+            </Select.Option>
+          ))}
+        </Select>
         <>
           <Input
             placeholder="School District"
@@ -81,20 +89,15 @@ const TeacherSearch = () => {
             Search
           </Button>
         </>
-      {/* )} */}
-      <List
-        itemLayout="horizontal"
-        dataSource={teachers}
-        renderItem={(teacher) => (
-          <List.Item>
-            <List.Item.Meta
-              avatar={<Avatar size={100} src={teacher.profilePhotoUrl} />}
-              title={`${teacher.firstName} ${teacher.lastName}`}
-              description={teacher.schoolName}
-            />
-          </List.Item>
-        )}
-      />
+        <Divider />
+        <List
+          itemLayout="horizontal"
+          dataSource={teachers}
+          renderItem={(teacher) => (
+            <TeacherListItem teacher={teacher} />
+          )}
+        />
+      </Card>
     </Layout>
   );
 };

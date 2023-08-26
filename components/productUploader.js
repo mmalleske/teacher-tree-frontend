@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { List, Form, Input, Button, message, Tabs, Card } from 'antd';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
+import Product from './product';
 
 const ProductUploader = () => {
     const [products, setProducts] = useState([]);
@@ -67,7 +68,7 @@ const ProductUploader = () => {
                 <Input placeholder="Amazon Link" />
             </Form.Item>
             <Form.Item name="quantity">
-                <Input placeholder='Quantity' type='number' />
+                <Input placeholder='Quantity' type='number' defaultValue={1} />
             </Form.Item>
             <Form.Item>
                 <Button type="primary" htmlType="submit">
@@ -82,12 +83,7 @@ const ProductUploader = () => {
         <List
             dataSource={products}
             renderItem={(product) => (
-                <List.Item>
-                    <a target="_blank" href={product.affiliateLink}>
-                        <img src={product.imageUrl} />
-                        <p>{product.title}</p>
-                    </a>
-                </List.Item>
+                <Product product={product} fetchProducts={fetchProducts} />
             )}
         />
     )
