@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Select, Input, Button, List, Avatar, Card, Divider } from 'antd';
 import axios from 'axios';
 import { stateCodes } from '../../constants';
@@ -21,16 +21,35 @@ export async function getServerSideProps(context) {
 
   // Continue loading the page normally
   return {
-    props: {},
+    props: {
+      session
+    },
   };
 }
 
-const TeacherSearch = () => {
+const TeacherSearch = ({ session }) => {
   const [state, setState] = useState('');
   const [schoolDistrict, setSchoolDistrict] = useState('');
   const [school, setSchool] = useState('');
   const [gradeLevel, setGradeLevel] = useState('');
   const [teachers, setTeachers] = useState([]);
+  const [donor, setDonor] = useState(null); // State to store donor information
+
+  useEffect(() => {
+    // Fetch donor information using the session's user ID
+    const fetchDonor = async () => {
+      try {
+        const response = await axios.get(`${process.env.API_BASE_URL}/donors/${session.user._id}`);
+        setDonor(response.data); // Set donor information
+      } catch (error) {
+        console.error('Error fetching donor:', error);
+      }
+    };
+
+    if (session?.user?._id) {
+      fetchDonor();
+    }
+  }, [session]);
 
   const handleSearch = async () => {
     try {
@@ -90,13 +109,15 @@ const TeacherSearch = () => {
           </Button>
         </>
         <Divider />
-        <List
-          itemLayout="horizontal"
-          dataSource={teachers}
-          renderItem={(teacher) => (
-            <TeacherListItem teacher={teacher} />
-          )}
-        />
+        {donor && (
+          <List
+            itemLayout="horizontal"
+            dataSource={teachers}
+            renderItem={(teacher) => (
+              <TeacherListItem teacher={teacher} donor={donor} fetchTeachers={handleSearch} />
+            )}
+          />
+        )}
       </Card>
     </Layout>
   );
