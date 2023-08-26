@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { getSession } from 'next-auth/react';
-import { Card, Button, List } from "antd";
+import { Card, Button, List, Divider } from "antd";
 import Layout from "../../components/layout";
 import TeacherListItem from "../../components/teacherListItem";
 
@@ -60,7 +60,9 @@ export default function Favorites({ session }) {
     return (
         <Layout>
             <Card>
-                <h3>Favorite Teachers</h3>
+                <h1>Favorite Teachers</h1>
+                <Button type="primary" href="/donor/teacherSearch">Search Teachers</Button>
+                <Divider />
                 {favoriteTeachers.length > 0 ? (
                     <List
                         itemLayout="horizontal"
@@ -71,8 +73,7 @@ export default function Favorites({ session }) {
                     />
                 ) : (
                     <p>You currently have no saved teachers.</p>
-                )}
-                <Button type="primary" href="/donor/teacherSearch">Search Teachers</Button>
+                )}                
             </Card>
         </Layout>
     )

@@ -53,7 +53,7 @@ const LoginForm = () => {
 
     return (
         <>
-            <Segmented onChange={(value) => handleChange(value)} options={["Login as Teacher", "Login as Parent"]} />
+            <Segmented onChange={(value) => handleChange(value)} options={["Login as Teacher", "Login as Donor"]} />
             <br />
             <Form layout='vertical' onFinish={formik.handleSubmit}>
                 <Form.Item
@@ -87,7 +87,7 @@ const LoginForm = () => {
 
                 <Form.Item>
                     <Button block type="primary" htmlType="submit" loading={formik.isSubmitting}>
-                        Login
+                        Login as {userType.toLocaleUpperCase()}
                     </Button>
                 </Form.Item>
             </Form>

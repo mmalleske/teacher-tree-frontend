@@ -49,7 +49,7 @@ const TeacherListItem = ({ teacher, donor, fetchTeachers }) => {
   return (
     <List.Item
       actions={[
-        <Button>View</Button>,
+        <Button href={`/donor/teacherProfile/${teacher._id}`}>View</Button>,
         <Button
           type="primary"
           icon={savedTeacher ? <HeartFilled /> : <HeartOutlined />}

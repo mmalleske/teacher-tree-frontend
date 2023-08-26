@@ -7,6 +7,7 @@ import ProfileSideBar from "../../components/profileSideBar";
 import styles from "./dashboard.module.scss"
 import { Col, Row } from "antd";
 import axios from "axios";
+import TeacherProfile from "../../components/teacherProfile";
 
 export async function getServerSideProps(context) {
     const session = await getSession(context);
@@ -58,17 +59,8 @@ export default function Favorites() {
     }
 
     return (
-        <Layout>
-            <Row>
-                <Col span={6} >
-                    {teacherProfile && (
-                        <ProfileSideBar teacherProfile={teacherProfile} />
-                    )}
-                </Col>
-                <Col span={18}>
-                    <ProductUploader />
-                </Col>
-            </Row>
+        <Layout>            
+            <TeacherProfile readOnly={false} teacherProfile={teacherProfile}/>
         </Layout>
     )
 }

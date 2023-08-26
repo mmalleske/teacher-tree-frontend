@@ -5,9 +5,7 @@ import { Avatar, Button, Card } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import styles from "./profileSideBar.module.scss";
 
-const ProfileSideBar = ({ teacherProfile }) => {
-
-    console.log(teacherProfile)
+const ProfileSideBar = ({ teacherProfile, readOnly }) => {
 
     const {
         firstName,
@@ -21,7 +19,7 @@ const ProfileSideBar = ({ teacherProfile }) => {
         gradeLevels
     } = teacherProfile
 
-    if (!firstName && !lastName && !schoolName && !schoolDistrict) {
+    if (!readOnly && !firstName && !lastName && !schoolName && !schoolDistrict) {
         return (
             <div className={styles.profileSideBar}>
                 <Card>
@@ -51,7 +49,7 @@ const ProfileSideBar = ({ teacherProfile }) => {
                     <p>{firstName} {lastName}</p>
                 </div>
 
-                <Button block href='/teacher/profile'>Edit Profile</Button>
+                {!readOnly && <Button block href='/teacher/profile'>Edit Profile</Button>}
                 <p><b>Birthday:</b> {birthdate}</p>
                 <p><b>Interests and Hobbies:</b></p>
                 <p>{interests}</p>
@@ -59,7 +57,16 @@ const ProfileSideBar = ({ teacherProfile }) => {
                 {favoriteThings && (
                     <ul>
                         {Object.entries(favoriteThings).map(([key, value]) => (
-                            <li key={key}><b>{key}:</b> {value}</li>
+                            <li key={key}>
+                                <b>
+                                    {key === 'notToReceive'
+                                        ? 'I Prefer not to Receive:'
+                                        : key === 'schoolBeverage'
+                                        ? 'school beverage:'
+                                        : key}{' '}
+                                </b>
+                                {value}
+                            </li>
                         ))}
                     </ul>
                 )}
