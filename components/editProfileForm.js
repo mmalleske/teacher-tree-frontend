@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
-import { Input, Button, Select, message } from 'antd';
+import { Input, Button, Select, message, Card, Space } from 'antd';
 import axios from 'axios';
 import S3ImageUploader from './s3ImageUploader';
 import * as Yup from 'yup';
@@ -69,77 +69,81 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
     }
 
     return (
-        <Formik initialValues={teacherProfile || initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
-            {({ isSubmitting, setFieldValue }) => (
-                // <ConfigProvider locale={locale}>
-                <Form>
-                    <label>Profile Photo</label>
+        <Card>
+            <Formik initialValues={teacherProfile || initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
+                {({ isSubmitting, setFieldValue }) => (
+                    // <ConfigProvider locale={locale}>
+                    <Form>
+                        <Space direction='vertical'>
+                        <label>Profile Photo</label>
 
-                    <S3ImageUploader teacherProfile={teacherProfile} onUpload={onUpload} />
+                        <S3ImageUploader teacherProfile={teacherProfile} onUpload={onUpload} />
 
-                    <label>First Name</label>
-                    <Field name="firstName" as={Input} />
+                        <label>First Name</label>
+                        <Field name="firstName" as={Input} />
 
-                    <label>Last Name</label>
-                    <Field name="lastName" as={Input} />
+                        <label>Last Name</label>
+                        <Field name="lastName" as={Input} />
 
-                    <label>State</label>
-                    <Field name="state" as={Input} />
+                        <label>State</label>
+                        <Field name="state" as={Input} />
 
-                    <label>School Name</label>
-                    <Field name="schoolName" as={Input} />
+                        <label>School Name</label>
+                        <Field name="schoolName" as={Input} />
 
-                    <label>School District</label>
-                    <Field name="schoolDistrict" as={Input} />
+                        <label>School District</label>
+                        <Field name="schoolDistrict" as={Input} />
 
-                    <label>Grade Levels</label>
-                    <Field name="gradeLevels">
-                        {({ field, form }) => (
-                            <Select
-                                mode="multiple"
-                                value={field.value}
-                                onChange={(value) => form.setFieldValue(field.name, value)}
-                            >
-                                {[...Array(12)].map((_, index) => (
-                                    <Select.Option key={index + 1} value={(index + 1).toString()}>
-                                        {index + 1}
-                                    </Select.Option>
-                                ))}
-                            </Select>
-                        )}
-                    </Field>
+                        <label>Grade Levels</label>
+                        <Field name="gradeLevels">
+                            {({ field, form }) => (
+                                <Select
+                                    mode="multiple"
+                                    value={field.value}
+                                    onChange={(value) => form.setFieldValue(field.name, value)}
+                                >
+                                    {[...Array(12)].map((_, index) => (
+                                        <Select.Option key={index + 1} value={(index + 1).toString()}>
+                                            {index + 1}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                            )}
+                        </Field>
 
-                    <label>Birthdate (MM/DD/YYYY)</label>
-                    <Field name="birthdate">
-                        {({ field, form }) => (
-                            <div>
-                                <Input {...field} placeholder="MM/DD/YYYY" />
-                                {form.errors.birthdate && form.touched.birthdate && <div>{form.errors.birthdate}</div>}
-                            </div>
-                        )}
-                    </Field>
+                        <label>Birthdate (MM/DD/YYYY)</label>
+                        <Field name="birthdate">
+                            {({ field, form }) => (
+                                <div>
+                                    <Input {...field} placeholder="MM/DD/YYYY" />
+                                    {form.errors.birthdate && form.touched.birthdate && <div>{form.errors.birthdate}</div>}
+                                </div>
+                            )}
+                        </Field>
 
-                    <label>Interests</label>
-                    <Field name="interests" as={Input} />
-
-                    <label>Favorite Things</label>
-                    <Field name="favoriteThings.pets" as={Input} placeholder="Pets" />
-                    <Field name="favoriteThings.dessert" as={Input} placeholder="Dessert" />
-                    <Field name="favoriteThings.flower" as={Input} placeholder="Flower" />
-                    <Field name="favoriteThings.scent" as={Input} placeholder="Scent" />
-                    <Field name="favoriteThings.color" as={Input} placeholder="Color" />
-                    <Field name="favoriteThings.schoolBeverage" as={Input} placeholder="School Beverage" />
-                    <Field name="favoriteThings.breakfast" as={Input} placeholder="Breakfast Restaurant & Item" />
-                    <Field name="favoriteThings.lunch" as={Input} placeholder="Lunch Restaurant & Item" />
-                    <Field name="favoriteThings.dinner" as={Input} placeholder="Dinner Restaurant" />
-                    <Field name="favoriteThings.stores" as={Input} placeholder="Stores & Gift Cards" />
-                    <Field name="favoriteThings.notToReceive" as={Input} placeholder="I Prefer Not To Receive" />
-                    <Button type="primary" htmlType="submit" loading={isSubmitting}>
-                        Submit
-                    </Button>
-                </Form>
-            )}
-        </Formik>
+                        <label>Interests</label>
+                        <Field name="interests" as={Input} />
+                                         
+                        <label>Favorite Things</label>
+                        <Field name="favoriteThings.pets" as={Input} placeholder="Pets" />
+                        <Field name="favoriteThings.dessert" as={Input} placeholder="Dessert" />
+                        <Field name="favoriteThings.flower" as={Input} placeholder="Flower" />
+                        <Field name="favoriteThings.scent" as={Input} placeholder="Scent" />
+                        <Field name="favoriteThings.color" as={Input} placeholder="Color" />
+                        <Field name="favoriteThings.schoolBeverage" as={Input} placeholder="School Beverage" />
+                        <Field name="favoriteThings.breakfast" as={Input} placeholder="Breakfast Restaurant & Item" />
+                        <Field name="favoriteThings.lunch" as={Input} placeholder="Lunch Restaurant & Item" />
+                        <Field name="favoriteThings.dinner" as={Input} placeholder="Dinner Restaurant" />
+                        <Field name="favoriteThings.stores" as={Input} placeholder="Stores & Gift Cards" />
+                        <Field name="favoriteThings.notToReceive" as={Input} placeholder="I Prefer Not To Receive" />
+                        <Button block type="primary" htmlType="submit" loading={isSubmitting}>
+                            Submit
+                        </Button>
+                        </Space>
+                    </Form>
+                )}
+            </Formik>
+        </Card>
     )
 }
 

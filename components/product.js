@@ -40,11 +40,11 @@ const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts }) =
     return (
         <List.Item
             actions={!isEditing ? [
-                <Button onClick={handleEditClick}>Edit</Button>,
-                <Button onClick={handleDeleteClick}><DeleteOutlined /></Button>
+                <Button key="edit" onClick={handleEditClick}>Edit</Button>,
+                <Button key="delete" onClick={handleDeleteClick}><DeleteOutlined /></Button>
             ] : [
-                <Button onClick={handleSaveClick}>Save</Button>,
-                <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+                <Button key="save" onClick={handleSaveClick}>Save</Button>,
+                <Button key="cancel" onClick={() => setIsEditing(false)}>Cancel</Button>
             ]}
         >
             <List.Item.Meta

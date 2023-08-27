@@ -49,8 +49,9 @@ const TeacherListItem = ({ teacher, donor, fetchTeachers }) => {
   return (
     <List.Item
       actions={[
-        <Button href={`/donor/teacherProfile/${teacher._id}`}>View</Button>,
+        <Button key="view" href={`/donor/teacherProfile/${teacher._id}`}>View</Button>,
         <Button
+          key="save"
           type="primary"
           icon={savedTeacher ? <HeartFilled /> : <HeartOutlined />}
           onClick={handleSaveToFavorites}

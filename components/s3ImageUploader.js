@@ -62,10 +62,10 @@ const S3ImageUploader = ({ onUpload, teacherProfile }) => {
   return (
     <div>
       {file ? (
-        <Avatar shape="square" size={100} src={URL.createObjectURL(file)} />
+        <Avatar shape="square" size={200} src={URL.createObjectURL(file)} />
       ) : (
-        <Avatar shape="square" size={100} src={teacherProfile.profilePhotoUrl} />
-      )}
+        <Avatar shape="square" size={200} src={teacherProfile.profilePhotoUrl} />
+      )}  
 
       <Upload
         showUploadList={false}

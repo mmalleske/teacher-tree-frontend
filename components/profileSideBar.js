@@ -29,7 +29,7 @@ const ProfileSideBar = ({ teacherProfile, readOnly }) => {
                         ) : (
                             <Avatar size={100} icon={<UserOutlined />} />
                         )}
-                        <p>You haven't completed your profile yet!</p>
+                        <p>Complete your profile by clicking below.</p>
                     </div>
                     <Button block href='/teacher/profile'>Edit Profile</Button>
                 </Card>
