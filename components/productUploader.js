@@ -110,12 +110,12 @@ const ProductUploader = () => {
                     {
                         label: 'Wishlist',
                         key: 'wishlist',
-                        children: [<Uploader />, <WishList />],
+                        children: [<Uploader key="uploader" />, <WishList key="wishlist" />],
                     },
                     {
                         label: 'Consumables',
                         key: 'consumables',
-                        children: [<Uploader />, <Consumables />]   
+                        children: [<Uploader key="uploader" />, <Consumables key="consumables" />]   
                     },                   
                 ]}
             />            

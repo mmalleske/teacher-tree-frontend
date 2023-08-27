@@ -2,6 +2,7 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import RegisterForm from '../components/registerForm'
 import { Card } from 'antd'
+import Link from 'next/link'
 
 export default function Home() {
     return (
@@ -14,7 +15,7 @@ export default function Home() {
                 <h1>Teacher Tree</h1>
                 <p>Connecting Communities With Classrooms</p>
                 <RegisterForm />
-                <p>Already a Teacher TreeUser? <a href="/login"><u>Login Here.</u></a></p>
+                <p>Already a Teacher TreeUser? <Link href="/login"><u>Login Here.</u></Link></p>
             </Card>
         </div>
     )
