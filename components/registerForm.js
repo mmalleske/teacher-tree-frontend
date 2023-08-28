@@ -3,12 +3,13 @@ import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { useFormik } from 'formik';
 import axios from 'axios';
 import { useState } from 'react';
-import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import useCustomLogin from '../hooks/useCustomLogin';
 
 const RegisterForm = () => {
     const router = useRouter();
     const [userType, setUserType] = useState("teacher");
+    const { register, loading } = useCustomLogin();
 
     const formik = useFormik({
         initialValues: {
@@ -16,39 +17,21 @@ const RegisterForm = () => {
             password: '',
             password_confirmation: '',
         },
-        onSubmit: async (values, { setSubmitting }) => {
+        onSubmit: async (values) => {
+            console.log(values)
             try {
-                const response = await axios.post(`${process.env.API_BASE_URL}/auth/register?userType=${userType}`, values);
-                const { data } = response;
-                setSubmitting(false);
-
-                // Check if the response indicates success
-                if (data) {
-                    message.success('New Account Created');
-
-                    // After successful registration, sign in the user
-                    await signIn('credentials', {
-                        email: values.email,
-                        password: values.password,
-                        redirect: false
-                    });
-
-                    console.log("redirect now dangi")
-
-                    // Redirect the user after signing in
-                    router.push('/teacher/dashboard');
-                }
+                await register(values.email, values.password, values.password_confirmation, userType);
+               
             } catch (error) {
-                setSubmitting(false);
-
                 // Handle error responses here
                 if (error.response && error.response.data && error.response.data.errors) {
                     // Display error messages from the backend
                     const { errors } = error.response.data;
-                    message.error(Object.values(errors).join(', '));
+                    console.error(error)
+                    // message.error(Object.values(errors).join(', '));
                 } else {
                     // Handle other types of errors
-                    message.error('An error occurred during registration.');
+                    // message.error('An error occurred during registration.');
                 }
             }
         },
@@ -121,7 +104,7 @@ const RegisterForm = () => {
                 </Form.Item>
 
                 <Form.Item>
-                    <Button block type="primary" htmlType="submit" loading={formik.isSubmitting}>
+                    <Button block type="primary" htmlType="submit" loading={loading}>
                         Register as {userType.toUpperCase()}
                     </Button>
                 </Form.Item>

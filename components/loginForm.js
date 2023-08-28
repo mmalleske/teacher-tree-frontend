@@ -19,14 +19,7 @@ const LoginForm = () => {
         },
         onSubmit: async (values, { setSubmitting }) => {
             try {
-                await login(values.email, values.password, userType); // Use the custom login function
-
-                if (userType === "teacher") {
-                    router.push('/teacher/dashboard');
-                } else {
-                    router.push('/donor/favorites');
-                }
-               
+                await login(values.email, values.password, userType); // Use the custom login function                              
             } catch (error) {
                 console.log(error, "Error")
                 // Handle specific error codes

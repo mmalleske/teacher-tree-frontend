@@ -49,6 +49,48 @@ const useCustomLogin = () => {
     }
   };
 
+  const register = async (email, password, password_confirmation, userType) => {
+    console.log(email, "register!")
+    try {
+      setLoading(true);
+
+      // Call your register API here
+      // Replace this with your actual API call logic
+      const response = await fetch(`${process.env.API_BASE_URL}/auth/register?userType=${userType}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, password_confirmation }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Set the user in context
+        setUser(data.user);
+
+        // Save the token to a cookie
+        const expirationTime = 3600; // Set the expiration time (e.g., 1 hour)
+        Cookies.set('authToken', data.token, { expires: expirationTime });
+        // message.success('New Account Created');
+
+        if (userType === 'teacher') {
+          router.push('/teacher/dashboard');
+        } else {
+          router.push('/donor/favorites');
+        }
+      } else {
+        message.error(data.message);
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      message.error('An error occurred during registration. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     try {
       // Clear the user data from context
@@ -65,7 +107,7 @@ const useCustomLogin = () => {
     }
   };
 
-  return { login, logout, loading };
+  return { login, logout, register, loading };
 
 };
 
