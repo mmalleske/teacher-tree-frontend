@@ -3,11 +3,14 @@ import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { signIn } from 'next-auth/react';
+import { useUser } from '../contexts/UserContext'; // Import the UserContext hook
+import useCustomLogin from '../hooks/useCustomLogin'; // Import the custom login hook
 
 const LoginForm = () => {
     const router = useRouter();
     const [userType, setUserType] = useState("teacher");
+    const { setUser } = useUser(); // Use the setUser function from the context
+    const { login, loading } = useCustomLogin(); // Use the custom login hook
 
     const formik = useFormik({
         initialValues: {
@@ -16,13 +19,7 @@ const LoginForm = () => {
         },
         onSubmit: async (values, { setSubmitting }) => {
             try {
-                await signIn('credentials', {
-                    email: values.email,
-                    password: values.password,
-                    redirect: false,
-                    action: "login",
-                    userType
-                });
+                await login(values.email, values.password, userType); // Use the custom login function
 
                 if (userType === "teacher") {
                     router.push('/teacher/dashboard');
@@ -86,7 +83,7 @@ const LoginForm = () => {
                 </Form.Item>
 
                 <Form.Item>
-                    <Button block type="primary" htmlType="submit" loading={formik.isSubmitting}>
+                    <Button block type="primary" htmlType="submit" loading={loading}>
                         Login as {userType.toLocaleUpperCase()}
                     </Button>
                 </Form.Item>

@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react"
-import { useSession } from 'next-auth/react';
 import { Col, Row } from "antd";
 import ProfileSideBar from "./profileSideBar";
 import ProductUploader from "./productUploader";

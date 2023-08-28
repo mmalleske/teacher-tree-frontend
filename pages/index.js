@@ -1,8 +1,6 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import RegisterForm from '../components/registerForm'
-import LoginForm from '../components/loginForm'
+import { Button, Card, Space } from 'antd'
 
 export default function Home() {
   return (
@@ -10,12 +8,15 @@ export default function Home() {
       <Head>
         <title>Teacher Tree</title>
       </Head>
-
-      {/* <RegisterForm /> */}
-      <img src="/assets/images/teacher-tree-logo.webp" />
-      <h1>Teacher Tree</h1>
-      <LoginForm />
-     
+      <Card>
+        <img src="/assets/images/teacher-tree-logo.webp" />
+        <h1>Teacher Tree</h1>
+        <p>Welcome to Teacher Tree</p>
+        <Space>
+          <Button block type="primary" href="/register">Sign Up</Button>
+          <Button block type="primary" href="/login">Login</Button>
+        </Space>
+      </Card>
     </div>
   )
 }

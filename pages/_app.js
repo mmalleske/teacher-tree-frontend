@@ -1,20 +1,19 @@
 import '../styles/globals.css'
-import { SessionProvider } from 'next-auth/react'
 import { ConfigProvider } from 'antd'
+import { UserProvider } from '../contexts/UserContext'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <SessionProvider session={pageProps.session}>
+    <UserProvider>
       <ConfigProvider
         theme={{
           token: {
-            // Seed Token
             colorPrimary: '#00b96b',
           },
         }}>
         <Component {...pageProps} />
       </ConfigProvider>
-    </SessionProvider>
+    </UserProvider>
   )
 }
 

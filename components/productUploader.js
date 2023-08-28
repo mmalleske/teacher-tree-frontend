@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { List, Form, Input, Button, message, Tabs, Card } from 'antd';
 import axios from 'axios';
-import { useSession } from 'next-auth/react';
 import Product from './product';
+import { UserContext } from "../contexts/UserContext";
 
 const ProductUploader = () => {
     const [products, setProducts] = useState([]);
-    const [form] = Form.useForm();
-    const { data: session } = useSession();
+    const [form] = Form.useForm();    
+    const { user } = useContext(UserContext);
 
     const fetchProducts = async () => {
-        const userId = session?.user?._id
-        if (userId) {
+        
+        if (user) {
             try {
-                const response = await axios.get(`${process.env.API_BASE_URL}/products/${userId}`); // Replace :userId with the actual user ID
+                const response = await axios.get(`${process.env.API_BASE_URL}/products/${user.userId}`); // Replace :userId with the actual user ID
                 setProducts(response.data);
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -24,15 +24,14 @@ const ProductUploader = () => {
 
     useEffect(() => {
         fetchProducts();
-    }, [session]);
+    }, [user]);
 
     const onFinish = async (values) => {
-        const userId = session?.user?._id
-
-        if (userId) {
+    
+        if (user) {
             try {
                 const response = await axios.post(`${process.env.API_BASE_URL}/products/new`, {
-                    userId,
+                    userId: user.userId,
                     url: values.amazonLink,
                     quantity: values.quantity
                 });

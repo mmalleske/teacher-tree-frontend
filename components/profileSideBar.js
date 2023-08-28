@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useSession } from 'next-auth/react';
 import { Avatar, Button, Card } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import styles from "./profileSideBar.module.scss";
