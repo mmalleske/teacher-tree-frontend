@@ -1,31 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useContext } from 'react';
 import Layout from '../../components/layout';
 import axios from 'axios';
-import { useSession } from 'next-auth/react';
 import EditProfileForm from '../../components/editProfileForm';
-
-import { getSession } from "next-auth/react";
-
-export async function getServerSideProps(context) {
-    const session = await getSession(context);
-
-    if (!session) {
-        return {
-            redirect: {
-                destination: '/login', // Redirect to login page
-                permanent: false,
-            },
-        };
-    }
-
-    // Continue loading the page normally
-    return {
-        props: {},
-    };
-}
+import { UserContext } from '../../contexts/UserContext';
 
 const TeacherProfilePage = () => {
-    const { data: session } = useSession();
+    const { user } = useContext(UserContext);
     const [teacherProfile, setTeacherProfile] = useState(null);
     const [loadingTeacher, setLoadingTeacher] = useState(false);
 
@@ -42,11 +23,11 @@ const TeacherProfilePage = () => {
     };
 
     useEffect(() => {
-        const userId = session?.user?._id
+        const userId = user?.userId
         if (userId) {
             fetchTeacherProfile(userId)
         }
-    }, [session])
+    }, [user])
 
     if(loadingTeacher) {
         return (

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { List, Form, Input, Button, message, Tabs, Card, Space } from 'antd';
 import axios from 'axios';
-import { useSession } from 'next-auth/react';
-import Product from './product';
 
 const ProductList = ({ userId }) => {
     const [products, setProducts] = useState([]);

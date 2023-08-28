@@ -1,55 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Select, Input, Button, List, Avatar, Card, Divider } from 'antd';
 import axios from 'axios';
 import { stateCodes } from '../../constants';
 import Layout from "../../components/layout";
-import { getSession } from 'next-auth/react';
 import { CaretLeftOutlined } from '@ant-design/icons';
 import TeacherListItem from '../../components/teacherListItem';
+import { UserContext } from '../../contexts/UserContext';
 
-export async function getServerSideProps(context) {
-  const session = await getSession(context);
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/login', // Redirect to login page
-        permanent: false,
-      },
-    };
-  }
-
-  // Continue loading the page normally
-  return {
-    props: {
-      session
-    },
-  };
-}
-
-const TeacherSearch = ({ session }) => {
+const TeacherSearch = () => {
   const [state, setState] = useState('');
   const [schoolDistrict, setSchoolDistrict] = useState('');
   const [school, setSchool] = useState('');
   const [gradeLevel, setGradeLevel] = useState('');
   const [teachers, setTeachers] = useState([]);
   const [donor, setDonor] = useState(null); // State to store donor information
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
-    // Fetch donor information using the session's user ID
+    
     const fetchDonor = async () => {
       try {
-        const response = await axios.get(`${process.env.API_BASE_URL}/donors/${session.user._id}`);
+        const response = await axios.get(`${process.env.API_BASE_URL}/donors/${user.userId}`);
         setDonor(response.data); // Set donor information
       } catch (error) {
         console.error('Error fetching donor:', error);
       }
     };
 
-    if (session?.user?._id) {
+    if (user?.userId) {
       fetchDonor();
     }
-  }, [session]);
+  }, [user]);
 
   const handleSearch = async () => {
     try {

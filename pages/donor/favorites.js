@@ -1,39 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import { getSession } from 'next-auth/react';
 import { Card, Button, List, Divider } from "antd";
 import Layout from "../../components/layout";
 import TeacherListItem from "../../components/teacherListItem";
+import { UserContext } from "../../contexts/UserContext";
 
-export async function getServerSideProps(context) {
-    const session = await getSession(context);
-
-    if (!session) {
-        return {
-            redirect: {
-                destination: '/login', // Redirect to login page
-                permanent: false,
-            },
-        };
-    }
-
-    // Continue loading the page normally
-    return {
-        props: {
-            session
-        },
-    };
-}
-
-export default function Favorites({ session }) {
+export default function Favorites() {
     const [donor, setDonor] = useState(null); // State to store donor information
     const [favoriteTeachers, setFavoriteTeachers] = useState([]); // State to store favorite teachers
+    const { user } = useContext(UserContext);
 
     useEffect(() => {
-        // Fetch donor information using the session's user ID
+        
         const fetchDonor = async () => {
             try {
-                const response = await axios.get(`${process.env.API_BASE_URL}/donors/${session.user._id}`);
+                const response = await axios.get(`${process.env.API_BASE_URL}/donors/${user.userId}`);
                 setDonor(response.data); // Set donor information
                 fetchFavoriteTeachers(response.data.savedTeachers); // Fetch favorite teachers
             } catch (error) {
@@ -41,10 +22,10 @@ export default function Favorites({ session }) {
             }
         };
 
-        if (session?.user?._id) {
+        if (user?.userId) {
             fetchDonor();
         }
-    }, [session]);
+    }, [user]);
 
     const fetchFavoriteTeachers = async (teacherIds) => {
         try {

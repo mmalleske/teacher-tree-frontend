@@ -49,7 +49,24 @@ const useCustomLogin = () => {
     }
   };
 
-  return { login, loading };
+  const logout = () => {
+    try {
+      // Clear the user data from context
+      setUser(null);
+
+      // Clear the token from cookies
+      Cookies.remove('authToken');
+
+      // Redirect to the login or homepage
+      router.push('/login'); // Replace with the appropriate route
+    } catch (error) {
+      console.error('Logout error:', error);
+      message.error('An error occurred during logout. Please try again later.');
+    }
+  };
+
+  return { login, logout, loading };
+
 };
 
 export default useCustomLogin;
