@@ -6,11 +6,11 @@ import { UserContext } from "../contexts/UserContext";
 
 const ProductUploader = () => {
     const [products, setProducts] = useState([]);
+    const [uploadingProduct, setUploadingProduct] = useState(false);
     const [form] = Form.useForm();    
     const { user } = useContext(UserContext);
 
-    const fetchProducts = async () => {
-        
+    const fetchProducts = async () => {        
         if (user) {
             try {
                 const response = await axios.get(`${process.env.API_BASE_URL}/products/${user.userId}`); // Replace :userId with the actual user ID
@@ -27,9 +27,10 @@ const ProductUploader = () => {
     }, [user]);
 
     const onFinish = async (values) => {
-    
+        setUploadingProduct(true)
         if (user) {
             try {
+                message.info('Please be patient while we talk to Amazon.')
                 const response = await axios.post(`${process.env.API_BASE_URL}/products/new`, {
                     userId: user.userId,
                     url: values.amazonLink,
@@ -38,11 +39,13 @@ const ProductUploader = () => {
 
                 if (response.data) {
                     message.success('Product added successfully');
+                    setUploadingProduct(false)
                     form.resetFields();
                     fetchProducts(); // Fetch updated list of products
                 }
             } catch (error) {
                 console.error('Error adding product:', error);
+                setUploadingProduct(false)
             }
         }
 
@@ -70,7 +73,7 @@ const ProductUploader = () => {
                 <Input placeholder='Quantity' type='number' defaultValue={1} />
             </Form.Item>
             <Form.Item>
-                <Button type="primary" htmlType="submit">
+                <Button type="primary" htmlType="submit" loading={uploadingProduct}>
                     Add Product
                 </Button>
             </Form.Item>
