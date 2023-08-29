@@ -71,7 +71,6 @@ const S3ImageUploader = ({ onUpload, teacherProfile }) => {
         type="file"
         accept="image/*"
         onChange={(event) => handleFileChange(event.target.files[0])}
-        capture
       />
 
       {/* <Button
