@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AWS from 'aws-sdk';
-import { Upload, Button, Avatar, message } from 'antd';
+import { Button, Avatar, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
 const S3ImageUploader = ({ onUpload, teacherProfile }) => {
@@ -55,8 +55,8 @@ const S3ImageUploader = ({ onUpload, teacherProfile }) => {
     }
   };
 
-  const handleFileChange = (file) => {
-    setFile(file);
+  const handleFileChange = (selectedFile) => {
+    setFile(selectedFile);
   };
 
   return (
@@ -65,18 +65,21 @@ const S3ImageUploader = ({ onUpload, teacherProfile }) => {
         <Avatar shape="square" size={200} src={URL.createObjectURL(file)} />
       ) : (
         <Avatar shape="square" size={200} src={teacherProfile.profilePhotoUrl} />
-      )}  
+      )}
 
-      <Upload
-        showUploadList={false}
-        customRequest={() => {}}
-        beforeUpload={(file) => {
-          handleFileChange(file);
-          return false; // Prevent default upload behavior
-        }}
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(event) => handleFileChange(event.target.files[0])}
+        capture
+      />
+
+      {/* <Button
+        icon={<UploadOutlined />}
+        onClick={() => document.querySelector('input[type="file"]').click()}
       >
-        <Button icon={<UploadOutlined />}>Select Image</Button>
-      </Upload>
+        Select Image
+      </Button> */}
     </div>
   );
 };
