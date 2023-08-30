@@ -1,0 +1,8 @@
+.teacherListItem {
+    ul {
+        margin: 0 !important
+    }
+    @media (max-width: 576px) {
+        display: block !important;
+    }
+}

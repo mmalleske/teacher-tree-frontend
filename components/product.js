@@ -4,7 +4,7 @@ import axios from 'axios';
 import { DeleteOutlined } from "@ant-design/icons";
 import styles from "./product.module.scss"
 
-const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts }) => {
+const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts, readOnly = false }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editedQuantity, setEditedQuantity] = useState(product.quantity);
     const { imageUrl, affiliateLink, title, quantity = 1 } = product;
@@ -48,7 +48,7 @@ const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts }) =
             </div>
             <div className={styles.productItemQuantity}>
                 {
-                    isEditing ? (
+                    isEditing && !readOnly ? (
                         <div className={styles.productItemQuantityEdit}>
                             <p>Quantity: </p>
                             <Input
@@ -62,19 +62,21 @@ const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts }) =
                     )
                 }
             </div>
-            <div className={styles.productItemActions}>
-                {!isEditing ? (
-                    <Space>
-                        <Button key="edit" onClick={handleEditClick}>Edit</Button>
-                        <Button key="delete" onClick={handleDeleteClick}><DeleteOutlined /></Button>
-                    </Space>
-                ) : (
-                    <Space>
-                        <Button key="save" onClick={handleSaveClick}>Save</Button>,
-                        <Button key="cancel" onClick={() => setIsEditing(false)}>Cancel</Button>
-                    </Space>
-                )}
-            </div>
+            {!readOnly && (
+                <div className={styles.productItemActions}>
+                    {!isEditing ? (
+                        <Space>
+                            <Button key="edit" onClick={handleEditClick}>Edit</Button>
+                            <Button key="delete" onClick={handleDeleteClick}><DeleteOutlined /></Button>
+                        </Space>
+                    ) : (
+                        <Space>
+                            <Button key="save" onClick={handleSaveClick}>Save</Button>,
+                            <Button key="cancel" onClick={() => setIsEditing(false)}>Cancel</Button>
+                        </Space>
+                    )}
+                </div>
+            )}
         </List.Item>
     );
 };

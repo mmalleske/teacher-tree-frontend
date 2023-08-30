@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { List, Form, Input, Button, message, Tabs, Card, Space } from 'antd';
 import axios from 'axios';
+import Product from './product';
 
 const ProductList = ({ userId }) => {
     const [products, setProducts] = useState([]);
@@ -21,46 +22,26 @@ const ProductList = ({ userId }) => {
         fetchProducts();
     }, []);
 
-    const WishList = () => (
+    const WishList = () => products && (
         <List
-            dataSource={products}
+            dataSource={products.filter(product => product.listType !== 'consumables' || !product.listType)}
             renderItem={(product) => (
-                <List.Item>
-                    <List.Item.Meta
-                        avatar={<a target="_blank" href={product.affiliateLink}><img src={product.imageUrl} /></a>}
-                        title={<p><a target="_blank" href={product.affiliateLink}>{product.title}</a></p>}
-                        description={<p>Quantity: {product.quantity}</p>}
-                    />
-                </List.Item>
+                <Product product={product} readOnly fetchProducts={fetchProducts} />
             )}
         />
-    )
+    );
 
-    const Consumables = () => (
+    const Consumables = () => products && (
         <List
-            dataSource={products}
+            dataSource={products.filter(product => product.listType === 'consumables')}
             renderItem={(product) => (
-                <List.Item>
-                    <List.Item.Meta
-                        avatar={<a target="_blank" href={product.affiliateLink}><img src={product.imageUrl} /></a>}
-                        title={<p><a target="_blank" href={product.affiliateLink}>{product.title}</a></p>}
-                        description={<p>Quantity: {product.quantity}</p>}
-                    />
-                </List.Item>
+                <Product product={product} readOnly fetchProducts={fetchProducts} />
             )}
         />
     )
 
     return (
-        <Card>
-            <Space>
-                <Button href="/donor/favorites" type="primary">
-                    Favorite Teachers
-                </Button>
-                <Button href="/donor/teacherSearch">
-                    Search Teachers
-                </Button>
-            </Space>
+        <Card>           
             <Tabs
                 defaultActiveKey="wishlist"
                 items={[

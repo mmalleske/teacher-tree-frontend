@@ -2,6 +2,7 @@ import { List, Avatar, Button, message, Modal } from "antd";
 import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { useState } from "react";
 import axios from "axios";
+import styles from "./teacherListItem.module.scss"
 
 const TeacherListItem = ({ teacher, donor, fetchTeachers }) => {
   const isTeacherSaved = donor.savedTeachers.includes(teacher._id);
@@ -48,6 +49,7 @@ const TeacherListItem = ({ teacher, donor, fetchTeachers }) => {
 
   return (
     <List.Item
+      className={styles.teacherListItem}
       actions={[
         <Button key="view" href={`/donor/teacherProfile/${teacher._id}`}>View</Button>,
         <Button
@@ -61,7 +63,7 @@ const TeacherListItem = ({ teacher, donor, fetchTeachers }) => {
       ]}
     >
       <List.Item.Meta
-        avatar={<Avatar size={100} src={teacher.profilePhotoUrl} />}
+        avatar={<Avatar size={100} style={{marginBottom: "1rem"}} src={teacher.profilePhotoUrl} />}
         title={`${teacher.firstName} ${teacher.lastName}`}
         description={teacher.schoolName}
       />
