@@ -52,16 +52,8 @@ const TeacherListItem = ({ teacher, donor, fetchTeachers }) => {
     <List.Item
       className={styles.teacherListItem}
       actions={[
-        <Button key="view" href={`/donor/teacherProfile/${teacher._id}`}>View</Button>,
-        // <Button
-        //   key="save"
-        //   type="primary"
-        //   icon={savedTeacher ? <HeartFilled /> : <HeartOutlined />}
-        //   onClick={handleSaveToFavorites}
-        // >
-        //   {savedTeacher ? "Saved" : "Save To Favorites"}
-        // </Button>
-        <SaveTeacherButton teacher={teacher} donor={donor} />
+        <Button key="view" href={`/donor/teacherProfile/${teacher._id}`}>View</Button>,      
+        <SaveTeacherButton key="save" teacher={teacher} donor={donor} />
       ]}
     >
       <List.Item.Meta
