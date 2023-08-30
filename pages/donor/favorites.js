@@ -77,7 +77,7 @@ export default function Favorites() {
                 </Card>
             ) : (
                 <Card>
-                    <p>We couldn't find a donor profile associated with this user.</p>
+                    <p>We could not find a donor profile associated with this user.</p>
                     <Button loading={loading} type="primary" onClick={createDonor}>Create One</Button>
                 </Card>
             )}

@@ -56,7 +56,7 @@ export default function Favorites() {
         <TeacherProfile readOnly={false} teacherProfile={teacherProfile} />
       ) : (
         <Card>
-          <p>We couldn't find a Teacher profile associated with this user.</p>
+          <p>We could not find a Teacher profile associated with this user.</p>
           <Button loading={loading} type="primary" onClick={createTeacher}>Create One</Button>
         </Card>
       )}

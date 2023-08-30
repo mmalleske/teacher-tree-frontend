@@ -36,7 +36,6 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
     };
 
     const handleSubmit = async (values, { setFieldValue }) => {
-        console.log(s3Url, "handle submit")
         if (file) {
             try {
                 await handleFileUpload(file, setFieldValue);
@@ -64,7 +63,6 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
     };
 
     const onUpload = (s3location) => {
-        console.log(s3location, "frome child")
         setS3Url(s3location)
     }
 
