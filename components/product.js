@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { List, Avatar, Button, Input } from "antd";
+import { List, Space, Button, Input } from "antd";
 import axios from 'axios';
 import { DeleteOutlined } from "@ant-design/icons";
 import styles from "./product.module.scss"
@@ -63,13 +63,17 @@ const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts }) =
                 }
             </div>
             <div className={styles.productItemActions}>
-                {!isEditing ? [
-                    <Button key="edit" onClick={handleEditClick}>Edit</Button>,
-                    <Button key="delete" onClick={handleDeleteClick}><DeleteOutlined /></Button>
-                ] : [
-                    <Button key="save" onClick={handleSaveClick}>Save</Button>,
-                    <Button key="cancel" onClick={() => setIsEditing(false)}>Cancel</Button>
-                ]}
+                {!isEditing ? (
+                    <Space>
+                        <Button key="edit" onClick={handleEditClick}>Edit</Button>
+                        <Button key="delete" onClick={handleDeleteClick}><DeleteOutlined /></Button>
+                    </Space>
+                ) : (
+                    <Space>
+                        <Button key="save" onClick={handleSaveClick}>Save</Button>,
+                        <Button key="cancel" onClick={() => setIsEditing(false)}>Cancel</Button>
+                    </Space>
+                )}
             </div>
         </List.Item>
     );

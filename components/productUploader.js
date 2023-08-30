@@ -7,10 +7,11 @@ import { UserContext } from "../contexts/UserContext";
 const ProductUploader = () => {
     const [products, setProducts] = useState([]);
     const [uploadingProduct, setUploadingProduct] = useState(false);
-    const [form] = Form.useForm();    
+    const [form] = Form.useForm();
     const { user } = useContext(UserContext);
+    const [listType, setListType] = useState('wishlist')
 
-    const fetchProducts = async () => {        
+    const fetchProducts = async () => {
         if (user) {
             try {
                 const response = await axios.get(`${process.env.API_BASE_URL}/products/${user.userId}`); // Replace :userId with the actual user ID
@@ -34,7 +35,8 @@ const ProductUploader = () => {
                 const response = await axios.post(`${process.env.API_BASE_URL}/products/new`, {
                     userId: user.userId,
                     url: values.amazonLink,
-                    quantity: values.quantity
+                    quantity: values.quantity,
+                    listType
                 });
 
                 if (response.data) {
@@ -81,32 +83,30 @@ const ProductUploader = () => {
     )
 
 
-    const WishList = () => (
+    const WishList = () => products && (
         <List
-            dataSource={products}
+            dataSource={products.filter(product => product.listType !== 'consumables' || !product.listType)}
+            renderItem={(product) => (
+                <Product product={product} fetchProducts={fetchProducts} />
+            )}
+        />
+    );
+
+    const Consumables = () => products && (
+        <List
+            dataSource={products.filter(product => product.listType === 'consumables')}
             renderItem={(product) => (
                 <Product product={product} fetchProducts={fetchProducts} />
             )}
         />
     )
 
-    const Consumables = () => (
-        <List
-            dataSource={products}
-            renderItem={(product) => (
-                <List.Item>
-                    <a target="_blank" href={product.affiliateLink}>
-                        <img src={product.imageUrl} />
-                        <p>{product.title}</p>
-                    </a>
-                </List.Item>
-            )}
-        />
-    )
+    console.log(products, 'products')
 
     return (
         <Card>
             <Tabs
+                onTabClick={(tab) => { setListType(tab) }}
                 defaultActiveKey="wishlist"
                 items={[
                     {
@@ -117,10 +117,10 @@ const ProductUploader = () => {
                     {
                         label: 'Consumables',
                         key: 'consumables',
-                        children: [<Uploader key="uploader" />, <Consumables key="consumables" />]   
-                    },                   
+                        children: [<Uploader key="uploader" />, <Consumables key="consumables" />]
+                    },
                 ]}
-            />            
+            />
         </Card>
     );
 };
