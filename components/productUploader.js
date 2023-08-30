@@ -101,8 +101,6 @@ const ProductUploader = () => {
         />
     )
 
-    console.log(products, 'products')
-
     return (
         <Card>
             <Tabs

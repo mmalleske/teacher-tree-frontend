@@ -1,6 +1,7 @@
 .teacherListItem {
     ul {
-        margin: 0 !important
+        margin: 0 !important;
+        text-align: right;
     }
     @media (max-width: 576px) {
         display: block !important;
