@@ -2,6 +2,7 @@ import { useState } from "react";
 import { List, Avatar, Button, Input } from "antd";
 import axios from 'axios';
 import { DeleteOutlined } from "@ant-design/icons";
+import styles from "./product.module.scss"
 
 const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -38,30 +39,38 @@ const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts }) =
     };
 
     return (
-        <List.Item
-            actions={!isEditing ? [
-                <Button key="edit" onClick={handleEditClick}>Edit</Button>,
-                <Button key="delete" onClick={handleDeleteClick}><DeleteOutlined /></Button>
-            ] : [
-                <Button key="save" onClick={handleSaveClick}>Save</Button>,
-                <Button key="cancel" onClick={() => setIsEditing(false)}>Cancel</Button>
-            ]}
-        >
-            <List.Item.Meta
-                avatar={<a target="_blank" href={affiliateLink}><img src={imageUrl} /></a>}
-                title={<p><a target="_blank" href={affiliateLink}>{title}</a></p>}
-                description={
+        <List.Item className={styles.productItem}>
+            <div className={styles.productItemInfo}>
+                <a target="_blank" href={product.affiliateLink}>
+                    <img src={product.imageUrl} />
+                    <p>{product.title}</p>
+                </a>
+            </div>
+            <div className={styles.productItemQuantity}>
+                {
                     isEditing ? (
-                        <Input
-                            type="number"
-                            value={editedQuantity}
-                            onChange={(e) => setEditedQuantity(e.target.value)}
-                        />
+                        <div className={styles.productItemQuantityEdit}>
+                            <p>Quantity: </p>
+                            <Input
+                                type="number"
+                                value={editedQuantity}
+                                onChange={(e) => setEditedQuantity(e.target.value)}
+                            />
+                        </div>
                     ) : (
                         <p>Quantity: {quantity}</p>
                     )
                 }
-            />
+            </div>
+            <div className={styles.productItemActions}>
+                {!isEditing ? [
+                    <Button key="edit" onClick={handleEditClick}>Edit</Button>,
+                    <Button key="delete" onClick={handleDeleteClick}><DeleteOutlined /></Button>
+                ] : [
+                    <Button key="save" onClick={handleSaveClick}>Save</Button>,
+                    <Button key="cancel" onClick={() => setIsEditing(false)}>Cancel</Button>
+                ]}
+            </div>
         </List.Item>
     );
 };

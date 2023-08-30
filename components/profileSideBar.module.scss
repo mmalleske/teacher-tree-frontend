@@ -1,6 +1,9 @@
 .profileSideBar {
     padding: 0 1rem;
-
+    @media (max-width: 991px) {
+        padding: 0;
+        margin-bottom: 1rem;
+    }
 
     .avatar {
         text-align: center;

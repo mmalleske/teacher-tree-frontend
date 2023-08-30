@@ -1,0 +1,30 @@
+.productItem {
+    display: block !important;
+    
+    a {
+        display: flex;
+        align-items: center;
+        img {
+            margin-right: 1rem;
+        }
+    }
+
+    .productItemActions {
+        text-align: right;
+    }
+
+    .productItemQuantity input {
+        margin: 1rem;
+    }
+
+    .productItemQuantityEdit {
+        display: flex;
+        align-items: center;
+    }
+
+    @media (max-width: 576px) {
+       a {
+            display: block;
+       }
+    }
+}
