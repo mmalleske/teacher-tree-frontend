@@ -71,7 +71,7 @@ const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts, rea
                         </Space>
                     ) : (
                         <Space>
-                            <Button key="save" onClick={handleSaveClick}>Save</Button>,
+                            <Button key="save" onClick={handleSaveClick}>Save</Button>
                             <Button key="cancel" onClick={() => setIsEditing(false)}>Cancel</Button>
                         </Space>
                     )}
