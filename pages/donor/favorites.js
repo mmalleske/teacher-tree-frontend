@@ -9,18 +9,9 @@ export default function Favorites() {
     const [donor, setDonor] = useState(null); // State to store donor information
     const [favoriteTeachers, setFavoriteTeachers] = useState([]); // State to store favorite teachers
     const { user } = useContext(UserContext);
+    const [loading, setLoading] = useState(false)
 
-    useEffect(() => {        
-        const fetchDonor = async () => {
-            try {
-                const response = await axios.get(`${process.env.API_BASE_URL}/donors/${user.userId}`);
-                setDonor(response.data); // Set donor information
-                fetchFavoriteTeachers(response.data.savedTeachers); // Fetch favorite teachers
-            } catch (error) {
-                console.error('Error fetching donor:', error);
-            }
-        };
-
+    useEffect(() => {
         if (user?.userId) {
             fetchDonor();
         }
@@ -37,24 +28,59 @@ export default function Favorites() {
         }
     };
 
+    const fetchDonor = async () => {
+        try {
+            const response = await axios.get(`${process.env.API_BASE_URL}/donors/${user.userId}`);
+            setDonor(response.data); // Set donor information
+            if (response.data) {
+                fetchFavoriteTeachers(response.data.savedTeachers); // Fetch favorite teachers
+            }
+        } catch (error) {
+            console.error('Error fetching donor:', error);
+        }
+    };
+
+    const createDonor = async () => {
+        setLoading(true)
+        try {
+            const response = await axios.post(`${process.env.API_BASE_URL}/donors`, {
+                userId: user.userId
+            })
+            fetchDonor()
+        } catch (error) {
+            console.error('Error creating donor:', error);
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <Layout>
-            <Card>
-                <h1>Favorite Teachers</h1>
-                <Button type="primary" href="/donor/teacherSearch">Search Teachers</Button>
-                <Divider />
-                {favoriteTeachers.length > 0 ? (
-                    <List
-                        itemLayout="horizontal"
-                        dataSource={favoriteTeachers}
-                        renderItem={(teacher) => (
-                            <TeacherListItem teacher={teacher} donor={donor} fetchTeachers={fetchFavoriteTeachers} />
-                        )}
-                    />
-                ) : (
-                    <p>You currently have no saved teachers.</p>
-                )}                
-            </Card>
+            {donor ? (
+                <Card>
+                    <h1>Favorite Teachers</h1>
+                    <Button type="primary" href="/donor/teacherSearch">Search Teachers</Button>
+                    <Divider />
+                    {
+                        favoriteTeachers.length > 0 ? (
+                            <List
+                                itemLayout="horizontal"
+                                dataSource={favoriteTeachers}
+                                renderItem={(teacher) => (
+                                    <TeacherListItem teacher={teacher} donor={donor} fetchTeachers={fetchFavoriteTeachers} />
+                                )}
+                            />
+                        ) : (
+                            <p>You currently have no saved teachers.</p>
+                        )
+                    }
+                </Card>
+            ) : (
+                <Card>
+                    <p>We couldn't find a donor profile associated with this user.</p>
+                    <Button loading={loading} type="primary" onClick={createDonor}>Create One</Button>
+                </Card>
+            )}
         </Layout>
     )
 }
