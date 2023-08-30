@@ -3,6 +3,7 @@ import { HeartOutlined, HeartFilled } from "@ant-design/icons";
 import { useState } from "react";
 import axios from "axios";
 import styles from "./teacherListItem.module.scss"
+import SaveTeacherButton from "./saveTeacherButton";
 
 const TeacherListItem = ({ teacher, donor, fetchTeachers }) => {
   const isTeacherSaved = donor.savedTeachers.includes(teacher._id);
@@ -52,14 +53,15 @@ const TeacherListItem = ({ teacher, donor, fetchTeachers }) => {
       className={styles.teacherListItem}
       actions={[
         <Button key="view" href={`/donor/teacherProfile/${teacher._id}`}>View</Button>,
-        <Button
-          key="save"
-          type="primary"
-          icon={savedTeacher ? <HeartFilled /> : <HeartOutlined />}
-          onClick={handleSaveToFavorites}
-        >
-          {savedTeacher ? "Saved" : "Save To Favorites"}
-        </Button>
+        // <Button
+        //   key="save"
+        //   type="primary"
+        //   icon={savedTeacher ? <HeartFilled /> : <HeartOutlined />}
+        //   onClick={handleSaveToFavorites}
+        // >
+        //   {savedTeacher ? "Saved" : "Save To Favorites"}
+        // </Button>
+        <SaveTeacherButton teacher={teacher} donor={donor} />
       ]}
     >
       <List.Item.Meta

@@ -10,8 +10,7 @@ export default function Favorites() {
     const [favoriteTeachers, setFavoriteTeachers] = useState([]); // State to store favorite teachers
     const { user } = useContext(UserContext);
 
-    useEffect(() => {
-        
+    useEffect(() => {        
         const fetchDonor = async () => {
             try {
                 const response = await axios.get(`${process.env.API_BASE_URL}/donors/${user.userId}`);
