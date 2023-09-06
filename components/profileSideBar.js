@@ -9,6 +9,8 @@ const ProfileSideBar = ({ teacherProfile, readOnly }) => {
         firstName,
         lastName,
         birthdate,
+        birthDay,
+        birthMonth,
         profilePhotoUrl,
         interests,
         favoriteThings,
@@ -35,6 +37,10 @@ const ProfileSideBar = ({ teacherProfile, readOnly }) => {
         )
     }
 
+    const capitalizeEveryWord = (str) => {
+        return str.replace(/\b\w/g, (char) => char.toUpperCase());
+    }
+
     return (
         <div className={styles.profileSideBar}>
             <Card>
@@ -48,7 +54,7 @@ const ProfileSideBar = ({ teacherProfile, readOnly }) => {
                 </div>
 
                 {!readOnly && <Button block href='/teacher/profile'>Edit Profile</Button>}
-                <p><b>Birthday:</b> {birthdate}</p>
+                <p><b>Birthday:</b> {birthdate && !birthMonth ? `${birthdate}` : `${birthMonth} ${birthDay}`}</p>
                 <p><b>Interests and Hobbies:</b></p>
                 <p>{interests}</p>
                 <p><b>Favorite Things:</b></p>
@@ -58,10 +64,10 @@ const ProfileSideBar = ({ teacherProfile, readOnly }) => {
                             <li key={key}>
                                 <b>
                                     {key === 'notToReceive'
-                                        ? 'I Prefer not to Receive:'
+                                        ? 'I Prefer Not to Receive'
                                         : key === 'schoolBeverage'
-                                        ? 'school beverage:'
-                                        : key}{' '}
+                                            ? 'School beverage'
+                                            : capitalizeEveryWord(key)}{': '}
                                 </b>
                                 {value}
                             </li>
