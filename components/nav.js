@@ -71,7 +71,7 @@ export default function Nav() {
     {
       key: 'teacher-search',
       label: (
-        <Link href="/teacher/teacherSearch"><SearchOutlined /> Search Teachers</Link>
+        <Link href="/donor/teacherSearch"><SearchOutlined /> Search Teachers</Link>
       ),
     },
     {
