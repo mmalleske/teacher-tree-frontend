@@ -4,6 +4,21 @@ import { UserOutlined } from '@ant-design/icons';
 import styles from "./profileSideBar.module.scss";
 
 const ProfileSideBar = ({ teacherProfile, readOnly }) => {
+    const months = {
+        '01': 'January',
+        '02': 'February',
+        '03': 'March',
+        '04': 'April',
+        '05': 'May',
+        '06': 'June',
+        '07': 'July',
+        '08': 'August',
+        '09': 'September',
+        '10': 'October',
+        '11': 'November',
+        '12': 'December',
+    };
+
 
     const {
         firstName,
@@ -54,7 +69,7 @@ const ProfileSideBar = ({ teacherProfile, readOnly }) => {
                 </div>
 
                 {!readOnly && <Button block href='/teacher/profile'>Edit Profile</Button>}
-                <p><b>Birthday:</b> {birthdate && !birthMonth ? `${birthdate}` : `${birthMonth} ${birthDay}`}</p>
+                <p><b>Birthday:</b> {birthdate && !birthMonth ? `${birthdate}` : `${months[birthMonth]} ${birthDay}`}</p>
                 <p><b>Interests and Hobbies:</b></p>
                 <p>{interests}</p>
                 <p><b>Favorite Things:</b></p>

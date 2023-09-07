@@ -4,10 +4,7 @@ import ProductUploader from "./productUploader";
 import ProductList from "./productList";
 import SaveTeacherButton from "./saveTeacherButton";
 
-const TeacherProfile = ({ teacherProfile, donor = null, readOnly }) => {
-
-    console.log(teacherProfile)
-    
+const TeacherProfile = ({ teacherProfile, donor = null, readOnly }) => {    
     return (
         <Row>
             <Col lg={6} xs={24} >

@@ -5,6 +5,7 @@ import axios from 'axios';
 import S3ImageUploader from './s3ImageUploader';
 import * as Yup from 'yup';
 import { useRouter } from 'next/router';
+import { stateCodes } from '../constants';
 
 const EditProfileForm = ({ teacherProfile, onSubmit }) => {
     const [file, setFile] = useState(null);
@@ -49,6 +50,27 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
         { value: '11', label: 'November' },
         { value: '12', label: 'December' },
     ];
+
+    const getOrdinal = (number) => {
+        if (typeof number !== 'number') {
+            throw new Error('Input must be a number');
+        }
+
+        if (number % 100 >= 11 && number % 100 <= 13) {
+            return number + 'th';
+        }
+
+        switch (number % 10) {
+            case 1:
+                return number + 'st';
+            case 2:
+                return number + 'nd';
+            case 3:
+                return number + 'rd';
+            default:
+                return number + 'th';
+        }
+    }
 
     const handleSubmit = async (values, { setFieldValue }) => {
         if (file) {
@@ -99,7 +121,20 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
                             <Field name="lastName" as={Input} />
 
                             <label>State</label>
-                            <Field name="state" as={Input} />
+                            <Field name="state">
+                                {({ field, form }) => (
+                                    <Select
+                                        placeholder="Select state"
+                                        style={{ width: "100%" }}
+                                    >
+                                        {stateCodes.map(state => (
+                                            <Select.Option key={state.code} value={state.code}>
+                                                {state.name}
+                                            </Select.Option>
+                                        ))}
+                                    </Select>
+                                )}
+                            </Field>
 
                             <label>School Name</label>
                             <Field name="schoolName" as={Input} />
@@ -111,15 +146,28 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
                             <Field name="gradeLevels">
                                 {({ field, form }) => (
                                     <Select
+                                        style={{ width: "100%" }}
                                         mode="multiple"
                                         value={field.value}
                                         onChange={(value) => form.setFieldValue(field.name, value)}
                                     >
+                                        <Select.Option key={'early-childhood'} value="Early Childhood">
+                                            Early Childhood
+                                        </Select.Option>
+                                        <Select.Option key={'pre-k'} value="Pre-K">
+                                            Pre-K
+                                        </Select.Option>
+                                        <Select.Option key={'kindergarten'} value="Kindergarten">
+                                            Kindergarten
+                                        </Select.Option>
                                         {[...Array(12)].map((_, index) => (
-                                            <Select.Option key={index + 1} value={(index + 1).toString()}>
-                                                {index + 1}
+                                            <Select.Option key={index + 1} value={getOrdinal(index + 1)}>
+                                                {getOrdinal(index + 1)}
                                             </Select.Option>
                                         ))}
+                                        <Select.Option key={'other'} value="Other">
+                                            Other
+                                        </Select.Option>
                                     </Select>
                                 )}
                             </Field>
@@ -153,8 +201,8 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
                                                 onChange={(value) => form.setFieldValue(field.name, value)}
                                             >
                                                 {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
-                                                    <Select.Option key={day} value={day.toString().padStart(2, '0')}>
-                                                        {day}
+                                                    <Select.Option key={day} value={getOrdinal(day)}>
+                                                        {getOrdinal(day)}
                                                     </Select.Option>
                                                 ))}
                                             </Select>
