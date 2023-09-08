@@ -11,9 +11,10 @@ export const UserProvider = ({ children }) => {
 
     useEffect(() => {
         const token = Cookies.get('authToken'); // Retrieve the token using js-cookie
-
         if (!token) {
-            router.push('/login'); // Redirect to login if token is not present
+            if(router.pathname !== "/forgotPassword") {
+                router.push('/login'); // Redirect to login if token is not present
+            }
             return;
         }
 
