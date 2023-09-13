@@ -1,36 +1,38 @@
-import { Form, Input, Button, message, Segmented, Space } from 'antd';
-import { MailOutlined, LockOutlined } from '@ant-design/icons';
+import { Form, Input, Button, message } from 'antd';
+import { MailOutlined } from '@ant-design/icons';
 import { useFormik } from 'formik';
+import axios from 'axios';
 import { useState } from 'react';
-import { useRouter } from 'next/router';
-import { useUser } from '../contexts/UserContext'; // Import the UserContext hook
-import useCustomLogin from '../hooks/useCustomLogin'; // Import the custom login hook
 
 const ForgotPasswordForm = () => {
-    const [loading, setLoading] = useState();
-    
+    const [loading, setLoading] = useState(false);
+
     const formik = useFormik({
         initialValues: {
             email: '',
         },
-        onSubmit: async (values, { setSubmitting }) => {
+        onSubmit: async (values) => {
             try {
-                await login(values.email); // Use the custom login function                              
+                setLoading(true);
+
+                // Make a POST request to your forgot password endpoint
+                await axios.post(`${process.env.API_BASE_URL}/auth/forgot-password`, {
+                    email: values.email,
+                });
+
+                message.success('Password reset email sent.');
             } catch (error) {
-                console.log(error, "Error")
-                // Handle specific error codes
-                if (error.status === 401) {
-                    message.error('Incorrect email or password.');
-                } else {
-                    console.error("Login failed:", error);
-                    message.error('An error occurred during login. Please try again later.');
-                }
+                console.error('Error sending reset email:', error);
+                message.error('Failed to send password reset email.');
+            } finally {
+                setLoading(false);
             }
         },
     });
 
     return (
         <>
+            <h2>Forgot Password</h2>
             <Form layout='vertical' onFinish={formik.handleSubmit}>
                 <Form.Item
                     label="Email"
