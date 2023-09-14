@@ -15,6 +15,7 @@ export default function Login() {
           <h1>Teacher Tree</h1>
           <p>Connecting Communities With Classrooms</p>
           <LoginForm />
+          <Link href="/forgotPassword">Forgot Password?</Link>
           <p>New to Teacher Tree? <Link href="/register"><u>Create an Account.</u></Link></p>
       </Card>
     </div>

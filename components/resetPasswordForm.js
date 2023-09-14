@@ -3,9 +3,11 @@ import { LockOutlined } from '@ant-design/icons';
 import { useFormik } from 'formik';
 import axios from 'axios';
 import { useState } from 'react';
+import {useRouter} from 'next/router';
 
 const ResetPasswordForm = ({ decodedToken }) => {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
@@ -28,6 +30,7 @@ const ResetPasswordForm = ({ decodedToken }) => {
         message.error('Password reset failed');
       } finally {
         setLoading(false);
+        router.push('/login')
       }
     },
   });
