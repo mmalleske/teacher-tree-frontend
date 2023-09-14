@@ -73,6 +73,8 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
     }
 
     const handleSubmit = async (values, { setFieldValue }) => {
+        console.log("wha th")
+
         if (file) {
             try {
                 await handleFileUpload(file, setFieldValue);
@@ -88,6 +90,7 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
             profilePhotoUrl: s3Url,
         } : { ...values };
 
+        
         try {
             const response = await axios.patch(`${process.env.API_BASE_URL}/teachers/${teacherProfile._id}`, updatedValues);
             message.success('Profile updated successfully!');
@@ -105,7 +108,7 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
 
     return (
         <Card>
-            <Formik initialValues={teacherProfile || initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
+            <Formik initialValues={teacherProfile || initialValues} onSubmit={handleSubmit}>
                 {({ isSubmitting, setFieldValue }) => (
                     // <ConfigProvider locale={locale}>
                     <Form>
@@ -126,6 +129,8 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
                                     <Select
                                         placeholder="Select state"
                                         style={{ width: "100%" }}
+                                        value={field.value}
+                                        onChange={(value) => form.setFieldValue(field.name, value)}
                                     >
                                         {stateCodes.map(state => (
                                             <Select.Option key={state.code} value={state.code}>

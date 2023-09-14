@@ -46,6 +46,27 @@ const TeacherSearch = () => {
 
   const missingFields = !state || !school && !schoolDistrict
 
+  const getOrdinal = (number) => {
+    if (typeof number !== 'number') {
+      throw new Error('Input must be a number');
+    }
+
+    if (number % 100 >= 11 && number % 100 <= 13) {
+      return number + 'th';
+    }
+
+    switch (number % 10) {
+      case 1:
+        return number + 'st';
+      case 2:
+        return number + 'nd';
+      case 3:
+        return number + 'rd';
+      default:
+        return number + 'th';
+    }
+  }
+
   return (
     <Layout>
       <Card>
@@ -83,7 +104,23 @@ const TeacherSearch = () => {
             style={{ width: 200, marginBottom: 16 }}
             onChange={(value) => setGradeLevel(value)}
           >
-            {/* Add options for grade levels 1-12 */}
+            <Select.Option key={'early-childhood'} value="Early Childhood">
+              Early Childhood
+            </Select.Option>
+            <Select.Option key={'pre-k'} value="Pre-K">
+              Pre-K
+            </Select.Option>
+            <Select.Option key={'kindergarten'} value="Kindergarten">
+              Kindergarten
+            </Select.Option>
+            {[...Array(12)].map((_, index) => (
+              <Select.Option key={index + 1} value={getOrdinal(index + 1)}>
+                {getOrdinal(index + 1)}
+              </Select.Option>
+            ))}
+            <Select.Option key={'other'} value="Other">
+              Other
+            </Select.Option>
           </Select>
           <Button type="primary" onClick={handleSearch} disabled={missingFields}>
             Search
