@@ -64,6 +64,8 @@ const RegisterForm = () => {
                         placeholder="Email"
                         onChange={formik.handleChange}
                         value={formik.values.email}
+                        autoCapitalize='off'
+                        autoCorrect='off'
                     />
                 </Form.Item>
 
