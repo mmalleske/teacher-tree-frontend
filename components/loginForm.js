@@ -43,7 +43,7 @@ const LoginForm = () => {
 
     return (
         <>
-            <Segmented onChange={(value) => handleChange(value)} options={["Login as Teacher", "Login as Donor"]} />
+            <Segmented style={{marginBottom: "1rem"}} onChange={(value) => handleChange(value)} options={["Login as Teacher", "Login as Donor"]} />
             <br />
             <Form layout='vertical' onFinish={formik.handleSubmit}>
                 <Form.Item

@@ -1,7 +1,6 @@
 import { Form, Input, Button, message, Segmented } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { useFormik } from 'formik';
-import axios from 'axios';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import useCustomLogin from '../hooks/useCustomLogin';
@@ -49,7 +48,7 @@ const RegisterForm = () => {
 
     return (
         <>
-            <Segmented onChange={(value) => handleChange(value)} options={["Sign Up as a Teacher", "Sign Up as a Donor"]} />
+            <Segmented style={{marginBottom: "1rem"}} onChange={(value) => handleChange(value)} options={["Sign Up as a Teacher", "Sign Up as a Donor"]} />
             <Form layout='vertical' onFinish={formik.handleSubmit}>
                 <Form.Item
                     label="Email"

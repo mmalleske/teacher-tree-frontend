@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import containerStyles from '../styles/Home.module.css'
+import containerStyles from '../styles/Home.module.scss'
 import { Divider, Card } from 'antd'
 import ForgotPasswordForm from '../components/forgotPasswordForm'
 import styles from "./forgotPassword.module.scss";

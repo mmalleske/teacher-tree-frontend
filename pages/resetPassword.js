@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import Head from 'next/head'
-import containerStyles from '../styles/Home.module.css'
+import containerStyles from '../styles/Home.module.scss'
 import styles from "./forgotPassword.module.scss";
 import { Divider, Card } from 'antd'
 import ResetPasswordForm from '../components/resetPasswordForm';

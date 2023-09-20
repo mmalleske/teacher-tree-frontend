@@ -67,11 +67,11 @@ const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts, rea
                     {!isEditing ? (
                         <Space>
                             <Button key="edit" onClick={handleEditClick}>Edit</Button>
-                            <Button key="delete" onClick={handleDeleteClick}><DeleteOutlined /></Button>
+                            <Button type="dashed" key="delete" onClick={handleDeleteClick}><DeleteOutlined /></Button>
                         </Space>
                     ) : (
                         <Space>
-                            <Button key="save" onClick={handleSaveClick}>Save</Button>
+                            <Button type="primary" key="save" onClick={handleSaveClick}>Save</Button>
                             <Button key="cancel" onClick={() => setIsEditing(false)}>Cancel</Button>
                         </Space>
                     )}
