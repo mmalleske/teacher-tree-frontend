@@ -1,7 +1,7 @@
 import { Form, Input, Button, message, Segmented } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import useCustomLogin from '../hooks/useCustomLogin';
 
@@ -9,6 +9,15 @@ const RegisterForm = () => {
     const router = useRouter();
     const [userType, setUserType] = useState("teacher");
     const { register, loading } = useCustomLogin();
+    const userTypeParam = router.query.userType;
+
+    useEffect(() => {
+        if (userTypeParam) {
+            setUserType(userTypeParam);
+        } else { 
+            setUserType("teacher")
+        }
+    }, [router.query.userType]);
 
     const formik = useFormik({
         initialValues: {
@@ -20,7 +29,7 @@ const RegisterForm = () => {
             console.log(values)
             try {
                 await register(values.email, values.password, values.password_confirmation, userType);
-               
+
             } catch (error) {
                 // Handle error responses here
                 if (error.response && error.response.data && error.response.data.errors) {
@@ -37,18 +46,27 @@ const RegisterForm = () => {
     });
 
     const handleChange = (value) => {
-        if(value === "Sign Up as a Teacher") {
+        if (value === "Sign Up as a Teacher") {
             setUserType("teacher")
         }
 
-        if(value === "Sign Up as a Donor") {
+        if (value === "Sign Up as a Donor") {
             setUserType("donor")
         }
-    } 
+    }
+
+    const memoizedSegmented = useMemo(() => (
+        <Segmented
+            style={{ marginBottom: "1rem" }}
+            defaultValue={userType === "teacher" ? "Sign Up as a Teacher" : "Sign Up as a Donor"} // Set the default value based on userType
+            onChange={handleChange}
+            options={["Sign Up as a Teacher", "Sign Up as a Donor"]}
+        />
+    ), [userType, userTypeParam]);
 
     return (
         <>
-            <Segmented style={{marginBottom: "1rem"}} onChange={(value) => handleChange(value)} options={["Sign Up as a Teacher", "Sign Up as a Donor"]} />
+           {memoizedSegmented}
             <Form layout='vertical' onFinish={formik.handleSubmit}>
                 <Form.Item
                     label="Email"

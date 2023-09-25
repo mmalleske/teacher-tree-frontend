@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Dropdown } from "antd";
+import { Button, Dropdown, Space } from "antd";
 import styles from "./nav.module.scss";
 import { UserContext } from "../contexts/UserContext";
 import useCustomLogin from "../hooks/useCustomLogin";
-import { 
-  ProfileOutlined, 
-  DashboardOutlined, 
-  MenuOutlined, 
-  LogoutOutlined, 
+import {
+  ProfileOutlined,
+  DashboardOutlined,
+  MenuOutlined,
+  LogoutOutlined,
   SearchOutlined,
   HeartOutlined,
   RedoOutlined
@@ -88,7 +88,7 @@ export default function Nav() {
 
   return (
     <div className={styles.nav}>
-      {user && (
+      {user ? (
         <>
           <p>Logged in as {user.email}</p>
           <Dropdown
@@ -98,6 +98,13 @@ export default function Nav() {
               <MenuOutlined />
             </a>
           </Dropdown>
+        </>
+      ) : (
+        <>
+        <Space>
+          <Link href="/login">Login</Link>
+          <Link href="/register">Sign Up</Link>
+        </Space>
         </>
       )}
     </div>

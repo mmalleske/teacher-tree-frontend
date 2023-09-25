@@ -1,0 +1,88 @@
+.header {
+    padding: 4rem 1rem;
+    color: #fff;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-image: linear-gradient(165deg, rgba(0, 91, 58, 0.77) 0%, rgba(255, 255, 255, 0.84) 100%), url('/assets/images/shutterstock_303888209.jpg');
+    // margin-top: 3rem;
+    text-shadow: 0em 0.1em 0.1em rgba(0, 0, 0, 0.4);
+
+    h1 {
+        font-size: 4rem;
+        margin: 1.5rem 0;
+        // text-align: center;
+    }
+
+    p {
+        font-size: 1.2rem;
+    }
+
+    @media(max-width: 599px) {
+        text-align: center;
+        img {
+            max-height: 8rem;
+        }
+        
+        h1 {
+            font-size: 2rem;
+        }
+
+        p {
+            font-size: 1rem;
+        }
+    }
+}
+
+.loginCtas {
+    padding: 2rem 1rem;
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #ddd;
+
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 4rem;
+        text-align: center;
+    }
+
+    .icon {
+        width: 8rem;
+        height: 8rem;
+        margin: 0 auto;
+        background: #00b96b;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        color: #fff;
+        font-size: 4rem;
+    }
+}
+
+.testimonials {
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 4rem;
+        text-align: center;
+    }
+
+    padding: 4rem 1rem;
+}
+
+.social {
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    padding: 4rem 1rem;
+
+    .iconsList {
+        text-align: center;
+    }
+}
+
+.ttCard {
+    margin-bottom: 1rem !important;
+}
