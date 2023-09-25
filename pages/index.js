@@ -65,7 +65,7 @@ export default function Home() {
             <Card className={styles.ttCard} bodyStyle={{ textAlign: "center" }}>
               <div className={styles.testimonialAvatar}>
                 <Avatar src="/assets/images/testimonial1.jpg" size={128} />
-                <p><i>"I was able to quickly and easily share items I need for my classroom on their website. Parents were then able to view, purchase and send those items right to my classroom!"</i></p>
+                <p><i>I was able to quickly and easily share items I need for my classroom on their website. Parents were then able to view, purchase and send those items right to my classroom!</i></p>
                 <p><b>Gretchen K.</b></p>
                 <p>2nd Grade Teacher</p>
               </div>
@@ -75,7 +75,7 @@ export default function Home() {
             <Card className={styles.ttCard} bodyStyle={{ textAlign: "center" }}>
               <div className={styles.testimonialAvatar}>
                 <Avatar src="/assets/images/testimonial2.jpg" size={128} />
-                <p><i>“It’s neat that there’s also a place to list my interests and favorites so that parents can easily access that information as well. Thanks for a great service, Teacher Tree!”</i></p>
+                <p><i>It is neat that there is also a place to list my interests and favorites so that parents can easily access that information as well. Thanks for a great service, Teacher Tree!</i></p>
                 <p><b>Georgie G.</b></p>
                 <p>2nd Grade Teacher</p>
               </div>
@@ -85,7 +85,7 @@ export default function Home() {
             <Card className={styles.ttCard} bodyStyle={{ textAlign: "center" }}>
               <div className={styles.testimonialAvatar}>
                 <Avatar src="/assets/images/testimonial3.jpg" size={128} />
-                <p><i>“Teacher Tree has simplified everything from classroom supplies and donations to gifts.  My parents always know what items our classroom is needing.”</i></p>
+                <p><i>Teacher Tree has simplified everything from classroom supplies and donations to gifts.  My parents always know what items our classroom is needing.</i></p>
                 <p><b>Tracy V.</b></p>
                 <p>2nd Grade Teacher</p>
               </div>
