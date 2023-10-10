@@ -93,7 +93,7 @@ export default function Home() {
           </Col>
         </Row>
       </section>
-      <section className={styles.social}>
+      {/* <section className={styles.social}>
         <Row justify={"center"}>
           <Col>
             <img src="/assets/images/teacher-tree-logo.webp" />
@@ -108,7 +108,7 @@ export default function Home() {
             </div>
           </Col>
         </Row>
-      </section>
+      </section> */}
     </>
   )
 }
