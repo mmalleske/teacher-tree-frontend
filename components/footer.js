@@ -5,8 +5,8 @@ export default function Footer() {
     return (
         <div className={styles.footer}>
             <Link href="/privacyPolicy">Privacy Policy</Link> |
-            <Link href="/privacyPolicy">Privacy Policy</Link> |
-            <Link href="/privacyPolicy">Privacy Policy</Link> 
+            <Link href="/termsAndConditions">Terms and Conditions</Link> |
+            <Link href="/cookiesPolicy">Cookies Policy</Link> 
         </div>
     )
 }

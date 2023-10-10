@@ -4,6 +4,7 @@ import { Button, Card, Space, Divider, Row, Col, Avatar } from 'antd'
 import Nav from "../components/nav";
 import { FaConfluence, FaChalkboardTeacher, FaHandHoldingHeart, FaFacebook } from 'react-icons/fa';
 import { SocialIcon } from 'react-social-icons';
+import Footer from '../components/footer';
 
 export default function Home() {
   return (
@@ -93,6 +94,7 @@ export default function Home() {
           </Col>
         </Row>
       </section>
+      <Footer />
       {/* <section className={styles.social}>
         <Row justify={"center"}>
           <Col>
