@@ -20,7 +20,6 @@ export const UserProvider = ({ children }) => {
 
         try {
             const decodedToken = decode(token);
-            console.log(decodedToken, 'decoded');
             setUser(decodedToken);
         } catch (error) {
             console.error('Error decoding token:', error);

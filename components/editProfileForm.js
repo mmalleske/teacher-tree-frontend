@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field } from 'formik';
-import { Input, Button, Select, message, Card, Space, DatePicker } from 'antd';
+import { Input, Button, Select, message, Card, Space, Modal, DatePicker } from 'antd';
 import axios from 'axios';
 import S3ImageUploader from './s3ImageUploader';
 import * as Yup from 'yup';
@@ -10,6 +10,9 @@ import { stateCodes } from '../constants';
 const EditProfileForm = ({ teacherProfile, onSubmit }) => {
     const [file, setFile] = useState(null);
     const [s3Url, setS3Url] = useState(null);
+    const [addingNewCategory, setAddingNewCategory] = useState(false);
+    const [customValue, setCustomValue] = useState();
+    const [customLabel, setCustomLabel] = useState();
 
     const router = useRouter();
 
@@ -34,6 +37,20 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
         favoriteThings: teacherProfile ? teacherProfile.favoriteThings : {},
         userId: teacherProfile.userId,
         profilePhotoUrl: teacherProfile.profilePhotoUrl
+    };
+
+    const defaultFavorites = {
+        pets: '',
+        dessert: '',
+        flower: '',
+        scent: '',
+        color: '',
+        schoolBeverage: '',
+        breakfast: '',
+        lunch: '',
+        dinner: '',
+        stores: '',
+        notToReceive: ''
     };
 
     const months = [
@@ -73,8 +90,6 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
     }
 
     const handleSubmit = async (values, { setFieldValue }) => {
-        console.log("wha th")
-
         if (file) {
             try {
                 await handleFileUpload(file, setFieldValue);
@@ -90,7 +105,7 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
             profilePhotoUrl: s3Url,
         } : { ...values };
 
-        
+
         try {
             const response = await axios.patch(`${process.env.API_BASE_URL}/teachers/${teacherProfile._id}`, updatedValues);
             message.success('Profile updated successfully!');
@@ -98,13 +113,50 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
             console.log(error);
             message.error('An error occurred while updating the profile.');
         } finally {
-            router.push('/teacher/dashboard')
+            router.push('/teacher/profile')
         }
     };
 
     const onUpload = (s3location) => {
         setS3Url(s3location)
     }
+
+    const toCamelCase = (str) => {
+        return str.replace(/\s(.)/g, function (match) {
+            return match.toUpperCase();
+        }).replace(/\s/g, '').replace(/^(.)/, function (match) {
+            return match.toLowerCase();
+        });
+    };
+
+    const toReadableFormat = (str) => {
+        if(str === 'notToReceive') {
+            return 'Prefer not to receive'
+        }
+        return str.replace(/([A-Z])/g, ' $1')
+            .trim()
+            .replace(/^\w/, (c) => c.toUpperCase()); // Capitalize the first letter
+    };
+
+
+    const handleAddNewCategory = async () => {
+        console.log(customLabel, customValue, "custom value")
+
+        const updatedValues = { ...initialValues, favoriteThings: { ...initialValues.favoriteThings, [toCamelCase(customLabel)]: customValue } }
+
+        try {
+            const response = await axios.patch(`${process.env.API_BASE_URL}/teachers/${teacherProfile._id}`, updatedValues);
+            message.success('Profile updated successfully!');
+        } catch (error) {
+            console.log(error);
+            message.error('An error occurred while updating the profile.');
+        } finally {
+            setAddingNewCategory(false)
+            router.push('/teacher/profile')
+        }
+    }
+
+    console.log(teacherProfile, 'teacherProfile')
 
     return (
         <Card>
@@ -113,17 +165,17 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
                     // <ConfigProvider locale={locale}>
                     <Form>
                         <Space direction='vertical'>
-                            <label>Profile Photo</label>
+                            <label><b>Profile Photo: </b></label>
 
                             <S3ImageUploader teacherProfile={teacherProfile} onUpload={onUpload} />
 
-                            <label>First Name</label>
+                            <label><b>First Name: </b></label>
                             <Field name="firstName" as={Input} />
 
-                            <label>Last Name</label>
+                            <label><b>Last Name: </b></label>
                             <Field name="lastName" as={Input} />
 
-                            <label>State</label>
+                            <label><b>State: </b></label>
                             <Field name="state">
                                 {({ field, form }) => (
                                     <Select
@@ -141,13 +193,13 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
                                 )}
                             </Field>
 
-                            <label>School Name</label>
+                            <label><b>School Name: </b></label>
                             <Field name="schoolName" as={Input} />
 
-                            <label>School District</label>
+                            <label><b>School District: </b></label>
                             <Field name="schoolDistrict" as={Input} />
 
-                            <label>Grade Levels</label>
+                            <label><b>Grade Levels: </b></label>
                             <Field name="gradeLevels">
                                 {({ field, form }) => (
                                     <Select
@@ -179,7 +231,7 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
 
                             <div>
                                 <div>
-                                    <label style={{ display: "block" }}>Birth Month</label>
+                                    <label style={{ display: "block" }}><b>Birth Month: </b></label>
                                     <Field name="birthMonth">
                                         {({ field, form }) => (
                                             <Select
@@ -197,7 +249,7 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
                                     </Field>
                                 </div>
                                 <div>
-                                    <label style={{ display: "block" }}>Birth Day</label>
+                                    <label style={{ display: "block" }}><b>Birth Day:</b></label>
                                     <Field name="birthDay">
                                         {({ field, form }) => (
                                             <Select
@@ -216,21 +268,30 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
                                 </div>
                             </div>
 
-                            <label>Interests</label>
+                            <label><b>Interests:</b></label>
                             <Field name="interests" as={Input} />
 
-                            <label>Favorite Things</label>
-                            <Field name="favoriteThings.pets" as={Input} placeholder="Pets" />
-                            <Field name="favoriteThings.dessert" as={Input} placeholder="Dessert" />
-                            <Field name="favoriteThings.flower" as={Input} placeholder="Flower" />
-                            <Field name="favoriteThings.scent" as={Input} placeholder="Scent" />
-                            <Field name="favoriteThings.color" as={Input} placeholder="Color" />
-                            <Field name="favoriteThings.schoolBeverage" as={Input} placeholder="School Beverage" />
-                            <Field name="favoriteThings.breakfast" as={Input} placeholder="Breakfast Restaurant & Item" />
-                            <Field name="favoriteThings.lunch" as={Input} placeholder="Lunch Restaurant & Item" />
-                            <Field name="favoriteThings.dinner" as={Input} placeholder="Dinner Restaurant" />
-                            <Field name="favoriteThings.stores" as={Input} placeholder="Stores & Gift Cards" />
-                            <Field name="favoriteThings.notToReceive" as={Input} placeholder="I Prefer Not To Receive" />
+                            <label><b>Favorite Things:</b></label>
+                            {/* default fields */}
+                            {Object.keys(defaultFavorites).map((key) => (
+                                <div key={key}>
+                                    <label>{toReadableFormat(key)}:</label>
+                                    <Field name={`favoriteThings.${key}`} as={Input} placeholder={toReadableFormat(key)} />
+                                </div>
+                            ))}
+
+                            {/* Render additional fields */}
+                            {teacherProfile && Object.keys(teacherProfile.favoriteThings).map((key) => (
+                                !defaultFavorites.hasOwnProperty(key) && (
+                                    <>
+                                        <label>{toReadableFormat(key)}:</label>
+                                        <Field key={key} name={`favoriteThings.${key}`} as={Input} placeholder={toReadableFormat(key)} />
+                                    </>
+                                )
+                            ))}
+                            <Button block type="default" onClick={() => setAddingNewCategory(true)}>
+                                + Add New Category
+                            </Button>
                             <Button block type="primary" htmlType="submit" loading={isSubmitting}>
                                 Submit
                             </Button>
@@ -238,6 +299,23 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
                     </Form>
                 )}
             </Formik>
+            <Modal
+                title="Add New Category"
+                open={addingNewCategory}
+                onOk={handleAddNewCategory}
+                onCancel={() => setAddingNewCategory(false)}
+            >
+                <Input
+                    type="text"
+                    placeholder="Category Name (e.g.) Favorite brand of Jewelry"
+                    onChange={(e) => setCustomLabel(e.target.value)}
+                />
+                <Input
+                    type="text"
+                    placeholder="Category Value (e.g.) Gucci"
+                    onChange={(e) => setCustomValue(e.target.value)}
+                />
+            </Modal>
         </Card>
     )
 }
