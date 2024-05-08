@@ -11,6 +11,7 @@ const TeacherProfilePage = () => {
     const [loadingTeacher, setLoadingTeacher] = useState(false);
 
     const fetchTeacherProfile = async (userId) => {
+        console.log("called fromchil")
         setLoadingTeacher(true)
         try {
             const response = await axios.get(`${process.env.API_BASE_URL}/teachers/${userId}`); 
@@ -38,7 +39,7 @@ const TeacherProfilePage = () => {
     return (
         <Layout>
             {teacherProfile ? (
-                <EditProfileForm teacherProfile={teacherProfile} />
+                <EditProfileForm teacherProfile={teacherProfile} refreshTeacherProfile={fetchTeacherProfile} />
             ): (
                 <h1>No teacher profile for this user found.</h1>
             )} 

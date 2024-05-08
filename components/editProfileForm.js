@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Input, Button, Select, message, Card, Space, Modal, DatePicker } from 'antd';
 import axios from 'axios';
@@ -6,8 +6,21 @@ import S3ImageUploader from './s3ImageUploader';
 import * as Yup from 'yup';
 import { useRouter } from 'next/router';
 import { stateCodes } from '../constants';
+import { DeleteOutlined } from "@ant-design/icons";
+import { UserContext } from '../contexts/UserContext';
 
-const EditProfileForm = ({ teacherProfile, onSubmit }) => {
+export const toReadableFormat = (str) => {
+    if(str === 'notToReceive') {
+        return 'Prefer not to receive'
+    }
+    return str.replace(/([A-Z])/g, ' $1')
+        .trim()
+        .replace(/^\w/, (c) => c.toUpperCase()); // Capitalize the first letter
+};
+
+
+const EditProfileForm = ({ teacherProfile, refreshTeacherProfile, onSubmit }) => {
+    const { user } = useContext(UserContext);
     const [file, setFile] = useState(null);
     const [s3Url, setS3Url] = useState(null);
     const [addingNewCategory, setAddingNewCategory] = useState(false);
@@ -113,7 +126,7 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
             console.log(error);
             message.error('An error occurred while updating the profile.');
         } finally {
-            router.push('/teacher/profile')
+            router.push('/teacher/dashboard')
         }
     };
 
@@ -129,19 +142,7 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
         });
     };
 
-    const toReadableFormat = (str) => {
-        if(str === 'notToReceive') {
-            return 'Prefer not to receive'
-        }
-        return str.replace(/([A-Z])/g, ' $1')
-            .trim()
-            .replace(/^\w/, (c) => c.toUpperCase()); // Capitalize the first letter
-    };
-
-
     const handleAddNewCategory = async () => {
-        console.log(customLabel, customValue, "custom value")
-
         const updatedValues = { ...initialValues, favoriteThings: { ...initialValues.favoriteThings, [toCamelCase(customLabel)]: customValue } }
 
         try {
@@ -152,11 +153,26 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
             message.error('An error occurred while updating the profile.');
         } finally {
             setAddingNewCategory(false)
-            router.push('/teacher/profile')
+            refreshTeacherProfile(user?.userId)
         }
     }
 
-    console.log(teacherProfile, 'teacherProfile')
+    const handleDeleteCategory = async (categoryKey) => {
+        const { [categoryKey]: deletedCategory, ...remainingCategories } = initialValues.favoriteThings;
+    
+        const updatedValues = { ...initialValues, favoriteThings: remainingCategories };
+    
+        try {
+            const response = await axios.patch(`${process.env.API_BASE_URL}/teachers/${teacherProfile._id}`, updatedValues);
+            message.success('Category deleted successfully!');
+        } catch (error) {
+            console.log(error);
+            message.error('An error occurred while deleting the category.');
+        } finally {
+            refreshTeacherProfile(user?.userId)
+        }
+    };
+    
 
     return (
         <Card>
@@ -283,10 +299,13 @@ const EditProfileForm = ({ teacherProfile, onSubmit }) => {
                             {/* Render additional fields */}
                             {teacherProfile && Object.keys(teacherProfile.favoriteThings).map((key) => (
                                 !defaultFavorites.hasOwnProperty(key) && (
-                                    <>
+                                    <div key={key}>
                                         <label>{toReadableFormat(key)}:</label>
-                                        <Field key={key} name={`favoriteThings.${key}`} as={Input} placeholder={toReadableFormat(key)} />
-                                    </>
+                                        <div style={{display: "flex"}}>
+                                            <Field key={key} name={`favoriteThings.${key}`} as={Input} placeholder={toReadableFormat(key)} />
+                                            <Button type="dashed" key="delete" onClick={() => handleDeleteCategory(key)}><DeleteOutlined /></Button>
+                                        </div>                                        
+                                    </div>
                                 )
                             ))}
                             <Button block type="default" onClick={() => setAddingNewCategory(true)}>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Avatar, Button, Card } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import styles from "./profileSideBar.module.scss";
+import { toReadableFormat } from './editProfileForm';
 
 const ProfileSideBar = ({ teacherProfile, readOnly }) => {
     const months = {
@@ -77,13 +78,7 @@ const ProfileSideBar = ({ teacherProfile, readOnly }) => {
                     <ul>
                         {Object.entries(favoriteThings).map(([key, value]) => (
                             <li key={key}>
-                                <b>
-                                    {key === 'notToReceive'
-                                        ? 'I Prefer Not to Receive'
-                                        : key === 'schoolBeverage'
-                                            ? 'School beverage'
-                                            : capitalizeEveryWord(key)}{': '}
-                                </b>
+                                <b>{toReadableFormat(key)}: </b>
                                 {value}
                             </li>
                         ))}
