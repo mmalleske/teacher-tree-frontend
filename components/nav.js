@@ -42,13 +42,13 @@ export default function Nav() {
     {
       key: 'dashboard',
       label: (
-        <Link href="/teacher/dashboard"><DashboardOutlined /> Teacher Dashboard</Link>
+        <Link href="/teacher/dashboard"><DashboardOutlined /> Teacher/Staff Dashboard</Link>
       ),
     },
     {
       key: 'profile',
       label: (
-        <Link href="/teacher/profile"><ProfileOutlined /> Teacher Profile</Link>
+        <Link href="/teacher/profile"><ProfileOutlined /> Teacher/Staff Profile</Link>
       ),
     },
     {
@@ -65,19 +65,19 @@ export default function Nav() {
     {
       key: 'favorites',
       label: (
-        <Link href="/donor/favorites"><HeartOutlined /> Favorite Teachers</Link>
+        <Link href="/donor/favorites"><HeartOutlined /> Favorite Teachers/Staff</Link>
       ),
     },
     {
       key: 'teacher-search',
       label: (
-        <Link href="/donor/teacherSearch"><SearchOutlined /> Search Teachers</Link>
+        <Link href="/donor/teacherSearch"><SearchOutlined /> Search Teachers/Staff</Link>
       ),
     },
     {
       key: 'switch-to-teacher',
       label: (
-        <Link href="/teacher/dashboard"><RedoOutlined /> Switch to Teacher Profile</Link>
+        <Link href="/teacher/dashboard"><RedoOutlined /> Switch to Teacher/Staff Profile</Link>
       ),
     },
     {

@@ -26,7 +26,7 @@ export default function Favorites() {
       );
       setTeacherProfile(response.data);
     } catch (error) {
-      console.error("Error fetching teacher profile:", error);
+      console.error("Error fetching teacher/staff profile:", error);
     } finally {
       setLoadingTeacher(false);
     }
@@ -47,7 +47,7 @@ export default function Favorites() {
   }
 
   if (loadingTeacher) {
-    return <h1>Loading Teacher profile...</h1>;
+    return <h1>Loading Teacher/Staff profile...</h1>;
   }
 
   return (
@@ -56,7 +56,7 @@ export default function Favorites() {
         <TeacherProfile readOnly={false} teacherProfile={teacherProfile} />
       ) : (
         <Card>
-          <p>We could not find a Teacher profile associated with this user.</p>
+          <p>We could not find a Teacher/Staff profile associated with this user.</p>
           <Button loading={loading} type="primary" onClick={createTeacher}>Create One</Button>
         </Card>
       )}

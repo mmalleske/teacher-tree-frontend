@@ -11,8 +11,8 @@ const SaveTeacherButton = ({ donor, teacher }) => {
         if (savedTeacher) {
             // Show a confirmation alert before removing the teacher
             Modal.confirm({
-                title: "Remove Teacher from Favorites",
-                content: "Are you sure you want to remove this teacher from your Favorites?",
+                title: "Remove Teacher/Staff from Favorites",
+                content: "Are you sure you want to remove this teacher/staff member from your favorites?",
                 okText: "Yes",
                 cancelText: "No",
                 onOk: async () => {
@@ -23,7 +23,7 @@ const SaveTeacherButton = ({ donor, teacher }) => {
                             `${process.env.API_BASE_URL}/donors/${donor.userId}/update-saved-teachers`,
                             { teacherId: teacher._id, action: "remove" }
                         );
-                        message.success("Teacher removed from favorites");
+                        message.success("Teacher/Staff removed from favorites");
                         fetchTeachers(); // Fetch updated list of teachers
                     } catch (error) {
                         console.error("Error removing teacher:", error);
@@ -38,7 +38,7 @@ const SaveTeacherButton = ({ donor, teacher }) => {
                     `${process.env.API_BASE_URL}/donors/${donor.userId}/update-saved-teachers`,
                     { teacherId: teacher._id, action: "add" }
                 );
-                message.success("Teacher saved to favorites");
+                message.success("Teacher/Staff saved to favorites");
                 fetchTeachers(); // Fetch updated list of teachers
             } catch (error) {
                 console.error("Error saving teacher:", error);

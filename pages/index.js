@@ -57,7 +57,7 @@ export default function Home() {
           </Col>
         </Row>
       </section>
-      <section className={styles.testimonials}>
+      {/* <section className={styles.testimonials}>
         <Row justify="center">
           <h1>Testimonials</h1>
         </Row>
@@ -93,7 +93,7 @@ export default function Home() {
             </Card>
           </Col>
         </Row>
-      </section>
+      </section> */}
       <Footer />
       {/* <section className={styles.social}>
         <Row justify={"center"}>

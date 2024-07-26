@@ -46,7 +46,7 @@ const RegisterForm = () => {
     });
 
     const handleChange = (value) => {
-        if (value === "Sign Up as a Teacher") {
+        if (value === "Sign Up as a Teacher/Staff") {
             setUserType("teacher")
         }
 
@@ -58,9 +58,9 @@ const RegisterForm = () => {
     const memoizedSegmented = useMemo(() => (
         <Segmented
             style={{ marginBottom: "1rem" }}
-            defaultValue={userType === "teacher" ? "Sign Up as a Teacher" : "Sign Up as a Donor"} // Set the default value based on userType
+            defaultValue={userType === "teacher" ? "Sign Up as a Teacher/Staff" : "Sign Up as a Donor"} // Set the default value based on userType
             onChange={handleChange}
-            options={["Sign Up as a Teacher", "Sign Up as a Donor"]}
+            options={["Sign Up as a Teacher/Staff", "Sign Up as a Donor"]}
         />
     ), [userType, userTypeParam]);
 

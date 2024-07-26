@@ -58,8 +58,8 @@ export default function Favorites() {
         <Layout>
             {donor ? (
                 <Card>
-                    <h1>Favorite Teachers</h1>
-                    <Button type="primary" href="/donor/teacherSearch">Search Teachers</Button>
+                    <h1>Favorite Teachers/Staff</h1>
+                    <Button type="primary" href="/donor/teacherSearch">Search Teachers/Staff</Button>
                     <Divider />
                     {
                         favoriteTeachers.length > 0 ? (
@@ -71,7 +71,7 @@ export default function Favorites() {
                                 )}
                             />
                         ) : (
-                            <p>You currently have no saved teachers.</p>
+                            <p>You currently have no saved teachers/staff.</p>
                         )
                     }
                 </Card>
