@@ -13,7 +13,7 @@ export default function Home() {
                 <Divider className={styles.titleDivider} />
                 <h3>Connecting Communities With Classrooms</h3>
                 <RegisterForm />
-                <p>Already a Teacher TreeUser? <Link href="/login"><u>Login Here.</u></Link></p>
+                <p>Already a Teacher Tree User? <Link href="/login"><u>Login Here.</u></Link></p>
             </Card>
         </div>
     )

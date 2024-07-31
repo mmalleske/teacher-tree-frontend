@@ -18,7 +18,7 @@ const TeacherProfilePage = () => {
         const response = await axios.get(`${process.env.API_BASE_URL}/teachers/profile/${id}`);
         setTeacher(response.data);
       } catch (error) {
-        console.error('Error fetching teacher:', error);
+        console.error('Error fetching School Staff Member:', error);
       }
     };
 

@@ -35,8 +35,8 @@ export default function Home() {
                 <FaChalkboardTeacher />
               </div>
               <div>
-                <h2>Teachers</h2>
-                <p>Teachers and other educators can share their preferences and post supplies and other classroom items onto their wishlist.</p>
+                <h2>School Staff Members</h2>
+                <p>Any school staff member can share their preferences, post supplies and other items they need for school on their wishlist.</p>
                 <Divider />
                 <Button href="/register?userType=teacher" type='primary'>Get Started</Button>
               </div>
@@ -48,8 +48,8 @@ export default function Home() {
                 <FaHandHoldingHeart />
               </div>
               <div>
-                <h2>Donors</h2>
-                <p>Donors can locate teachers to view their wishlist and help fulfill their needs for supplies or enrichment.</p>
+                <h2>Helpers</h2>
+                <p>Anyone who would like to help a school staff member out. Helpers can locate a school staff member to view their wishlist and help fulfill their needs for school supplies and enrichment.</p>
                 <Divider />
                 <Button href="/register?userType=donor" type='primary'>Get Started</Button>
               </div>
@@ -57,7 +57,7 @@ export default function Home() {
           </Col>
         </Row>
       </section>
-      <section className={styles.testimonials}>
+      {/* <section className={styles.testimonials}>
         <Row justify="center">
           <h1>Testimonials</h1>
         </Row>
@@ -93,7 +93,7 @@ export default function Home() {
             </Card>
           </Col>
         </Row>
-      </section>
+      </section> */}
       <Footer />
       {/* <section className={styles.social}>
         <Row justify={"center"}>

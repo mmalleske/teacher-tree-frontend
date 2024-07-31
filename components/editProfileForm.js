@@ -297,7 +297,7 @@ const EditProfileForm = ({ teacherProfile, refreshTeacherProfile, onSubmit }) =>
                             ))}
 
                             {/* Render additional fields */}
-                            {teacherProfile && Object.keys(teacherProfile.favoriteThings).map((key) => (
+                            {teacherProfile && !!teacherProfile.favoriteThings && Object.keys(teacherProfile.favoriteThings).map((key) => (
                                 !defaultFavorites.hasOwnProperty(key) && (
                                     <div key={key}>
                                         <label>{toReadableFormat(key)}:</label>

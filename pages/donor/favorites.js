@@ -58,8 +58,8 @@ export default function Favorites() {
         <Layout>
             {donor ? (
                 <Card>
-                    <h1>Favorite Teachers</h1>
-                    <Button type="primary" href="/donor/teacherSearch">Search Teachers</Button>
+                    <h1>Favorite School Staff Members</h1>
+                    <Button type="primary" href="/donor/teacherSearch">Search School Staff Members</Button>
                     <Divider />
                     {
                         favoriteTeachers.length > 0 ? (
@@ -71,13 +71,13 @@ export default function Favorites() {
                                 )}
                             />
                         ) : (
-                            <p>You currently have no saved teachers.</p>
+                            <p>You currently have no saved School Staff Members.</p>
                         )
                     }
                 </Card>
             ) : (
                 <Card>
-                    <p>We could not find a donor profile associated with this user.</p>
+                    <p>We could not find a Helper profile associated with this user.</p>
                     <Button loading={loading} type="primary" onClick={createDonor}>Create One</Button>
                 </Card>
             )}
