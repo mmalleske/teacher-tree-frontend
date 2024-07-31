@@ -79,7 +79,7 @@ const LoginForm = () => {
 
                 <Form.Item>
                     <Button block type="primary" htmlType="submit" loading={loading}>
-                        Login as {userType.toLocaleUpperCase()}
+                        Login as {userType === "teacher" ? "School Staff Member" : "Helper"}
                     </Button>
                 </Form.Item>
             </Form>

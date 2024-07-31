@@ -124,7 +124,7 @@ const RegisterForm = () => {
 
                 <Form.Item>
                     <Button block type="primary" htmlType="submit" loading={loading}>
-                        Register as {userType.toUpperCase()}
+                        Register as {userType === "teacher" ? "School Staff Member" : "Helper"}
                     </Button>
                 </Form.Item>
             </Form>
