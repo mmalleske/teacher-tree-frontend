@@ -42,19 +42,19 @@ export default function Nav() {
     {
       key: 'dashboard',
       label: (
-        <Link href="/teacher/dashboard"><DashboardOutlined /> Teacher/Staff Dashboard</Link>
+        <Link href="/teacher/dashboard"><DashboardOutlined /> School Staff Member Dashboard</Link>
       ),
     },
     {
       key: 'profile',
       label: (
-        <Link href="/teacher/profile"><ProfileOutlined /> Teacher/Staff Profile</Link>
+        <Link href="/teacher/profile"><ProfileOutlined /> School Staff Member Profile</Link>
       ),
     },
     {
       key: 'switch-to-donor',
       label: (
-        <Link href="/donor/favorites"><RedoOutlined /> Switch to Donor Profile</Link>
+        <Link href="/donor/favorites"><RedoOutlined /> Switch to Helper Profile</Link>
       ),
     },
     {
@@ -65,19 +65,19 @@ export default function Nav() {
     {
       key: 'favorites',
       label: (
-        <Link href="/donor/favorites"><HeartOutlined /> Favorite Teachers/Staff</Link>
+        <Link href="/donor/favorites"><HeartOutlined /> Favorite School Staff Members</Link>
       ),
     },
     {
       key: 'teacher-search',
       label: (
-        <Link href="/donor/teacherSearch"><SearchOutlined /> Search Teachers/Staff</Link>
+        <Link href="/donor/teacherSearch"><SearchOutlined /> Search School Staff Members</Link>
       ),
     },
     {
       key: 'switch-to-teacher',
       label: (
-        <Link href="/teacher/dashboard"><RedoOutlined /> Switch to Teacher/Staff Profile</Link>
+        <Link href="/teacher/dashboard"><RedoOutlined /> Switch to School Staff Member Profile</Link>
       ),
     },
     {

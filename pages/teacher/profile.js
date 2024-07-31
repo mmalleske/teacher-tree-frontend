@@ -16,7 +16,7 @@ const TeacherProfilePage = () => {
             const response = await axios.get(`${process.env.API_BASE_URL}/teachers/${userId}`); 
             setTeacherProfile(response.data);            
         } catch (error) {
-            console.error('Error fetching teacher/staff profile:', error);
+            console.error('Error fetching School Staff Member profile:', error);
         } finally {
             setLoadingTeacher(false)
         }
@@ -31,7 +31,7 @@ const TeacherProfilePage = () => {
 
     if(loadingTeacher) {
         return (
-            <h1>Loading Teacher/Staff profile...</h1>
+            <h1>Loading School Staff Member profile...</h1>
         )
     }
   
@@ -40,7 +40,7 @@ const TeacherProfilePage = () => {
             {teacherProfile ? (
                 <EditProfileForm teacherProfile={teacherProfile} refreshTeacherProfile={fetchTeacherProfile} />
             ): (
-                <h1>No teacher/staff profile for this user found.</h1>
+                <h1>No School Staff Member profile for this user found.</h1>
             )} 
         </Layout>
     );

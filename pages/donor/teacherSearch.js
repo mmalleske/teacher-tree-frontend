@@ -72,7 +72,7 @@ const TeacherSearch = () => {
       <Card>
         <div>
           <Button type="primary" href="/donor/favorites"><CaretLeftOutlined /> Back to Favorites</Button>
-          <h1>Search Teachers/Staff</h1>
+          <h1>Search School Staff Members</h1>
           <sub>*Please select a state and enter a school name and/or school district.</sub>
         </div>
         <Divider />
