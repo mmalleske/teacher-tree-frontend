@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../../components/layout';
 import ProductUploader from '../../components/productUploader';
+import DummyProductUploader from '../../components/dummyProductUploader';
 import { UserContext } from '../../contexts/UserContext';
 import { Select, Input, Button, List, Avatar, Card, Divider, Modal } from 'antd';
 import { stateCodes } from '../../constants';
@@ -53,7 +54,7 @@ const SchoolPage = () => {
                     </div>
                 </div>
                 <Divider />
-                <ProductUploader />
+                <DummyProductUploader />
             </Card>
             <Modal
                 title="Invite Members"
