@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { List, Space, Button, Modal, Input } from "antd";
+import { List, Space, Button, Modal, Input, Avatar } from "antd";
 import axios from 'axios';
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, GiftOutlined } from "@ant-design/icons";
 import styles from "./product.module.scss"
 
 const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts, readOnly = false }) => {
@@ -52,10 +52,10 @@ const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts, rea
             if (isNaN(parsedPurchaseQuantity)) {
                 throw new Error('Invalid quantity');
             }
-            
+
             // Update quantityPurchased by adding parsedPurchaseQuantity to the existing value
             const newQuantityPurchased = (product.quantityPurchased || 0) + parsedPurchaseQuantity;
-    
+
             // Send PATCH request to update quantityPurchased
             await axios.patch(`${process.env.API_BASE_URL}/products/${product._id}`, { quantityPurchased: newQuantityPurchased });
         } catch (error) {
@@ -74,9 +74,11 @@ const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts, rea
         <List.Item className={styles.productItem}>
             <div className={styles.productItemInfo}>
                 <a target="_blank" href={product.affiliateLink}>
-                    <img src={product.imageUrl} />
-                    <p>{product.title}</p>
+                    {product.imageUrl ? <img src={product.imageUrl} /> : <Avatar icon={<GiftOutlined />}/>}
+                    <p>{' '}{product.title}</p>
                 </a>
+                {/* DEMO ONLY */}
+                {product.gradeLevel && <p><strong>Grade Level: </strong>{product.gradeLevel}</p>}
             </div>
             <div className={styles.productItemQuantity}>
                 {
@@ -92,7 +94,7 @@ const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts, rea
                     ) : (
                         <>
                             <p>Quantity: {quantity}</p>
-                            {product.quantityPurchased && product.quantityPurchased > 0 && (<p><i>{product.quantityPurchased} of these items have been purchased.</i></p>)}                            
+                            {product.quantityPurchased && product.quantityPurchased > 0 && (<p><i>{product.quantityPurchased} of these items have been purchased.</i></p>)}
                         </>
                     )
                 }

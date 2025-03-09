@@ -7,6 +7,7 @@ import { UserContext } from '../../contexts/UserContext';
 import { Select, Input, Button, List, Avatar, Card, Divider, Modal } from 'antd';
 import { stateCodes } from '../../constants';
 import SchoolSearchBar from '../../components/schoolSearchBar';
+import { ExportOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons';
 import "./school.module.scss";
 
 
@@ -40,14 +41,14 @@ const SchoolPage = () => {
             <Card className="school-page">
                 <div className="school-header">
                     <div className="school-header__info">
-                        <h1>School Name</h1>
-                        <h2>School information</h2>
+                        <h1>Super Awesome School</h1>
+                        <h2>Super Awesome School District</h2>
                     </div>
                     <div className="school-header__actions">
-                        <Button type="primary" onClick={() => setInviteModalOpen(true)}>
-                            Invite members
+                        <Button icon={<UserAddOutlined />} type="primary" onClick={() => setInviteModalOpen(true)}>
+                             Invite members
                         </Button>
-                        <Button onClick={() => setViewMembersModalOpen(true)}>
+                        <Button icon={<UserOutlined />} onClick={() => setViewMembersModalOpen(true)}>
                             View Members
                         </Button>
                         <sub>These buttons will only show for admin users</sub>

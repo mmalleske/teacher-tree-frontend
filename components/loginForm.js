@@ -34,7 +34,7 @@ const LoginForm = () => {
     });
 
     const handleChange = (value) => {
-        if (value === "Login as School Staff Member") {
+        if (value === "Login as a School Staff Member") {
             setUserType("teacher")
         } else {
             setUserType("donor")
@@ -43,7 +43,7 @@ const LoginForm = () => {
 
     return (
         <>
-            <Segmented style={{marginBottom: "1rem"}} onChange={(value) => handleChange(value)} options={["Login as School Staff Member", "Login as Helper"]} />
+            <Segmented style={{marginBottom: "1rem"}} onChange={(value) => handleChange(value)} options={["Login as a School Staff Member", "Login as a Helper"]} />
             <br />
             <Form layout='vertical' onFinish={formik.handleSubmit}>
                 <Form.Item
@@ -79,7 +79,7 @@ const LoginForm = () => {
 
                 <Form.Item>
                     <Button block type="primary" htmlType="submit" loading={loading}>
-                        Login as {userType === "teacher" ? "School Staff Member" : "Helper"}
+                        Login as a {userType === "teacher" ? "School Staff Member" : "Helper"}
                     </Button>
                 </Form.Item>
             </Form>
