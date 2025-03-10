@@ -3,6 +3,8 @@ import ProfileSideBar from "./profileSideBar";
 import ProductUploader from "./productUploader";
 import ProductList from "./productList";
 import SaveTeacherButton from "./saveTeacherButton";
+import Link from "next/link"
+
 
 const TeacherProfile = ({ teacherProfile, donor = null, readOnly }) => {
     return (
@@ -19,18 +21,18 @@ const TeacherProfile = ({ teacherProfile, donor = null, readOnly }) => {
 
                 </div>
                 <Alert
-                    style={{ margin: "1rem"}}
+                    style={{ margin: "1rem" }}
                     showIcon
                     message="Join Awesome School?"
                     description="Your School Admin has invited you to join the Awesome School product list."
                     type="info"
                     action={
                         <Space direction="vertical">
-                            <a href="/school/123">
-                            <Button size="small" type="primary">
-                                Accept
-                            </Button>
-                            </a>
+                            <Link href="/school/123">
+                                <Button size="small" type="primary">
+                                    Accept
+                                </Button>
+                            </Link>
                             <Button size="small">
                                 Decline
                             </Button>
