@@ -37,6 +37,11 @@ const TeacherTable = () => {
             sorter: (a, b) => a.lastName.localeCompare(b.lastName),
         },
         {
+            title: 'Email',
+            dataIndex: ['userData', 'email'],
+            sorter: (a, b) => a.lastName.localeCompare(b.lastName),
+        },
+        {
             title: 'School',
             dataIndex: 'schoolName',
             sorter: (a, b) => a.schoolName - b.schoolName,
@@ -51,7 +56,7 @@ const TeacherTable = () => {
             dataIndex: '',
             render: (_, teacher) => (
                 <Switch
-                    checked={teacher.isAdmin === true} // Check if isAdmin is true
+                    checked={teacher.userData.isAdmin === true} // Check if isAdmin is true
                     onChange={() => toggleAdmin(teacher)}
                     checkedChildren="Admin"
                     unCheckedChildren="User"
@@ -62,45 +67,77 @@ const TeacherTable = () => {
 
     const { confirm } = Modal;
 
+    const createAdminProfile = async (teacher) => {
+        try {            
+            const body = {
+                schools: [],
+                userId: teacher.userId,
+                ownerName: `${teacher.firstName} ${teacher.lastName}`
+            }
+            //Create an Admin Profile
+            const response = await fetch(
+                `${process.env.API_BASE_URL}/admin`,  // Use key as the user ID
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${Cookies.get('authToken')}`,
+                    },
+                    body: JSON.stringify(body),  // Only send isAdmin in the body
+                }
+            );
+
+            // Check if the response is successful (status code 200)
+            if (response.ok) {
+               fetchTeachers();
+
+                message.success('User is now an Admin');
+            } else {
+                message.error('Failed to update permissions');
+            }
+        } catch (error) {
+            console.error('Error updating permissions:', error);
+            message.error('Failed to update permissions');
+        }
+    }
+
+    const revokeAdminPermissions = async (teacher) => {
+        try {           
+            //Revoke an Admin Profile
+            const response = await fetch(
+                `${process.env.API_BASE_URL}/admin/revoke-admin/${teacher.userId}`,  // Use key as the user ID
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${Cookies.get('authToken')}`,
+                    },                    
+                }
+            );
+
+            // Check if the response is successful (status code 200)
+            if (response.ok) {
+               fetchTeachers();
+
+                message.success('User is no longer an Admin');
+            } else {
+                message.error('Failed to update permissions');
+            }
+        } catch (error) {
+            console.error('Error updating permissions:', error);
+            message.error('Failed to update permissions');
+        }
+    }
+
+
     const toggleAdmin = (teacher) => {
-        const isAdmin = teacher.isAdmin || false;
+        const isAdmin = teacher.userData.isAdmin || false;
         confirm({
             title: isAdmin ? 'Revoke Admin Permissions' : 'Grant Admin Permissions',
             content: isAdmin
                 ? 'Are you sure you want to revoke Admin permissions? This user will lose their administrative privileges.'
                 : 'Are you sure you want to make this user an Admin? This action gives them higher privileges.',
-            onOk: async () => {
-                try {
-                    const newStatus = !isAdmin; // Toggle role
-    
-                    // Use fetch to make the request
-                    const response = await fetch(
-                        `${process.env.API_BASE_URL}/teachers/update-admin/${teacher._id}`,  // Use key as the user ID
-                        {
-                            method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${Cookies.get('authToken')}`,
-                            },
-                            body: JSON.stringify({ isAdmin: newStatus }),  // Only send isAdmin in the body
-                        }
-                    );
-    
-                    // Check if the response is successful (status code 200)
-                    if (response.ok) {
-                       fetchTeachers();
-    
-                        message.success(
-                            newStatus ? 'User is now an Admin' : 'User is no longer an Admin'
-                        );
-                    } else {
-                        message.error('Failed to update permissions');
-                    }
-                } catch (error) {
-                    console.error('Error updating permissions:', error);
-                    message.error('Failed to update permissions');
-                }
-            },
+            onOk: () => isAdmin ? revokeAdminPermissions(teacher) : createAdminProfile(teacher),
             onCancel() {
                 message.info('Action canceled');
             },
