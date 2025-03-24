@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Form, Input, Button, Select, message } from 'antd';
+import { Form, Input, Button, Select, message, Popconfirm, Space } from 'antd';
 
 const { Option } = Select;
 
@@ -44,6 +44,27 @@ const SchoolForm = ({ onSuccess, adminProfile, initialValues }) => {
             message.error('An error occurred. Please try again later.');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!initialValues?._id) return;
+
+        try {
+            const response = await fetch(`${process.env.API_BASE_URL}/schools/${initialValues._id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            if (response.ok) {
+                message.success('School deleted successfully');
+                if (onSuccess) onSuccess(); // Refresh list and close modal
+            } else {
+                message.error('Failed to delete school');
+            }
+        } catch (error) {
+            console.error('Error deleting school:', error);
+            message.error('An error occurred while deleting.');
         }
     };
 
@@ -94,9 +115,24 @@ const SchoolForm = ({ onSuccess, adminProfile, initialValues }) => {
             </Form.Item>
 
             <Form.Item>
-                <Button type="primary" htmlType="submit" loading={loading}>
-                    {initialValues ? 'Update School' : 'Create School'}
-                </Button>
+                <Space>
+                    <Button type="primary" htmlType="submit" loading={loading}>
+                        {initialValues ? 'Update School' : 'Create School'}
+                    </Button>
+
+                    {initialValues && (
+                        <Popconfirm
+                            title="Are you sure you want to delete this school?"
+                            onConfirm={handleDelete}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                            <Button type="default" danger>
+                                Delete School
+                            </Button>
+                        </Popconfirm>
+                    )}
+                </Space>
             </Form.Item>
         </Form>
     );
