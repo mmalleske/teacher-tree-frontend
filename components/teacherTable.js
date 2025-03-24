@@ -7,90 +7,93 @@ import useFetchTeachers from '../hooks/useFetchTeachers';
 const TeacherTable = () => {
     const [searchText, setSearchText] = useState('');
     const { fetchTeachers, teachers, loading } = useFetchTeachers();
-    const [filteredData, setFilteredData] = useState(teachers);
-    
+    const [filteredData, setFilteredData] = useState([]);
+
     useEffect(() => {
-        if(teachers && !!teachers.length) {
+        if (teachers.length) {
             setFilteredData(teachers);
         }
-    }, [teachers])
+    }, [teachers]);
 
-    // Filter function combining text input and dropdown selection
     const handleSearch = (value) => {
-        setSearchText(value);
-        const filtered = teachers.filter((item) => {
-            return Object.values(item).some((val) => String(val).toLowerCase().includes(value.toLowerCase()))
-        }
-        );
+        setSearchText(value.toLowerCase());
+    
+        const filtered = teachers.filter((teacher) => {
+            return (
+                (teacher.email && teacher.email.toLowerCase().includes(value.toLowerCase())) ||
+                (teacher.teacherData?.firstName && teacher.teacherData.firstName.toLowerCase().includes(value.toLowerCase())) ||
+                (teacher.teacherData?.lastName && teacher.teacherData.lastName.toLowerCase().includes(value.toLowerCase())) ||
+                (teacher.teacherData?.schoolName && teacher.teacherData.schoolName.toLowerCase().includes(value.toLowerCase())) ||
+                (teacher.teacherData?.schoolDistrict && teacher.teacherData.schoolDistrict.toLowerCase().includes(value.toLowerCase()))
+            );
+        });
+    
         setFilteredData(filtered);
-    };
+    };    
 
     const columns = [
         {
             title: 'First Name',
-            dataIndex: 'firstName',
-            sorter: (a, b) => a.firstName.localeCompare(b.firstName),
+            dataIndex: ['teacherData', 'firstName'], // Adjusted for teacherData
+            sorter: (a, b) => (a.teacherData?.firstName || "").localeCompare(b.teacherData?.firstName || ""),
         },
         {
             title: 'Last Name',
-            dataIndex: 'lastName',
-            sorter: (a, b) => a.lastName.localeCompare(b.lastName),
+            dataIndex: ['teacherData', 'lastName'],
+            sorter: (a, b) => (a.teacherData?.lastName || "").localeCompare(b.teacherData?.lastName || ""),
         },
         {
             title: 'Email',
-            dataIndex: ['userData', 'email'],
-            sorter: (a, b) => a.lastName.localeCompare(b.lastName),
+            dataIndex: 'email',
+            sorter: (a, b) => (a.email || "").localeCompare(b.email || ""),
         },
         {
             title: 'School',
-            dataIndex: 'schoolName',
-            sorter: (a, b) => a.schoolName - b.schoolName,
+            dataIndex: ['teacherData', 'schoolName'],
+            sorter: (a, b) => (a.teacherData?.schoolName || "").localeCompare(b.teacherData?.schoolName || ""),
         },
         {
             title: 'School District',
-            dataIndex: 'schoolDistrict',
-            sorter: (a, b) => a.schoolDistrict - b.schoolDistrict,
+            dataIndex: ['teacherData', 'schoolDistrict'],
+            sorter: (a, b) => (a.teacherData?.schoolDistrict || "").localeCompare(b.teacherData?.schoolDistrict || ""),
         },
         {
             title: 'Permissions',
             dataIndex: '',
             render: (_, teacher) => (
                 <Switch
-                    checked={teacher.userData.isAdmin === true} // Check if isAdmin is true
+                    checked={teacher.isAdmin || false} // Ensuring boolean value
                     onChange={() => toggleAdmin(teacher)}
                     checkedChildren="Admin"
                     unCheckedChildren="User"
                 />
             ),
         },
-    ];
+    ];    
 
     const { confirm } = Modal;
 
-    const createAdminProfile = async (teacher) => {
-        try {            
+    const createAdminProfile = async (user) => {
+        console.log(user, "create admin")
+        const { teacherData: teacher } = user;
+        try {
             const body = {
                 schools: [],
-                userId: teacher.userId,
-                ownerName: `${teacher.firstName} ${teacher.lastName}`
-            }
-            //Create an Admin Profile
-            const response = await fetch(
-                `${process.env.API_BASE_URL}/admin`,  // Use key as the user ID
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${Cookies.get('authToken')}`,
-                    },
-                    body: JSON.stringify(body),  // Only send isAdmin in the body
-                }
-            );
+                userId: user.id,
+                ownerName: `${teacher.firstName} ${teacher.lastName}`,
+            };
 
-            // Check if the response is successful (status code 200)
+            const response = await fetch(`${process.env.API_BASE_URL}/admin`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('authToken')}`,
+                },
+                body: JSON.stringify(body),
+            });
+
             if (response.ok) {
-               fetchTeachers();
-
+                fetchTeachers();
                 message.success('User is now an Admin');
             } else {
                 message.error('Failed to update permissions');
@@ -99,26 +102,23 @@ const TeacherTable = () => {
             console.error('Error updating permissions:', error);
             message.error('Failed to update permissions');
         }
-    }
+    };
 
-    const revokeAdminPermissions = async (teacher) => {
-        try {           
-            //Revoke an Admin Profile
+    const revokeAdminPermissions = async (user) => {
+        try {
             const response = await fetch(
-                `${process.env.API_BASE_URL}/admin/revoke-admin/${teacher.userId}`,  // Use key as the user ID
+                `${process.env.API_BASE_URL}/admin/revoke-admin/${user._id}`, // FIXED: Use _id
                 {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${Cookies.get('authToken')}`,
-                    },                    
+                    },
                 }
             );
 
-            // Check if the response is successful (status code 200)
             if (response.ok) {
-               fetchTeachers();
-
+                fetchTeachers();
                 message.success('User is no longer an Admin');
             } else {
                 message.error('Failed to update permissions');
@@ -127,24 +127,22 @@ const TeacherTable = () => {
             console.error('Error updating permissions:', error);
             message.error('Failed to update permissions');
         }
-    }
+    };
 
-
-    const toggleAdmin = (teacher) => {
-        const isAdmin = teacher.userData.isAdmin || false;
+    const toggleAdmin = (user) => {
         confirm({
-            title: isAdmin ? 'Revoke Admin Permissions' : 'Grant Admin Permissions',
-            content: isAdmin
+            title: user.isAdmin ? 'Revoke Admin Permissions' : 'Grant Admin Permissions',
+            content: user.isAdmin
                 ? 'Are you sure you want to revoke Admin permissions? This user will lose their administrative privileges.'
                 : 'Are you sure you want to make this user an Admin? This action gives them higher privileges.',
-            onOk: () => isAdmin ? revokeAdminPermissions(teacher) : createAdminProfile(teacher),
+            onOk: () => (user.isAdmin ? revokeAdminPermissions(user) : createAdminProfile(user)),
             onCancel() {
                 message.info('Action canceled');
             },
         });
     };
 
-    if(loading) return <p>Loading...</p>
+    if (loading) return <p>Loading...</p>;
 
     return (
         <div>
@@ -155,7 +153,7 @@ const TeacherTable = () => {
                 style={{ marginBottom: 16, width: 200 }}
                 suffix={<SearchOutlined />}
             />
-            <Table columns={columns} dataSource={filteredData} />
+            <Table columns={columns} dataSource={filteredData} rowKey="_id" />
         </div>
     );
 };

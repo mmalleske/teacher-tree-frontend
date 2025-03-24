@@ -10,7 +10,7 @@ const useFetchTeachers = () => {
         try {
             setLoading(true);
 
-            const response = await fetch(`${process.env.API_BASE_URL}/teachers`, {
+            const response = await fetch(`${process.env.API_BASE_URL}/users`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -21,14 +21,9 @@ const useFetchTeachers = () => {
             const data = await response.json();
 
             if (response.ok) {
-                const filteredTeachers = data.filter(
-                    (teacher) =>
-                        teacher !== null && teacher !== undefined &&
-                        teacher.firstName !== null && teacher.firstName !== undefined &&
-                        teacher.lastName !== null && teacher.lastName !== undefined 
-                        // teacher.schoolName !== null && teacher.schoolName !== undefined
-                );
-                setTeachers(filteredTeachers); // Assuming data is the array of teachers
+                const filteredTeachers = data.filter(user => user.teacherData) // Only users with teacherData
+                    
+                setTeachers(filteredTeachers);
             } else {
                 message.error(data.message || 'Failed to fetch teachers');
             }
