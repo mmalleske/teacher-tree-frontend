@@ -52,8 +52,8 @@ const SchoolProductUploader = ({ school }) => {
             <Form.Item name="quantity">
                 <Input placeholder='Quantity' type='number' defaultValue={1} />
             </Form.Item>
-            <Form.Item name="gradeLevel" label="Grade Level">
-                <Select placeholder="Select grade level" required>
+            <Form.Item name="gradeLevel" label="Grade Level" rules={[{ required: true, message: 'Please select a grade level' }]}>
+                <Select placeholder="Select grade level">
                     {school?.gradeLevels?.map((grade) => (
                         <Option key={grade} value={grade}>
                             {grade}

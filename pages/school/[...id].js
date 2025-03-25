@@ -7,6 +7,7 @@ import { stateCodes } from '../../constants';
 import useSchools from '../../hooks/useSchools';
 // import ProductUploader from '../../components/productUploader';
 import SchoolProductUploader from '../../components/schoolProductUploader';
+import TeacherSearch from '../../components/teacherSearch';
 import "./school.module.scss";
 
 const SchoolPage = () => {
@@ -70,42 +71,12 @@ const SchoolPage = () => {
             <Modal
                 title="Invite Members"
                 open={inviteModalOpen}
-                onOk={() => setInviteModalOpen(false)}
                 onCancel={() => setInviteModalOpen(false)}
+                footer={[
+                    <Button key="done" onClick={() => setInviteModalOpen(false)}>Done</Button>
+                ]}                
             >
-                <p>Search for a Staff Member by School</p>
-                <Select placeholder="Select state" style={{ width: 200, marginBottom: 16 }}>
-                    {stateCodes.map((state) => (
-                        <Select.Option key={state.code} value={state.code}>
-                            {state.name}
-                        </Select.Option>
-                    ))}
-                </Select>
-                <Input placeholder="School District" style={{ marginBottom: 16 }} />
-                <Input required placeholder="School Name" style={{ marginBottom: 16 }} />
-                <Select placeholder="Select grade level" style={{ width: 200, marginBottom: 16 }}>
-                    <Select.Option key={'early-childhood'} value="Early Childhood">
-                        Early Childhood
-                    </Select.Option>
-                    <Select.Option key={'pre-k'} value="Pre-K">
-                        Pre-K
-                    </Select.Option>
-                    <Select.Option key={'kindergarten'} value="Kindergarten">
-                        Kindergarten
-                    </Select.Option>
-                    {[...Array(12)].map((_, index) => (
-                        <Select.Option key={index + 1} value={`${index + 1}th`}>
-                            {`${index + 1}th`}
-                        </Select.Option>
-                    ))}
-                    <Select.Option key={'other'} value="Other">
-                        Other Staff
-                    </Select.Option>
-                </Select>
-                <Button type="primary">Search</Button>
-                <Divider />
-                <p>Can't find this user on Teacher Tree? Send an invite via email.</p>
-                <Input placeholder="Email" />
+                <TeacherSearch school={school} listType={'members'} />
             </Modal>
 
             {/* View Members Modal */}
