@@ -94,7 +94,7 @@ const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts, rea
                     ) : (
                         <>
                             <p>Quantity: {quantity}</p>
-                            {product.quantityPurchased && product.quantityPurchased > 0 && (<p><i>{product.quantityPurchased} of these items have been purchased.</i></p>)}
+                            {!!product.quantityPurchased && product.quantityPurchased > 0 && (<p><i>{product.quantityPurchased} of these items have been purchased.</i></p>)}
                         </>
                     )
                 }

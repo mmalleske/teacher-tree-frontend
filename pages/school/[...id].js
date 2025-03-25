@@ -5,6 +5,8 @@ import { Select, Input, Button, List, Avatar, Card, Divider, Modal, Spin } from 
 import { UserAddOutlined, UserOutlined } from '@ant-design/icons';
 import { stateCodes } from '../../constants';
 import useSchools from '../../hooks/useSchools';
+// import ProductUploader from '../../components/productUploader';
+import SchoolProductUploader from '../../components/schoolProductUploader';
 import "./school.module.scss";
 
 const SchoolPage = () => {
@@ -61,8 +63,7 @@ const SchoolPage = () => {
                     </div>
                 </div>
                 <Divider />
-                <h3>Grade Levels</h3>
-                <p>{school.gradeLevels?.join(', ') || 'No grade levels specified'}</p>
+                <SchoolProductUploader school={school} />
             </Card>
 
             {/* Invite Members Modal */}

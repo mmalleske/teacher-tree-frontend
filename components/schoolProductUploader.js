@@ -7,10 +7,9 @@ import useProducts from '../hooks/useProducts';
 
 const { Option } = Select;
 
-const ProductUploader = ({ school }) => {
+const SchoolProductUploader = ({ school }) => {
     const [form] = Form.useForm();
     const { user } = useContext(UserContext);
-    const [listType, setListType] = useState('wishlist');
 
     const {
         products,
@@ -18,16 +17,16 @@ const ProductUploader = ({ school }) => {
         uploadAmazonProduct,
         fetchingProducts,
         uploadingProduct,
-    } = useProducts({ userId: user?.userId });
+    } = useProducts({ userId: user.userId, schoolId: school._id, fetchSchoolList: true });
 
     const onSubmitAmazonProduct = async (values) => {
-        await uploadAmazonProduct({ values, listType });
+        await uploadAmazonProduct({ values, listType: 'schoolList', schoolId: school._id });
         form.resetFields();
         fetchProducts();
     };
 
     const onSubmitManualProduct = async (values) => {
-        await uploadAmazonProduct({ values, listType });
+        await uploadAmazonProduct({ values, listType: 'schoolList', schoolId: school._id });
         form.resetFields();
         fetchProducts();
     };
@@ -53,17 +52,15 @@ const ProductUploader = ({ school }) => {
             <Form.Item name="quantity">
                 <Input placeholder='Quantity' type='number' defaultValue={1} />
             </Form.Item>
-            {school && (
-                <Form.Item name="gradeLevel" label="Grade Level">
-                    <Select placeholder="Select grade level" required>
-                        {school?.gradeLevels?.map((grade) => (
-                            <Option key={grade} value={grade}>
-                                {grade}
-                            </Option>
-                        ))}
-                    </Select>
-                </Form.Item>
-            )}
+            <Form.Item name="gradeLevel" label="Grade Level">
+                <Select placeholder="Select grade level" required>
+                    {school?.gradeLevels?.map((grade) => (
+                        <Option key={grade} value={grade}>
+                            {grade}
+                        </Option>
+                    ))}
+                </Select>
+            </Form.Item>
             <Form.Item>
                 <Button type="primary" htmlType="submit" loading={uploadingProduct}>
                     Add Product
@@ -94,28 +91,9 @@ const ProductUploader = ({ school }) => {
         </Form>
     )
 
-
-    const WishList = () => products && (
-        <List
-            dataSource={products.filter(product => product.listType === 'wishlist')}
-            renderItem={(product) => (
-                <Product product={product} fetchProducts={fetchProducts} />
-            )}
-        />
-    );
-
-    const Consumables = () => products && (
-        <List
-            dataSource={products.filter(product => product.listType === 'consumables')}
-            renderItem={(product) => (
-                <Product product={product} fetchProducts={fetchProducts} />
-            )}
-        />
-    )
-
     const SchoolList = () => products && (
         <List
-            dataSource={products.filter(product => product.listType === 'schoolList')}
+            dataSource={products}
             renderItem={(product) => (
                 <Product product={product} fetchProducts={fetchProducts} />
             )}
@@ -126,29 +104,10 @@ const ProductUploader = ({ school }) => {
 
     return (
         <Card>
-            <Tabs
-                onTabClick={(tab) => { setListType(tab) }}
-                defaultActiveKey="wishlist"
-                items={[
-                    {
-                        label: 'Wishlist',
-                        key: 'wishlist',
-                        children: [<Uploader key="uploader" />, <WishList key="wishlist" />],
-                    },
-                    {
-                        label: 'Consumables',
-                        key: 'consumables',
-                        children: [<Uploader key="uploader" />, <Consumables key="consumables" />]
-                    },
-                    {
-                        label: 'School List',
-                        key: 'schoolList',
-                        children: [<Uploader key="uploader" />, <SchoolList key="schoolList" />]
-                    },
-                ]}
-            />
+            <Uploader key="uploader" />
+            <SchoolList key="schoolList" />
         </Card>
     );
 };
 
-export default ProductUploader;
+export default SchoolProductUploader;
