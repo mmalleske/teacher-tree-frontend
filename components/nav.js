@@ -36,8 +36,6 @@ export default function Nav() {
 
   }, [])
 
-  console.log(currentPath)
-
   const items = currentPath === 'teacher' ? [
     {
       key: 'dashboard',

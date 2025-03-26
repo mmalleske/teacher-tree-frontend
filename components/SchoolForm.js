@@ -27,7 +27,7 @@ const SchoolForm = ({ onSuccess, adminProfile, initialValues }) => {
             const response = await fetch(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...values, ownerId: adminProfile._id }),
+                body: JSON.stringify({ ...values, ownerId: adminProfile._id, ownerName: adminProfile.ownerName }),
             });
 
             const data = await response.json();
