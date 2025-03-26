@@ -4,9 +4,11 @@ import ProductUploader from "./productUploader";
 import ProductList from "./productList";
 import SaveTeacherButton from "./saveTeacherButton";
 import Link from "next/link"
+import InviteAlert from "./InviteAlert";
 
 
 const TeacherProfile = ({ teacherProfile, donor = null, readOnly }) => {
+    console.log(teacherProfile, "teache")
     return (
         <Row>
             <Col lg={6} xs={24} >
@@ -17,29 +19,9 @@ const TeacherProfile = ({ teacherProfile, donor = null, readOnly }) => {
                     <SaveTeacherButton donor={donor} teacher={teacherProfile} />
                 )}
                 <br></br>
-                <div>
-
-                </div>
-                <Alert
-                    style={{ margin: "1rem" }}
-                    showIcon
-                    message="Join Awesome School?"
-                    description="Your School Admin has invited you to join the Awesome School product list."
-                    type="info"
-                    action={
-                        <Space direction="vertical">
-                            <Link href="/school/123">
-                                <Button size="small" type="primary">
-                                    Accept
-                                </Button>
-                            </Link>
-                            <Button size="small">
-                                Decline
-                            </Button>
-                        </Space>
-                    }
-                    closable
-                />
+                {!readOnly && teacherProfile.invites && !!teacherProfile.invites.length && teacherProfile.invites.filter((invite) => invite.status === "pending").map((invite) => (
+                    <InviteAlert invite={invite} />
+                ))}
                 <br></br>
             </Col>
             <Col lg={18} xs={24}>

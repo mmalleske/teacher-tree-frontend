@@ -11,6 +11,8 @@ const SchoolProductUploader = ({ school }) => {
     const [form] = Form.useForm();
     const { user } = useContext(UserContext);
 
+    if(!user) return;
+
     const {
         products,
         fetchProducts,

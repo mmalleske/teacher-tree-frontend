@@ -7,7 +7,7 @@ const MemberListItem = ({ teacher, school, fetchTeachers }) => {
   const [savedTeacher, setSavedTeacher] = useState(false);
   const [inviteStatus, setInviteStatus] = useState(null); // To track the invite status
   
-  const { createInvite, loading, error } = useInvites();
+  const { createInvite, removeMember, loading, error } = useInvites();
 
   // Check if an invite exists for the teacher for this school
   useEffect(() => {
@@ -46,7 +46,7 @@ const MemberListItem = ({ teacher, school, fetchTeachers }) => {
   // Handle removing the teacher
   const handleRemoveMember = async () => {
     try {
-      // Add your remove logic here (e.g., call an API to remove the teacher from the school)
+      await removeMember({teacherId: teacher._id, schoolId: school.id });
       message.success('School staff member removed!');
       fetchTeachers();  // Refresh the list
       setSavedTeacher(false);  // Reset the savedTeacher state
