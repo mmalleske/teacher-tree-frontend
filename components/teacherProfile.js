@@ -28,8 +28,8 @@ const TeacherProfile = ({ teacherProfile, donor = null, readOnly }) => {
                     <SaveTeacherButton donor={donor} teacher={teacherProfile} />
                 )}
                 <br></br>
-                {!readOnly && teacherProfile.invites && !!teacherProfile.invites.length && teacherProfile.invites.filter((invite) => invite.status === "pending").map((invite) => (
-                    <InviteAlert invite={invite} />
+                {!readOnly && teacherProfile.invites && !!teacherProfile.invites.length && teacherProfile.invites.filter((invite) => invite.status === "pending").map((invite, index) => (
+                    <InviteAlert key={`invite-${index}`} invite={invite} />
                 ))}
                 <br></br>
             </Col>
