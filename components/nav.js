@@ -36,7 +36,7 @@ export default function Nav() {
 
   }, [])
 
-  const items = currentPath === 'teacher' ? [
+  const items = currentPath === 'teacher' || currentPath === 'admin' ? [
     {
       key: 'dashboard',
       label: (
@@ -54,11 +54,7 @@ export default function Nav() {
       label: (
         <Link href="/donor/favorites"><RedoOutlined /> Switch to Helper Profile</Link>
       ),
-    },
-    {
-      key: 'logout',
-      label: (<Button block onClick={logout}><LogoutOutlined /> Logout</Button>),
-    },
+    },    
   ] : [
     {
       key: 'favorites',
@@ -78,11 +74,24 @@ export default function Nav() {
         <Link href="/teacher/dashboard"><RedoOutlined /> Switch to School Staff Member Profile</Link>
       ),
     },
-    {
-      key: 'logout',
-      label: (<Button block onClick={logout}><LogoutOutlined /> Logout</Button>),
-    },
   ];
+
+  if (user?.isAdmin) {
+    items.push({
+      key: 'admin-dashboard',
+      label: (
+        <Link href="/admin/dashboard"><DashboardOutlined /> Admin dashboard</Link>
+      ),
+    });
+  }
+
+  // Always add the logout button at the end
+  const logoutButton = {
+    key: 'logout',
+    label: (
+      <Button block onClick={logout}><LogoutOutlined /> Logout</Button>
+    ),
+  };
 
   return (
     <div className={styles.nav}>
@@ -90,7 +99,7 @@ export default function Nav() {
         <>
           <p>Logged in as {user.email}</p>
           <Dropdown
-            menu={{ items }}
+             menu={{ items: [...items, logoutButton] }}
           >
             <a onClick={(e) => e.preventDefault()}>
               <MenuOutlined />
@@ -99,10 +108,10 @@ export default function Nav() {
         </>
       ) : (
         <>
-        <Space>
-          <Link href="/login">Login</Link>
-          <Link href="/register">Sign Up</Link>
-        </Space>
+          <Space>
+            <Link href="/login">Login</Link>
+            <Link href="/register">Sign Up</Link>
+          </Space>
         </>
       )}
     </div>

@@ -22,7 +22,6 @@ function ResetPassword() {
             try {
                 const decoded = jwt_decode(tokenParam);
                 setDecodedToken(decoded);
-                console.log(decoded)
             } catch (error) {
                 console.error('Error decoding JWT:', error);
             }

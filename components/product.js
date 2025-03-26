@@ -4,7 +4,7 @@ import axios from 'axios';
 import { DeleteOutlined, GiftOutlined } from "@ant-design/icons";
 import styles from "./product.module.scss"
 
-const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts, readOnly = false }) => {
+const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts, readOnly = false, schoolListView = false }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editedQuantity, setEditedQuantity] = useState(product.quantity);
     const [showModal, setShowModal] = useState(false); // State to control modal visibility
@@ -78,7 +78,8 @@ const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts, rea
                     <p>{' '}{product.title}</p>
                 </a>
                 {/* DEMO ONLY */}
-                {product.gradeLevel && <p><strong>Grade Level: </strong>{product.gradeLevel}</p>}
+                {schoolListView && product.gradeLevel && <p><strong>Grade Level: </strong>{product.gradeLevel}</p>}
+                {schoolListView && product.teacherData && <p><strong>Added by: </strong>{`${product.teacherData.firstName} ${product.teacherData.lastName}`}</p>}
             </div>
             <div className={styles.productItemQuantity}>
                 {

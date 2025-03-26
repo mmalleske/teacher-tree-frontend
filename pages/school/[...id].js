@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../../components/layout';
 import { Select, Input, Button, List, Avatar, Card, Divider, Modal, Spin } from 'antd';
@@ -8,6 +8,9 @@ import useSchools from '../../hooks/useSchools';
 // import ProductUploader from '../../components/productUploader';
 import SchoolProductUploader from '../../components/schoolProductUploader';
 import TeacherSearch from '../../components/teacherSearch';
+import { UserContext } from "../../contexts/UserContext";
+import MembersList from '../../components/membersList';
+
 import "./school.module.scss";
 
 const SchoolPage = () => {
@@ -16,6 +19,9 @@ const SchoolPage = () => {
     const { fetchSchool, loading, school } = useSchools();
     const [inviteModalOpen, setInviteModalOpen] = useState(false);
     const [viewMembersModalOpen, setViewMembersModalOpen] = useState(false);
+    const { user } = useContext(UserContext);
+
+    const isAdmin = user?.isAdmin
 
     // Fetch school data when the page loads, only if it's not already fetched
     useEffect(() => {
@@ -53,15 +59,16 @@ const SchoolPage = () => {
                             {school.city}, {school.state}
                         </p>
                     </div>
-                    <div className="school-header__actions">
-                        <Button icon={<UserAddOutlined />} type="primary" onClick={() => setInviteModalOpen(true)}>
-                            Invite members
-                        </Button>
-                        <Button icon={<UserOutlined />} onClick={() => setViewMembersModalOpen(true)}>
-                            View Members
-                        </Button>
-                        <sub>These buttons will only show for admin users</sub>
-                    </div>
+                    {isAdmin && (
+                        <div className="school-header__actions" style={{ display: "flex", gap: "8px" }}>
+                            <Button icon={<UserAddOutlined />} type="primary" onClick={() => setInviteModalOpen(true)}>
+                                Invite members
+                            </Button>
+                            <Button icon={<UserOutlined />} onClick={() => setViewMembersModalOpen(true)}>
+                                View Members
+                            </Button>
+                        </div>
+                    )}
                 </div>
                 <Divider />
                 <SchoolProductUploader school={school} />
@@ -74,7 +81,7 @@ const SchoolPage = () => {
                 onCancel={() => setInviteModalOpen(false)}
                 footer={[
                     <Button key="done" onClick={() => setInviteModalOpen(false)}>Done</Button>
-                ]}                
+                ]}
             >
                 <TeacherSearch school={school} listType={'members'} />
             </Modal>
@@ -86,17 +93,7 @@ const SchoolPage = () => {
                 onOk={() => setViewMembersModalOpen(false)}
                 onCancel={() => setViewMembersModalOpen(false)}
             >
-                <List itemLayout="horizontal">
-                    <List.Item actions={[<Button key="view">Remove</Button>]}>
-                        <List.Item.Meta avatar={<Avatar size={100} />} title={"Teacher #1"} description={school.schoolName} />
-                    </List.Item>
-                    <List.Item actions={[<Button key="view">Remove</Button>]}>
-                        <List.Item.Meta avatar={<Avatar size={100} />} title={"Teacher #2"} description={school.schoolName} />
-                    </List.Item>
-                    <List.Item actions={[<Button key="view">Remove</Button>]}>
-                        <List.Item.Meta avatar={<Avatar size={100} />} title={"Teacher #3"} description={school.schoolName} />
-                    </List.Item>
-                </List>
+                <MembersList school={school} />
             </Modal>
         </Layout>
     );

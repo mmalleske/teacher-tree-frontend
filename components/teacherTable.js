@@ -74,7 +74,6 @@ const TeacherTable = () => {
     const { confirm } = Modal;
 
     const createAdminProfile = async (user) => {
-        console.log(user, "create admin")
         const { teacherData: teacher } = user;
         try {
             const body = {

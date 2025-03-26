@@ -11,11 +11,16 @@ const MemberListItem = ({ teacher, school, fetchTeachers }) => {
 
   // Check if an invite exists for the teacher for this school
   useEffect(() => {
-    const checkInvite = () => {
+    const checkInviteAndMembership = () => {
+      const isMember = school.memberIds?.includes(teacher._id);
+      if (isMember) {
+        setSavedTeacher(true);  // If the teacher is in the members list, mark them as saved
+      }
       // Check if teacher's invites include a pending invite for the given school
       const invite = teacher.invites?.find(
         (invite) => invite.schoolId === school._id
       );
+      
       if (invite) {
         setInviteStatus(invite.status); // Set status: 'pending', 'accepted', or 'none'
         if (invite.status === 'accepted') {
@@ -24,14 +29,17 @@ const MemberListItem = ({ teacher, school, fetchTeachers }) => {
       } else {
         setInviteStatus('none');  // No invite exists
       }
+  
+      // Check if the teacher is a member of the school by teacherId
+      
     };
-    checkInvite();
-  }, [teacher.invites, school._id]);
+  
+    checkInviteAndMembership();
+  }, [teacher.invites, school._id, school.memberIds, teacher._id]);
 
 
   // Handle sending the invite
   const handleInviteMember = async () => {
-    console.log('school', school)
 
     try {
       await createInvite({teacherId: teacher._id, schoolId: school.id,  ownerName: school.ownerName});  // Send the invite from the admin

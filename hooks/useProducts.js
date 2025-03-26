@@ -32,7 +32,6 @@ const useProducts = ({ userId, schoolId, fetchSchoolList }) => {
     };
 
     const uploadAmazonProduct = async ({values, listType, schoolId}) => {
-        console.log({values, listType, schoolId}, "on upload from schools")
         setUploadingProduct(true)
         if (userId) {
             try {

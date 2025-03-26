@@ -4,6 +4,10 @@ import axios from 'axios';
 import Product from './product';
 import { UserContext } from "../contexts/UserContext";
 import useProducts from '../hooks/useProducts';
+import useSchools from '../hooks/useSchools';
+import Link from "next/link"
+import { CaretRightOutlined } from '@ant-design/icons';
+
 
 const { Option } = Select;
 
@@ -11,6 +15,8 @@ const ProductUploader = ({ school }) => {
     const [form] = Form.useForm();
     const { user } = useContext(UserContext);
     const [listType, setListType] = useState('wishlist');
+
+    console.log(school, "school in product uploader")
 
     const {
         products,
@@ -21,7 +27,7 @@ const ProductUploader = ({ school }) => {
     } = useProducts({ userId: user?.userId });
 
     const onSubmitAmazonProduct = async (values) => {
-        await uploadAmazonProduct({ values, listType });
+        await uploadAmazonProduct({ values, listType, schoolId: listType === "schoolList" && school?._id });
         form.resetFields();
         fetchProducts();
     };
@@ -53,7 +59,7 @@ const ProductUploader = ({ school }) => {
             <Form.Item name="quantity">
                 <Input placeholder='Quantity' type='number' defaultValue={1} />
             </Form.Item>
-            {school && (
+            {school && listType === "schoolList" && (
                 <Form.Item name="gradeLevel" label="Grade Level" rules={[{ required: true, message: 'Please select a grade level' }]}>
                     <Select placeholder="Select grade level">
                         {school?.gradeLevels?.map((grade) => (
@@ -97,7 +103,7 @@ const ProductUploader = ({ school }) => {
 
     const WishList = () => products && (
         <List
-            dataSource={products.filter(product => product.listType === 'wishlist')}
+            dataSource={products.filter(product => product.listType === 'wishlist' || !product.listType)}
             renderItem={(product) => (
                 <Product product={product} fetchProducts={fetchProducts} />
             )}
@@ -113,7 +119,7 @@ const ProductUploader = ({ school }) => {
         />
     )
 
-    const SchoolList = () => products && (
+    const SchoolList = () => school && products && (
         <List
             dataSource={products.filter(product => product.listType === 'schoolList')}
             renderItem={(product) => (
@@ -124,28 +130,38 @@ const ProductUploader = ({ school }) => {
 
     const Uploader = AmazonUploader;
 
+    const tabItems = [
+        {
+            label: 'Wishlist',
+            key: 'wishlist',
+            children: [<Uploader key="uploader" />, <WishList key="wishlist" />],
+        },
+        {
+            label: 'Consumables',
+            key: 'consumables',
+            children: [<Uploader key="uploader" />, <Consumables key="consumables" />]
+        },
+    ]
+
+    if (school) {
+        tabItems.push({
+            label: `${school.schoolName}`,
+            key: 'schoolList',
+            children: [
+                <div style={{ padding: "1rem 0" }} key="school-link">
+                    <Link href={`/school/${school._id}`}>Go to shared School List <CaretRightOutlined /></Link>
+                </div>,
+                <Uploader key="uploader" />,
+                <SchoolList key="schoolList" />]
+        })
+    }
+
     return (
         <Card>
             <Tabs
                 onTabClick={(tab) => { setListType(tab) }}
                 defaultActiveKey="wishlist"
-                items={[
-                    {
-                        label: 'Wishlist',
-                        key: 'wishlist',
-                        children: [<Uploader key="uploader" />, <WishList key="wishlist" />],
-                    },
-                    {
-                        label: 'Consumables',
-                        key: 'consumables',
-                        children: [<Uploader key="uploader" />, <Consumables key="consumables" />]
-                    },
-                    {
-                        label: 'School List',
-                        key: 'schoolList',
-                        children: [<Uploader key="uploader" />, <SchoolList key="schoolList" />]
-                    },
-                ]}
+                items={tabItems}
             />
         </Card>
     );
