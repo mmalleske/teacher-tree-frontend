@@ -8,7 +8,6 @@ import InviteAlert from "./InviteAlert";
 import useSchools from "../hooks/useSchools";
 
 const TeacherProfile = ({ teacherProfile, donor = null, readOnly }) => {
-    console.log(teacherProfile, "teach")
 
     const { fetchSchool, school } = useSchools();
 

@@ -24,6 +24,8 @@ export default function Nav() {
       const currentPathname = window.location.pathname;
       const isDonorPage = currentPathname.startsWith('/donor');
       const isTeacherPage = currentPathname.startsWith('/teacher');
+      const isAdminPage = currentPathname.startsWith('/admin');
+      const isSchoolPage = currentPathname.startsWith('/school');
 
       if (isDonorPage) {
         setCurrentPath('donor')
@@ -32,11 +34,20 @@ export default function Nav() {
       if (isTeacherPage) {
         setCurrentPath('teacher')
       }
+
+      if (isAdminPage) {
+        setCurrentPath('admin')
+      }
+
+      if (isSchoolPage) {
+        setCurrentPath('school')
+      }
     }
 
   }, [])
 
-  const items = currentPath === 'teacher' || currentPath === 'admin' ? [
+
+  const items = currentPath === 'teacher' || currentPath === 'admin' || currentPath === 'school' ? [
     {
       key: 'dashboard',
       label: (
@@ -80,7 +91,7 @@ export default function Nav() {
     items.push({
       key: 'admin-dashboard',
       label: (
-        <Link href="/admin/dashboard"><DashboardOutlined /> Admin dashboard</Link>
+        <Link href="/admin/dashboard"><DashboardOutlined /> Admin Dashboard</Link>
       ),
     });
   }

@@ -17,7 +17,7 @@ const AdminSchools = ({ adminProfile, refreshProfile }) => {
 
     return (
         <div>
-            <h2>Admin Schools</h2>
+            <h2>My Schools: </h2>
 
             {adminProfile.schools && adminProfile.schools.length > 0 ? (
                 <List

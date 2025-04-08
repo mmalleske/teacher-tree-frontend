@@ -5,7 +5,7 @@ import useTeacherSearch from '../hooks/useTeacherSearch';
 import TeacherListItem from '../components/teacherListItem';
 import MemberListItem from './memberListItem';
 
-const TeacherSearch = ({ donor, school, listType }) => {
+const TeacherSearch = ({ donor, school, listType, includeNameSearch }) => {
     const [form] = Form.useForm();
     const { loading, error, results, searchTeachers } = useTeacherSearch();
 
@@ -42,12 +42,28 @@ const TeacherSearch = ({ donor, school, listType }) => {
 
     return (
         <>
-            <div>                
+            <div>
                 <h1>Search School Staff Members</h1>
                 <sub>*Please select a state and enter either a school name or school district.</sub>
             </div>
             <Divider />
             <Form form={form} layout="vertical">
+                {includeNameSearch && (
+                    <>
+                        <Form.Item
+                            name="firstName"
+                            label="First Name"                            
+                        >
+                           <Input placeholder="First Name" />
+                        </Form.Item>
+                        <Form.Item
+                            name="lastName"
+                            label="Last Name"                            
+                        >
+                           <Input placeholder="Last Name" />
+                        </Form.Item>
+                    </>
+                )}
                 <Form.Item
                     name="state"
                     label="State"

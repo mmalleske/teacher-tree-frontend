@@ -16,7 +16,6 @@ const ProductUploader = ({ school }) => {
     const { user } = useContext(UserContext);
     const [listType, setListType] = useState('wishlist');
 
-    console.log(school, "school in product uploader")
 
     const {
         products,
@@ -121,7 +120,7 @@ const ProductUploader = ({ school }) => {
 
     const SchoolList = () => school && products && (
         <List
-            dataSource={products.filter(product => product.listType === 'schoolList')}
+            dataSource={products.filter(product => product.listType === 'schoolList' && product.schoolId === school._id)}
             renderItem={(product) => (
                 <Product product={product} fetchProducts={fetchProducts} />
             )}

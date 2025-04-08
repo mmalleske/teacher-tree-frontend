@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Form, Input, Button, Select, message, Popconfirm, Space } from 'antd';
+import { stateCodes } from '../constants';
 
 const { Option } = Select;
 
@@ -20,8 +21,8 @@ const SchoolForm = ({ onSuccess, adminProfile, initialValues }) => {
         setLoading(true);
         try {
             const method = initialValues ? 'PUT' : 'POST';
-            const url = initialValues 
-                ? `${process.env.API_BASE_URL}/schools/${initialValues._id}` 
+            const url = initialValues
+                ? `${process.env.API_BASE_URL}/schools/${initialValues._id}`
                 : `${process.env.API_BASE_URL}/schools`;
 
             const response = await fetch(url, {
@@ -81,7 +82,6 @@ const SchoolForm = ({ onSuccess, adminProfile, initialValues }) => {
             <Form.Item
                 label="School District"
                 name="schoolDistrict"
-                rules={[{ required: true, message: 'Please enter the school district' }]}
             >
                 <Input placeholder="Enter school district" />
             </Form.Item>
@@ -95,11 +95,17 @@ const SchoolForm = ({ onSuccess, adminProfile, initialValues }) => {
             </Form.Item>
 
             <Form.Item
-                label="State"
                 name="state"
-                rules={[{ required: true, message: 'Please enter the state' }]}
+                label="State"
+                rules={[{ required: true, message: 'Please select a state' }]}
             >
-                <Input placeholder="Enter state" />
+                <Select placeholder="Select state">
+                    {stateCodes.map(state => (
+                        <Select.Option key={state.code} value={state.code}>
+                            {state.name}
+                        </Select.Option>
+                    ))}
+                </Select>
             </Form.Item>
 
             <Form.Item

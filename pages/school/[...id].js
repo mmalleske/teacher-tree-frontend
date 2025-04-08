@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../../components/layout';
 import { Select, Input, Button, List, Avatar, Card, Divider, Modal, Spin } from 'antd';
+import { CaretLeftOutlined } from '@ant-design/icons';
 import { UserAddOutlined, UserOutlined } from '@ant-design/icons';
 import { stateCodes } from '../../constants';
 import useSchools from '../../hooks/useSchools';
@@ -10,6 +11,7 @@ import SchoolProductUploader from '../../components/schoolProductUploader';
 import TeacherSearch from '../../components/teacherSearch';
 import { UserContext } from "../../contexts/UserContext";
 import MembersList from '../../components/membersList';
+import Link from 'next/link';
 
 import "./school.module.scss";
 
@@ -23,6 +25,7 @@ const SchoolPage = () => {
 
     const isAdmin = user?.isAdmin
 
+    console.log(user)
     // Fetch school data when the page loads, only if it's not already fetched
     useEffect(() => {
         if (id && !school) {
@@ -52,6 +55,7 @@ const SchoolPage = () => {
         <Layout>
             <Card className="school-page">
                 <div className="school-header">
+                    {isAdmin && (<Link href="/admin/dashboard"><CaretLeftOutlined /> Back to Schools</Link>)}
                     <div className="school-header__info">
                         <h1>{school.schoolName}</h1>
                         <h2>{school.schoolDistrict}</h2>
@@ -83,7 +87,7 @@ const SchoolPage = () => {
                     <Button key="done" onClick={() => setInviteModalOpen(false)}>Done</Button>
                 ]}
             >
-                <TeacherSearch school={school} listType={'members'} />
+                <TeacherSearch school={school} listType={'members'} includeNameSearch />
             </Modal>
 
             {/* View Members Modal */}
