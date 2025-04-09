@@ -2,6 +2,7 @@ import { List, Avatar, Button, message, Popconfirm } from "antd";
 import { useState, useEffect } from "react";
 import styles from "./teacherListItem.module.scss";
 import useInvites from "../hooks/useInvites";
+import { UserOutlined } from "@ant-design/icons";
 
 const MemberListItem = ({ teacher, school, fetchTeachers }) => {
   const [savedTeacher, setSavedTeacher] = useState(false);
@@ -88,7 +89,7 @@ const MemberListItem = ({ teacher, school, fetchTeachers }) => {
       ]}
     >
       <List.Item.Meta
-        avatar={<Avatar size={100} style={{ marginBottom: "1rem" }} src={teacher.profilePhotoUrl} />}
+        avatar={<Avatar size={100} style={{ marginBottom: "1rem" }} src={teacher.profilePhotoUrl} icon={<UserOutlined />} />}
         title={`${teacher.firstName} ${teacher.lastName}`}
         description={teacher.schoolName}
       />

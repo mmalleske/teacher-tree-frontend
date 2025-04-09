@@ -54,12 +54,12 @@ export default function Nav() {
         <Link href="/teacher/dashboard"><DashboardOutlined /> School Staff Member Dashboard</Link>
       ),
     },
-    {
-      key: 'profile',
-      label: (
-        <Link href="/teacher/profile"><ProfileOutlined /> School Staff Member Profile</Link>
-      ),
-    },
+    // {
+    //   key: 'profile',
+    //   label: (
+    //     <Link href="/teacher/profile"><ProfileOutlined /> School Staff Member Profile</Link>
+    //   ),
+    // },
     {
       key: 'switch-to-donor',
       label: (

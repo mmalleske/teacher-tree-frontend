@@ -18,31 +18,35 @@ export default function Favorites() {
     }
   }, [user]);
 
-  const fetchTeacherProfile = async (userId) => {
+  const fetchTeacherProfile = async () => {
     setLoadingTeacher(true);
-    try {
-      const response = await axios.get(
-        `${process.env.API_BASE_URL}/teachers/${userId}`
-      );
-      setTeacherProfile(response.data);
-    } catch (error) {
-      console.error("Error fetching School Staff Member profile:", error);
-    } finally {
-      setLoadingTeacher(false);
+    if(user?.userId) {
+      try {
+        const response = await axios.get(
+          `${process.env.API_BASE_URL}/teachers/${user?.userId}`
+        );
+        setTeacherProfile(response.data);
+      } catch (error) {
+        console.error("Error fetching School Staff Member profile:", error);
+      } finally {
+        setLoadingTeacher(false);
+      }
     }
   };
 
   const createTeacher = async () => {
     setLoading(true)
-    try {
-      const response = await axios.post(`${process.env.API_BASE_URL}/teachers`, {
-        userId: user.userId
-      })
-      fetchTeacherProfile(user.userId)
-    } catch (error) {
-      console.error('Error creating donor:', error);
-    } finally {
-      setLoading(false)
+    if(user?.id) {
+      try {
+        const response = await axios.post(`${process.env.API_BASE_URL}/teachers`, {
+          userId: user.userId
+        })
+        fetchTeacherProfile(user?.userId)
+      } catch (error) {
+        console.error('Error creating donor:', error);
+      } finally {
+        setLoading(false)
+      }
     }
   }
 
@@ -53,7 +57,7 @@ export default function Favorites() {
   return (
     <Layout>
       {teacherProfile ? (
-        <TeacherProfile readOnly={false} teacherProfile={teacherProfile} />
+        <TeacherProfile readOnly={false} teacherProfile={teacherProfile} refreshProfile={fetchTeacherProfile} />
       ) : (
         <Card>
           <p>We could not find a School Staff Member profile associated with this user.</p>

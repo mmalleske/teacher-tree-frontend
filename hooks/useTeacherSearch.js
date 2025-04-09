@@ -15,7 +15,7 @@ const useTeacherSearch = () => {
                 params: { state, schoolDistrict, school, gradeLevel },
             });
 
-            setResults(response.data.results);
+            setResults(response.data.results.filter((result => result?.firstName !== undefined || result?.lastName !== undefined )));
         } catch (err) {
             console.error("Error fetching teachers:", err);
             setError(err.message);
