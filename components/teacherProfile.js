@@ -7,7 +7,7 @@ import SaveTeacherButton from "./saveTeacherButton";
 import InviteAlert from "./InviteAlert";
 import useSchools from "../hooks/useSchools";
 
-const TeacherProfile = ({ teacherProfile, donor = null, readOnly }) => {
+const TeacherProfile = ({ teacherProfile, donor = null, readOnly, refreshProfile }) => {
 
     const { fetchSchool, school } = useSchools();
 
@@ -21,7 +21,7 @@ const TeacherProfile = ({ teacherProfile, donor = null, readOnly }) => {
         <Row>
             <Col lg={6} xs={24} >
                 {teacherProfile && (
-                    <ProfileSideBar teacherProfile={teacherProfile} readOnly={readOnly} />
+                    <ProfileSideBar teacherProfile={teacherProfile} readOnly={readOnly} refreshProfile={refreshProfile} />
                 )}
                 {donor && (
                     <SaveTeacherButton donor={donor} teacher={teacherProfile} />

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Button, Card } from 'antd';
+import { Avatar, Button, Card, Modal } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import styles from "./profileSideBar.module.scss";
 import { toReadableFormat } from './editProfileForm';
+import EditProfileForm from './editProfileForm';
 
-const ProfileSideBar = ({ teacherProfile, readOnly }) => {
+const ProfileSideBar = ({ teacherProfile, readOnly, refreshProfile }) => {
     const months = {
         '01': 'January',
         '02': 'February',
@@ -20,6 +21,7 @@ const ProfileSideBar = ({ teacherProfile, readOnly }) => {
         '12': 'December',
     };
 
+    const [editModalOpen, setEditModalOpen] = useState(false);
 
     const {
         firstName,
@@ -57,6 +59,11 @@ const ProfileSideBar = ({ teacherProfile, readOnly }) => {
         return str.replace(/\b\w/g, (char) => char.toUpperCase());
     }
 
+    const onSubmit = () => {
+        refreshProfile();
+        setEditModalOpen(false);
+    }
+
     return (
         <div className={styles.profileSideBar}>
             <Card>
@@ -67,9 +74,10 @@ const ProfileSideBar = ({ teacherProfile, readOnly }) => {
                         <Avatar size={100} icon={<UserOutlined />} />
                     )}
                     <p>{firstName} {lastName}</p>
+                    <p>{schoolName}, {schoolDistrict}</p>
                 </div>
 
-                {!readOnly && <Button block href='/teacher/profile'>Edit Profile</Button>}
+                {!readOnly && <Button block onClick={() => setEditModalOpen(true)}>Edit Profile</Button>}
                 <p><b>Birthday:</b> {birthdate && !birthMonth ? `${birthdate}` : `${months[birthMonth]} ${birthDay}`}</p>
                 <p><b>Interests and Hobbies:</b></p>
                 <p>{interests}</p>
@@ -85,6 +93,15 @@ const ProfileSideBar = ({ teacherProfile, readOnly }) => {
                     </ul>
                 )}
             </Card>
+            <Modal
+                title={'Edit Profile'}
+                open={editModalOpen}
+                onCancel={() => setEditModalOpen(false)}
+                footer={null} // Removes default buttons
+                destroyOnClose
+            >
+               <EditProfileForm teacherProfile={teacherProfile} refreshTeacherProfile={onSubmit} onSubmit={onSubmit} />
+            </Modal>
         </div>
     )
 }

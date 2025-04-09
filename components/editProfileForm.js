@@ -1,6 +1,6 @@
-import React, { useEffect, useState,useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Formik, Form, Field } from 'formik';
-import { Input, Button, Select, message, Card, Space, Modal, DatePicker } from 'antd';
+import { Input, Button, Select, message, Card, Space, Modal, DatePicker, Popconfirm } from 'antd';
 import axios from 'axios';
 import S3ImageUploader from './s3ImageUploader';
 import * as Yup from 'yup';
@@ -8,9 +8,10 @@ import { useRouter } from 'next/router';
 import { stateCodes } from '../constants';
 import { DeleteOutlined } from "@ant-design/icons";
 import { UserContext } from '../contexts/UserContext';
+import useUserActions from '../hooks/useUserActions';
 
 export const toReadableFormat = (str) => {
-    if(str === 'notToReceive') {
+    if (str === 'notToReceive') {
         return 'Prefer not to receive'
     }
     return str.replace(/([A-Z])/g, ' $1')
@@ -26,6 +27,7 @@ const EditProfileForm = ({ teacherProfile, refreshTeacherProfile, onSubmit }) =>
     const [addingNewCategory, setAddingNewCategory] = useState(false);
     const [customValue, setCustomValue] = useState();
     const [customLabel, setCustomLabel] = useState();
+    const { deleteAccount } = useUserActions();
 
     const router = useRouter();
 
@@ -126,7 +128,9 @@ const EditProfileForm = ({ teacherProfile, refreshTeacherProfile, onSubmit }) =>
             console.log(error);
             message.error('An error occurred while updating the profile.');
         } finally {
-            router.push('/teacher/dashboard')
+            // router.push('/teacher/dashboard')
+            // refreshTeacherProfile()
+            onSubmit();
         }
     };
 
@@ -159,9 +163,9 @@ const EditProfileForm = ({ teacherProfile, refreshTeacherProfile, onSubmit }) =>
 
     const handleDeleteCategory = async (categoryKey) => {
         const { [categoryKey]: deletedCategory, ...remainingCategories } = initialValues.favoriteThings;
-    
+
         const updatedValues = { ...initialValues, favoriteThings: remainingCategories };
-    
+
         try {
             const response = await axios.patch(`${process.env.API_BASE_URL}/teachers/${teacherProfile._id}`, updatedValues);
             message.success('Category deleted successfully!');
@@ -172,7 +176,7 @@ const EditProfileForm = ({ teacherProfile, refreshTeacherProfile, onSubmit }) =>
             refreshTeacherProfile(user?.userId)
         }
     };
-    
+
 
     return (
         <Card>
@@ -301,10 +305,10 @@ const EditProfileForm = ({ teacherProfile, refreshTeacherProfile, onSubmit }) =>
                                 !defaultFavorites.hasOwnProperty(key) && (
                                     <div key={key}>
                                         <label>{toReadableFormat(key)}:</label>
-                                        <div style={{display: "flex"}}>
+                                        <div style={{ display: "flex" }}>
                                             <Field key={key} name={`favoriteThings.${key}`} as={Input} placeholder={toReadableFormat(key)} />
                                             <Button type="dashed" key="delete" onClick={() => handleDeleteCategory(key)}><DeleteOutlined /></Button>
-                                        </div>                                        
+                                        </div>
                                     </div>
                                 )
                             ))}
@@ -314,6 +318,15 @@ const EditProfileForm = ({ teacherProfile, refreshTeacherProfile, onSubmit }) =>
                             <Button block type="primary" htmlType="submit" loading={isSubmitting}>
                                 Submit
                             </Button>
+                            <Popconfirm
+                                title="Are you sure you want to delete your account?"
+                                description="This action cannot be undone."
+                                onConfirm={deleteAccount}
+                                okText="Yes"
+                                cancelText="No"
+                            >
+                                <Button danger>Delete Account</Button>
+                            </Popconfirm>
                         </Space>
                     </Form>
                 )}

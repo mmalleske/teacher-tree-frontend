@@ -1,6 +1,7 @@
 import { List, Avatar, Button } from "antd";
 import styles from "./teacherListItem.module.scss"
 import SaveTeacherButton from "./saveTeacherButton";
+import { UserOutlined } from '@ant-design/icons';
 
 const TeacherListItem = ({ teacher, donor }) => {
   return (
@@ -12,7 +13,7 @@ const TeacherListItem = ({ teacher, donor }) => {
       ]}
     >
       <List.Item.Meta
-        avatar={<Avatar size={100} style={{marginBottom: "1rem"}} src={teacher.profilePhotoUrl} />}
+        avatar={<Avatar size={100} style={{marginBottom: "1rem"}} src={teacher.profilePhotoUrl} icon={<UserOutlined />} />}
         title={`${teacher.firstName} ${teacher.lastName}`}
         description={teacher.schoolName}
       />

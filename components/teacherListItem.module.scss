@@ -1,7 +1,14 @@
 .teacherListItem {
+    display: flex;
+    list-style: none;
+    text-decoration: none;
+    justify-content: space-between;
+    align-items: center;
+    
     ul {
         margin: 0 !important;
         text-align: right;
+        list-style: none;
     }
     @media (max-width: 576px) {
         display: block !important;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../../components/layout';
-import { Select, Input, Button, List, Avatar, Card, Divider, Modal, Spin } from 'antd';
+import { Select, Input, Button, List, Avatar, Card, Divider, Modal, Spin, Col, Row } from 'antd';
 import { CaretLeftOutlined } from '@ant-design/icons';
 import { UserAddOutlined, UserOutlined } from '@ant-design/icons';
 import { stateCodes } from '../../constants';
@@ -11,6 +11,7 @@ import SchoolProductUploader from '../../components/schoolProductUploader';
 import TeacherSearch from '../../components/teacherSearch';
 import { UserContext } from "../../contexts/UserContext";
 import MembersList from '../../components/membersList';
+import TeacherSearchAutoComplete from '../../components/TeacherSearchAutocomplete';
 import Link from 'next/link';
 
 import "./school.module.scss";
@@ -64,14 +65,18 @@ const SchoolPage = () => {
                         </p>
                     </div>
                     {isAdmin && (
-                        <div className="school-header__actions" style={{ display: "flex", gap: "8px" }}>
-                            <Button icon={<UserAddOutlined />} type="primary" onClick={() => setInviteModalOpen(true)}>
-                                Invite members
-                            </Button>
-                            <Button icon={<UserOutlined />} onClick={() => setViewMembersModalOpen(true)}>
-                                View Members
-                            </Button>
-                        </div>
+                        <Row className="school-header__actions" style={{gap: "8px", display: "flex"}}>
+                            <Col lg={4} sm={24} xs={24}>
+                                <Button block icon={<UserAddOutlined />} type="primary" onClick={() => setInviteModalOpen(true)}>
+                                    Invite members
+                                </Button>
+                            </Col>
+                            <Col lg={4} sm={24} xs={24}>
+                                <Button block icon={<UserOutlined />} onClick={() => setViewMembersModalOpen(true)}>
+                                    View Members
+                                </Button>
+                            </Col>
+                        </Row>
                     )}
                 </div>
                 <Divider />
@@ -88,6 +93,7 @@ const SchoolPage = () => {
                 ]}
             >
                 <TeacherSearch school={school} listType={'members'} includeNameSearch />
+                {/* <TeacherSearchAutoComplete school={school} listType={'members'} /> */}
             </Modal>
 
             {/* View Members Modal */}

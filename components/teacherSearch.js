@@ -67,7 +67,7 @@ const TeacherSearch = ({ donor, school, listType, includeNameSearch }) => {
                 <Form.Item
                     name="state"
                     label="State"
-                    rules={[{ required: true, message: 'Please select a state' }]}
+                    // rules={[{ required: true, message: 'Please select a state' }]}
                 >
                     <Select placeholder="Select state">
                         {stateCodes.map(state => (
@@ -81,7 +81,7 @@ const TeacherSearch = ({ donor, school, listType, includeNameSearch }) => {
                 <Form.Item
                     name="school"
                     label="School Name"
-                    rules={[{ validator: validateSchoolFields }]}
+                    // rules={[{ validator: validateSchoolFields }]}
                 >
                     <Input placeholder="Enter school name" />
                 </Form.Item>
@@ -89,7 +89,7 @@ const TeacherSearch = ({ donor, school, listType, includeNameSearch }) => {
                 <Form.Item
                     name="schoolDistrict"
                     label="School District"
-                    rules={[{ validator: validateSchoolFields }]}
+                    // rules={[{ validator: validateSchoolFields }]}
                 >
                     <Input placeholder="Enter school district (optional)" />
                 </Form.Item>
