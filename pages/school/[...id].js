@@ -11,6 +11,7 @@ import SchoolProductUploader from '../../components/schoolProductUploader';
 import TeacherSearch from '../../components/teacherSearch';
 import { UserContext } from "../../contexts/UserContext";
 import MembersList from '../../components/membersList';
+import TeacherSearchAutoComplete from '../../components/TeacherSearchAutocomplete';
 import Link from 'next/link';
 
 import "./school.module.scss";
@@ -92,6 +93,7 @@ const SchoolPage = () => {
                 ]}
             >
                 <TeacherSearch school={school} listType={'members'} includeNameSearch />
+                {/* <TeacherSearchAutoComplete school={school} listType={'members'} /> */}
             </Modal>
 
             {/* View Members Modal */}

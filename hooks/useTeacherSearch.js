@@ -1,4 +1,53 @@
-import { useState } from 'react';
+// import { useState } from 'react';
+// import axios from 'axios';
+
+// const useTeacherSearch = () => {
+//     const [results, setResults] = useState([]);
+//     const [loading, setLoading] = useState(false);
+//     const [error, setError] = useState(null);
+
+//     const searchTeachers = async ({ state, schoolDistrict, school, gradeLevel, firstName, lastName }) => {
+//         setLoading(true);
+//         setError(null);
+
+//         try {
+//             const response = await axios.get(`${process.env.API_BASE_URL}/teachers/search`, {
+//                 params: { state, schoolDistrict, school, gradeLevel, firstName, lastName },
+//             });
+
+//             setResults(response.data.results.filter((result => result?.firstName !== undefined || result?.lastName !== undefined )));
+//         } catch (err) {
+//             console.error("Error fetching teachers:", err);
+//             setError(err.message);
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+
+//     const searchSuggestions = async ({ state, schoolDistrict, school, gradeLevel, firstName, lastName }) => {
+//         setLoading(true);
+//         setError(null);
+
+//         try {
+//             const response = await axios.get(`${process.env.API_BASE_URL}/teachers/searchSuggestions`, {
+//                 params: { state, schoolDistrict, school, gradeLevel, firstName, lastName },
+//             });
+
+//             setResults(response.data.results.filter((result => result?.firstName !== undefined || result?.lastName !== undefined )));
+//         } catch (err) {
+//             console.error("Error fetching teachers:", err);
+//             setError(err.message);
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+
+//     return { results, loading, error, searchTeachers, searchSuggestions };
+// };
+
+// export default useTeacherSearch;
+
+import { useState, useCallback } from 'react';
 import axios from 'axios';
 
 const useTeacherSearch = () => {
@@ -6,16 +55,16 @@ const useTeacherSearch = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const searchTeachers = async ({ state, schoolDistrict, school, gradeLevel }) => {
+    const searchTeachers = async ({ firstName, lastName, schoolDistrict, school, gradeLevel, state }) => {
         setLoading(true);
         setError(null);
 
         try {
             const response = await axios.get(`${process.env.API_BASE_URL}/teachers/search`, {
-                params: { state, schoolDistrict, school, gradeLevel },
+                params: { firstName, lastName, schoolDistrict, school, gradeLevel, state },
             });
 
-            setResults(response.data.results.filter((result => result?.firstName !== undefined || result?.lastName !== undefined )));
+            setResults(response.data.results.filter(result => result?.firstName || result?.lastName));
         } catch (err) {
             console.error("Error fetching teachers:", err);
             setError(err.message);
@@ -24,7 +73,25 @@ const useTeacherSearch = () => {
         }
     };
 
-    return { results, loading, error, searchTeachers };
+    const searchSuggestions = async ({ searchText }) => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await axios.get(`${process.env.API_BASE_URL}/teachers/searchSuggestions`, {
+                params: { searchText },
+            });
+
+            return response.data.results; // return results for use in the component
+        } catch (err) {
+            console.error("Error fetching teacher suggestions:", err);
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { results, loading, error, searchTeachers, searchSuggestions };
 };
 
 export default useTeacherSearch;
