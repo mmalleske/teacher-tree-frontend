@@ -69,7 +69,7 @@ const TeacherSearch = ({ donor, school, listType, includeNameSearch }) => {
                     label="State"
                     // rules={[{ required: true, message: 'Please select a state' }]}
                 >
-                    <Select placeholder="Select state">
+                    <Select placeholder="Select state" allowClear>
                         {stateCodes.map(state => (
                             <Select.Option key={state.code} value={state.code}>
                                 {state.name}
@@ -95,7 +95,7 @@ const TeacherSearch = ({ donor, school, listType, includeNameSearch }) => {
                 </Form.Item>
 
                 <Form.Item name="gradeLevel" label="Grade Level">
-                    <Select placeholder="Select grade level">
+                    <Select placeholder="Select grade level" allowClear>
                         <Select.Option key={'early-childhood'} value="Early Childhood">Early Childhood</Select.Option>
                         <Select.Option key={'pre-k'} value="Pre-K">Pre-K</Select.Option>
                         <Select.Option key={'kindergarten'} value="Kindergarten">Kindergarten</Select.Option>

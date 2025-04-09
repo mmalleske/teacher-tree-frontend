@@ -26,7 +26,6 @@ const SchoolPage = () => {
 
     const isAdmin = user?.isAdmin
 
-    console.log(user)
     // Fetch school data when the page loads, only if it's not already fetched
     useEffect(() => {
         if (id && !school) {
