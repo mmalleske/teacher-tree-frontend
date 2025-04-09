@@ -144,7 +144,7 @@ const ProductUploader = ({ school }) => {
 
     if (school) {
         tabItems.push({
-            label: `${school.schoolName}`,
+            label: `${school.schoolName} Supply List`,
             key: 'schoolList',
             children: [
                 <div style={{ padding: "1rem 0" }} key="school-link">
