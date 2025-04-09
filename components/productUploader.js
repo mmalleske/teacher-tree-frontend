@@ -1,56 +1,40 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { List, Form, Input, Button, message, Tabs, Card } from 'antd';
+import { List, Form, Input, Button, message, Select, Tabs, Card } from 'antd';
 import axios from 'axios';
 import Product from './product';
 import { UserContext } from "../contexts/UserContext";
+import useProducts from '../hooks/useProducts';
+import useSchools from '../hooks/useSchools';
+import Link from "next/link"
+import { CaretRightOutlined } from '@ant-design/icons';
 
-const ProductUploader = () => {
-    const [products, setProducts] = useState([]);
-    const [uploadingProduct, setUploadingProduct] = useState(false);
+
+const { Option } = Select;
+
+const ProductUploader = ({ school }) => {
     const [form] = Form.useForm();
     const { user } = useContext(UserContext);
-    const [listType, setListType] = useState('wishlist')
+    const [listType, setListType] = useState('wishlist');
 
-    const fetchProducts = async () => {
-        if (user) {
-            try {
-                const response = await axios.get(`${process.env.API_BASE_URL}/products/${user.userId}`); // Replace :userId with the actual user ID
-                setProducts(response.data);
-            } catch (error) {
-                console.error('Error fetching products:', error);
-            }
-        }
 
+    const {
+        products,
+        fetchProducts,
+        uploadAmazonProduct,
+        fetchingProducts,
+        uploadingProduct,
+    } = useProducts({ userId: user?.userId });
+
+    const onSubmitAmazonProduct = async (values) => {
+        await uploadAmazonProduct({ values, listType, schoolId: listType === "schoolList" && school?._id });
+        form.resetFields();
+        fetchProducts();
     };
 
-    useEffect(() => {
+    const onSubmitManualProduct = async (values) => {
+        await uploadAmazonProduct({ values, listType });
+        form.resetFields();
         fetchProducts();
-    }, [user]);
-
-    const onFinish = async (values) => {
-        setUploadingProduct(true)
-        if (user) {
-            try {
-                message.info('Please be patient while we talk to Amazon.')
-                const response = await axios.post(`${process.env.API_BASE_URL}/products/new`, {
-                    userId: user.userId,
-                    url: values.amazonLink,
-                    quantity: values.quantity,
-                    listType
-                });
-
-                if (response.data) {
-                    message.success('Product added successfully');
-                    setUploadingProduct(false)
-                    form.resetFields();
-                    fetchProducts(); // Fetch updated list of products
-                }
-            } catch (error) {
-                console.error('Error adding product:', error);
-                setUploadingProduct(false)
-            }
-        }
-
     };
 
     const validateAmazonLink = (rule, value) => {
@@ -60,7 +44,40 @@ const ProductUploader = () => {
         return Promise.resolve();
     };
 
-    const Uploader = () => (
+    const AmazonUploader = () => (
+        <Form form={form} onFinish={onSubmitAmazonProduct}>
+            <Form.Item
+                name="amazonLink"
+                rules={[
+                    { required: true, message: 'Please enter an Amazon link' },
+                    { validator: validateAmazonLink },
+                ]}
+            >
+                <Input placeholder="Amazon Link" />
+            </Form.Item>
+            <Form.Item name="quantity">
+                <Input placeholder='Quantity' type='number' defaultValue={1} />
+            </Form.Item>
+            {school && listType === "schoolList" && (
+                <Form.Item name="gradeLevel" label="Grade Level" rules={[{ required: true, message: 'Please select a grade level' }]}>
+                    <Select placeholder="Select grade level">
+                        {school?.gradeLevels?.map((grade) => (
+                            <Option key={grade} value={grade}>
+                                {grade}
+                            </Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+            )}
+            <Form.Item>
+                <Button type="primary" htmlType="submit" loading={uploadingProduct}>
+                    Add Product
+                </Button>
+            </Form.Item>
+        </Form>
+    )
+
+    const ManualUploader = () => (
         <Form form={form} onFinish={onFinish}>
             <Form.Item
                 name="amazonLink"
@@ -85,7 +102,7 @@ const ProductUploader = () => {
 
     const WishList = () => products && (
         <List
-            dataSource={products.filter(product => product.listType !== 'consumables' || !product.listType)}
+            dataSource={products.filter(product => product.listType === 'wishlist' || !product.listType)}
             renderItem={(product) => (
                 <Product product={product} fetchProducts={fetchProducts} />
             )}
@@ -101,23 +118,49 @@ const ProductUploader = () => {
         />
     )
 
+    const SchoolList = () => school && products && (
+        <List
+            dataSource={products.filter(product => product.listType === 'schoolList' && product.schoolId === school._id)}
+            renderItem={(product) => (
+                <Product product={product} fetchProducts={fetchProducts} />
+            )}
+        />
+    )
+
+    const Uploader = AmazonUploader;
+
+    const tabItems = [
+        {
+            label: 'Wishlist',
+            key: 'wishlist',
+            children: [<Uploader key="uploader" />, <WishList key="wishlist" />],
+        },
+        {
+            label: 'Consumables',
+            key: 'consumables',
+            children: [<Uploader key="uploader" />, <Consumables key="consumables" />]
+        },
+    ]
+
+    if (school) {
+        tabItems.push({
+            label: `${school.schoolName}`,
+            key: 'schoolList',
+            children: [
+                <div style={{ padding: "1rem 0" }} key="school-link">
+                    <Link href={`/school/${school._id}`}>Go to shared School List <CaretRightOutlined /></Link>
+                </div>,
+                <Uploader key="uploader" />,
+                <SchoolList key="schoolList" />]
+        })
+    }
+
     return (
         <Card>
             <Tabs
                 onTabClick={(tab) => { setListType(tab) }}
                 defaultActiveKey="wishlist"
-                items={[
-                    {
-                        label: 'Wishlist',
-                        key: 'wishlist',
-                        children: [<Uploader key="uploader" />, <WishList key="wishlist" />],
-                    },
-                    {
-                        label: 'Consumables',
-                        key: 'consumables',
-                        children: [<Uploader key="uploader" />, <Consumables key="consumables" />]
-                    },
-                ]}
+                items={tabItems}
             />
         </Card>
     );

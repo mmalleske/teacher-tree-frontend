@@ -33,7 +33,7 @@ const TeacherProfilePage = () => {
       try {
         const response = await axios.get(`${process.env.API_BASE_URL}/donors/${user.userId}`);
         setDonor(response.data); // Set donor information
-        fetchFavoriteTeachers(response.data.savedTeachers); // Fetch favorite teachers
+        // fetchFavoriteTeachers(response.data.savedTeachers); // Fetch favorite teachers
       } catch (error) {
         console.error('Error fetching donor:', error);
       }

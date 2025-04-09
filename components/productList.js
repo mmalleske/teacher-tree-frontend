@@ -9,7 +9,7 @@ const ProductList = ({ userId }) => {
     const fetchProducts = async () => {
         if (userId) {
             try {
-                const response = await axios.get(`${process.env.API_BASE_URL}/products/${userId}`); // Replace :userId with the actual user ID
+                const response = await axios.get(`${process.env.API_BASE_URL}/products/user/${userId}`); // Replace :userId with the actual user ID
                 setProducts(response.data);
             } catch (error) {
                 console.error('Error fetching products:', error);

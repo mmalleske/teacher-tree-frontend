@@ -26,7 +26,6 @@ const RegisterForm = () => {
             password_confirmation: '',
         },
         onSubmit: async (values) => {
-            console.log(values)
             try {
                 await register(values.email, values.password, values.password_confirmation, userType);
 

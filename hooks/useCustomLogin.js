@@ -50,7 +50,6 @@ const useCustomLogin = () => {
   };
 
   const register = async (email, password, password_confirmation, userType) => {
-    console.log(email, "register!")
     try {
       setLoading(true);
 

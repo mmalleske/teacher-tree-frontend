@@ -24,7 +24,6 @@ const SaveTeacherButton = ({ donor, teacher }) => {
                             { teacherId: teacher._id, action: "remove" }
                         );
                         message.success("School Staff Member removed from favorites");
-                        fetchTeachers(); // Fetch updated list of teachers
                     } catch (error) {
                         console.error("Error removing teacher:", error);
                     }
@@ -39,7 +38,6 @@ const SaveTeacherButton = ({ donor, teacher }) => {
                     { teacherId: teacher._id, action: "add" }
                 );
                 message.success("School Staff Member saved to favorites");
-                fetchTeachers(); // Fetch updated list of teachers
             } catch (error) {
                 console.error("Error saving teacher:", error);
             }
