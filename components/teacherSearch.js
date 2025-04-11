@@ -43,8 +43,7 @@ const TeacherSearch = ({ donor, school, listType, includeNameSearch }) => {
     return (
         <>
             <div>
-                <h1>Search School Staff Members</h1>
-                <sub>*Please select a state and enter either a school name or school district.</sub>
+                <h1>Search School Staff Members</h1>                
             </div>
             <Divider />
             <Form form={form} layout="vertical">
