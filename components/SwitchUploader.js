@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { List, Form, Input, Button, message, Select, Modal, Card, Col, Row, Divider, Switch } from 'antd';
+import { List, Form, Input, Button, message, Select, Modal, Card, Col, Row, Divider, Switch, Tooltip } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Product from './product';
 import { UserContext } from "../contexts/UserContext";
@@ -69,15 +70,23 @@ const SwitchUploader = ({ form, school, listType, onSubmitAmazonProduct, onSubmi
         <Input placeholder="Product Title" />
       </Form.Item>
       <Form.Item
-        name="imageUrl"        
+        name="imageUrl"
+        label={
+          <span>
+            {"Image URL"}
+            <Tooltip title="Right-click on an image online and choose 'Copy image address' or 'Open image in new tab' and copy the URL from the address bar.">
+              <InfoCircleOutlined style={{ color: 'rgba(0,0,0,0.45)' }} />
+            </Tooltip>
+          </span>
+        }
       >
-        <Input placeholder="Image URL" />
+        <Input placeholder="Image URL (optional)" />
       </Form.Item>
       <Form.Item name="description">
         <Input.TextArea placeholder="Product Description (optional)" />
       </Form.Item>
       <Form.Item name="altLink">
-        <Input placeholder="Alternate Link (optional)" />
+        <Input placeholder="Product Link" />
       </Form.Item>
       <Form.Item name="quantity">
         <Input placeholder="Quantity" type="number" defaultValue={1} />
