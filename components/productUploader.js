@@ -69,6 +69,7 @@ const ProductUploader = ({ school }) => {
             key: 'wishlist',
             children: [
                 <SwitchUploader
+                    key="uploader"
                     form={form}
                     listType={"wishlist"}
                     onSubmitAmazonProduct={onSubmitAmazonProduct}
@@ -83,6 +84,7 @@ const ProductUploader = ({ school }) => {
             key: 'consumables',
             children: [
                 <SwitchUploader
+                    key="uploader"
                     form={form}
                     listType={"consumables"}
                     onSubmitAmazonProduct={onSubmitAmazonProduct}
@@ -103,6 +105,7 @@ const ProductUploader = ({ school }) => {
                     <Link href={`/school/${school._id}`}>Go to shared School List <CaretRightOutlined /></Link>
                 </div>,
                 <SwitchUploader
+                    key="uploader"
                     form={form}
                     school={school}
                     listType={"schoolList"}
