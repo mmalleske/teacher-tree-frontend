@@ -69,7 +69,7 @@ const SchoolProduct = ({ product, onProductUpdate, onProductDelete, fetchProduct
         <List.Item className={styles.productItem}>
             <div className={styles.productItemInfo}>
                 {product.affiliateLink ? (
-                    <a target="_blank" rel="noopener noreferrer" href={product.affiliateLink}>
+                    <a target="_blank" rel="noopener noreferrer" href={product.affiliateLink || product.altLink}>
                         {product.imageUrl ? <img src={product.imageUrl} alt={product.title} /> : <Avatar icon={<GiftOutlined />} />}
                         <p>{' '}{product.title}</p>
                     </a>
@@ -130,6 +130,7 @@ const SchoolProduct = ({ product, onProductUpdate, onProductDelete, fetchProduct
                         <Option value="3">3rd Grade</Option>
                         <Option value="4">4th Grade</Option>
                         <Option value="5">5th Grade</Option>
+                        <Option value="5">6th Grade</Option>
                     </Select>
                 </div>
             )}

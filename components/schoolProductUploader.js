@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { List, Form, Input, Button, message, Select, Modal, Card, Col, Row, Divider } from 'antd';
+import { List, Form, Input, Button, message, Select, Modal, Card, Col, Row, Divider, Switch } from 'antd';
 import axios from 'axios';
 import Product from './product';
 import { UserContext } from "../contexts/UserContext";
@@ -12,11 +12,13 @@ const SchoolProductUploader = ({ school }) => {
     const { user } = useContext(UserContext);
     const [isModalVisible, setIsModalVisible] = useState(false); // Modal visibility state
     const [selectedGradeLevel, setSelectedGradeLevel] = useState(school.gradeLevels[0]); // Filter by grade level
+    const [usingManualEntry, setUsingManualEntry] = useState(false);
 
     const {
         products,
         fetchProducts,
         uploadAmazonProduct,
+        uploadManualProduct,
         fetchingProducts,
         uploadingProduct,
     } = useProducts({ userId: user?.userId, schoolId: school._id, fetchSchoolList: true });
@@ -29,7 +31,7 @@ const SchoolProductUploader = ({ school }) => {
     };
 
     const onSubmitManualProduct = async (values) => {
-        await uploadAmazonProduct({ values, listType: 'schoolList', schoolId: school._id });
+        await uploadManualProduct({ values, listType: 'schoolList', schoolId: school._id });
         form.resetFields();
         fetchProducts();
         setIsModalVisible(false); // Close the modal after successful upload
@@ -80,23 +82,67 @@ const SchoolProductUploader = ({ school }) => {
     const ManualUploader = () => (
         <Form form={form} onFinish={onSubmitManualProduct}>
             <Form.Item
-                name="amazonLink"
-                rules={[
-                    { required: true, message: 'Please enter an Amazon link' },
-                    { validator: validateAmazonLink },
-                ]}
+                name="title"
+                rules={[{ required: true, message: 'Please enter a product title' }]}
             >
-                <Input placeholder="Amazon Link" />
+                <Input placeholder="Product Title" />
+            </Form.Item>
+            <Form.Item
+                name="imageUrl"
+                rules={[{ required: true, message: 'Please enter an image URL' }]}
+            >
+                <Input placeholder="Image URL" />
+            </Form.Item>
+            <Form.Item name="description">
+                <Input.TextArea placeholder="Product Description (optional)" />
+            </Form.Item>
+            <Form.Item name="altLink">
+                <Input placeholder="Alternate Link (optional)" />
             </Form.Item>
             <Form.Item name="quantity">
                 <Input placeholder="Quantity" type="number" defaultValue={1} />
             </Form.Item>
+            {school && (
+                <Form.Item name="gradeLevel" label="Grade Level" rules={[{ required: true, message: 'Please select a grade level' }]}>
+                    <Select placeholder="Select grade level">
+                        {school?.gradeLevels?.map((grade) => (
+                            <Option key={grade} value={grade}>
+                                {grade}
+                            </Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+            )}
             <Form.Item>
                 <Button type="primary" htmlType="submit" loading={uploadingProduct}>
                     Add Product
                 </Button>
             </Form.Item>
         </Form>
+    );
+
+    const EntrySwitch = () => (
+        <div style={{ marginBottom: 16 }}>
+            <p strong>Don't have an Amazon product? Enter the product manually.</p>
+            <div>
+                <Switch
+                    label={usingManualEntry ? "Manual Entry" : "Using Amazon Link"}
+                    checked={usingManualEntry}
+                    onChange={(checked) => setUsingManualEntry(checked)}
+                    style={{ marginLeft: 8 }}
+                />
+                <div>
+                    <sub>{usingManualEntry ? "Switch to Amazon Link" : "Switch to Manual Entry"}</sub>
+                </div>
+            </div>
+        </div>
+    )
+
+    const Uploader = () => (
+        <>
+            <EntrySwitch />
+            {usingManualEntry ? <ManualUploader /> : <AmazonUploader />}
+        </>
     );
 
     // Filter products by grade level
@@ -111,8 +157,6 @@ const SchoolProductUploader = ({ school }) => {
             locale={{ emptyText: "No products uploaded to this school list yet." }}
         />
     );
-
-    const Uploader = AmazonUploader; // You can switch to ManualUploader here if you want a different form
 
     // Function to show modal
     const showModal = () => {
@@ -146,7 +190,7 @@ const SchoolProductUploader = ({ school }) => {
                 </Col>
                 {/* Button to open modal */}
                 <Col lg={6} xs={24}>
-                    <Button style={{ width: "100%"}} type="primary" onClick={showModal}>
+                    <Button style={{ width: "100%" }} type="primary" onClick={showModal}>
                         Add Product
                     </Button>
                 </Col>
