@@ -73,7 +73,7 @@ const Product = ({ product, onProductUpdate, onProductDelete, fetchProducts, rea
     return (
         <List.Item className={styles.productItem}>
             <div className={styles.productItemInfo}>
-                <a target="_blank" href={product.affiliateLink}>
+                <a target="_blank" href={product.affiliateLink || product.altLink}>
                     {product.imageUrl ? <img src={product.imageUrl} /> : <Avatar icon={<GiftOutlined />}/>}
                     <p>{' '}{product.title}</p>
                 </a>

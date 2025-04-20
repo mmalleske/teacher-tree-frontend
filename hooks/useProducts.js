@@ -31,9 +31,9 @@ const useProducts = ({ userId, schoolId, fetchSchoolList }) => {
         }
     };
 
-    const uploadAmazonProduct = async ({values, listType, schoolId}) => {
-        setUploadingProduct(true)
+    const uploadAmazonProduct = async ({ values, listType, schoolId }) => {
         if (userId) {
+            setUploadingProduct(true)
             try {
                 message.info('Please be patient while we talk to Amazon.')
                 const response = await axios.post(`${process.env.API_BASE_URL}/products/new`, {
@@ -56,37 +56,32 @@ const useProducts = ({ userId, schoolId, fetchSchoolList }) => {
             }
         }
     }
-
-    // const uploadManualProduct = async () => {
-    //     setUploadingProduct(true)
-    //     if (user) {
-    //         try {
-    //             message.info('Please be patient while we talk to Amazon.')
-    //             const response = await axios.post(`${process.env.API_BASE_URL}/products/new`, {
-    //                 userId: user.userId,
-    //                 url: values.amazonLink,
-    //                 quantity: values.quantity,
-    //                 listType
-    //             });
-
-    //             if (response.data) {
-    //                 message.success('Product added successfully');
-    //                 setUploadingProduct(false)
-    //                 form.resetFields();
-    //                 fetchProducts(); // Fetch updated list of products
-    //             }
-    //         } catch (error) {
-    //             console.error('Error adding product:', error);
-    //             setUploadingProduct(false)
-    //         }
-    //     }
-    // }
+    const uploadManualProduct = async ({ values, listType, schoolId }) => {
+        console.log(userId, "user")
+        if (userId) {
+            setUploadingProduct(true);
+            try {
+                await axios.post(`${process.env.API_BASE_URL}/products/new`, {
+                    ...values,
+                    userId,
+                    listType,
+                    schoolId,
+                });
+                message.success('Product added');                
+            } catch (err) {
+                message.error('Something went wrong');
+                console.error(err);
+            } finally {
+                setUploadingProduct(false);
+            }
+        }
+    };
 
     useEffect(() => {
         fetchProducts();
     }, [userId, schoolId]);
 
-    return { products, fetchingProducts, uploadingProduct, error, fetchProducts, uploadAmazonProduct };
+    return { products, fetchingProducts, uploadingProduct, error, fetchProducts, uploadAmazonProduct, uploadManualProduct };
 };
 
 export default useProducts;
