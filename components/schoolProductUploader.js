@@ -1,10 +1,45 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { List, Form, Input, Button, message, Select, Modal, Card, Col, Row, Divider, Switch } from 'antd';
-import axios from 'axios';
+import React, { useState, useContext } from 'react';
+import { List, Form, Button, Select, Modal, Menu, Col, Row, Divider, Dropdown } from 'antd';
 import Product from './product';
 import { UserContext } from "../contexts/UserContext";
 import useProducts from '../hooks/useProducts';
 import SwitchUploader from './SwitchUploader';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { DownloadOutlined } from '@ant-design/icons';
+
+const exportToExcel = (products, fileName = "school_list.xlsx") => {
+    const workbook = XLSX.utils.book_new();
+
+    // Group products by gradeLevel
+    const grouped = products.reduce((acc, product) => {
+        const grade = product.gradeLevel || "Unspecified";
+        if (!acc[grade]) acc[grade] = [];
+        acc[grade].push(product);
+        return acc;
+    }, {});
+
+    // Create a sheet for each grade
+    Object.entries(grouped).forEach(([gradeLevel, group]) => {
+        const sheetData = group.map(product => ({
+            Title: product.title,
+            Quantity: product.quantity,
+            Purchased: product.quantityPurchased,
+            Description: product.description || '',
+            ProductLink: product.affiliateLink || product.altLink || '',
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(sheetData);
+        // Sheet name must be <= 31 chars and not contain special chars like : \ / ? * [ ]
+        const cleanSheetName = gradeLevel.substring(0, 31).replace(/[:\\/?*[\]]/g, '-');
+        XLSX.utils.book_append_sheet(workbook, worksheet, cleanSheetName);
+    });
+
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, fileName);
+};
+
 
 const { Option } = Select;
 
@@ -41,14 +76,46 @@ const SchoolProductUploader = ({ school }) => {
     // Filter products by grade level
     const filteredProducts = products?.filter((product) => product.gradeLevel === selectedGradeLevel);
 
-    const SchoolList = () => (
-        <List
-            dataSource={[...filteredProducts].reverse()} // Reverse the filtered products array
-            renderItem={(product) => (
-                <Product product={product} fetchProducts={fetchProducts} schoolListView />
-            )}
-            locale={{ emptyText: "No products uploaded to this school list yet." }}
+    const exportMenu = (
+        <Menu
+            items={[
+                {
+                    key: 'grade',
+                    label: `Export ${selectedGradeLevel} grade level list to Excel`,
+                    onClick: () => exportToExcel(filteredProducts, `${selectedGradeLevel} Grade Product List.xlsx`),
+                    disabled: filteredProducts.length === 0,
+                },
+                {
+                    key: 'all',
+                    label: 'Export all grade level lists to Excel',
+                    onClick: () => exportToExcel(products),
+                    disabled: products.length === 0,
+                },
+            ]}
         />
+    );
+
+    const SchoolList = () => (
+        <>
+            <Row gutter={[16, 16]}>
+                <Col>
+                    <Dropdown overlay={exportMenu} placement="bottomLeft" trigger={['click']}>
+                        <Button type="primary" icon={<DownloadOutlined />}>
+                            Export to Excel
+                        </Button>
+                    </Dropdown>
+                </Col>
+            </Row>
+
+
+            <List
+                dataSource={[...filteredProducts].reverse()}
+                renderItem={(product) => (
+                    <Product product={product} fetchProducts={fetchProducts} schoolListView />
+                )}
+                locale={{ emptyText: "No products uploaded to this school list yet." }}
+            />
+        </>
     );
 
     // Function to show modal
