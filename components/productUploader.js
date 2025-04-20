@@ -7,15 +7,12 @@ import useProducts from '../hooks/useProducts';
 import useSchools from '../hooks/useSchools';
 import Link from "next/link"
 import { CaretRightOutlined } from '@ant-design/icons';
-
-
-const { Option } = Select;
+import SwitchUploader from './SwitchUploader';
 
 const ProductUploader = ({ school }) => {
     const [form] = Form.useForm();
     const { user } = useContext(UserContext);
     const [listType, setListType] = useState('wishlist');
-    const [usingManualEntry, setUsingManualEntry] = useState(false);
 
     const {
         products,
@@ -38,88 +35,6 @@ const ProductUploader = ({ school }) => {
         form.resetFields();
         fetchProducts();
     };
-
-    const validateAmazonLink = (rule, value) => {
-        if (!value.includes('amazon.com')) {
-            return Promise.reject('Please provide a valid Amazon link');
-        }
-        return Promise.resolve();
-    };
-
-    const AmazonUploader = () => (
-        <Form form={form} onFinish={onSubmitAmazonProduct}>
-            <Form.Item
-                name="amazonLink"
-                rules={[
-                    { required: true, message: 'Please enter an Amazon link' },
-                    { validator: validateAmazonLink },
-                ]}
-            >
-                <Input placeholder="Amazon Link" />
-            </Form.Item>
-            <Form.Item name="quantity">
-                <Input placeholder='Quantity' type='number' defaultValue={1} />
-            </Form.Item>
-            {school && listType === "schoolList" && (
-                <Form.Item name="gradeLevel" label="Grade Level" rules={[{ required: true, message: 'Please select a grade level' }]}>
-                    <Select placeholder="Select grade level">
-                        {school?.gradeLevels?.map((grade) => (
-                            <Option key={grade} value={grade}>
-                                {grade}
-                            </Option>
-                        ))}
-                    </Select>
-                </Form.Item>
-            )}
-            <Form.Item>
-                <Button type="primary" htmlType="submit" loading={uploadingProduct}>
-                    Add Product
-                </Button>
-            </Form.Item>
-        </Form>
-    )
-
-    const ManualUploader = () => (
-        <Form form={form} onFinish={onSubmitManualProduct}>
-            <Form.Item
-                name="title"
-                rules={[{ required: true, message: 'Please enter a product title' }]}
-            >
-                <Input placeholder="Product Title" />
-            </Form.Item>
-            <Form.Item
-                name="imageUrl"
-                rules={[{ required: true, message: 'Please enter an image URL' }]}
-            >
-                <Input placeholder="Image URL" />
-            </Form.Item>
-            <Form.Item name="description">
-                <Input.TextArea placeholder="Product Description (optional)" />
-            </Form.Item>
-            <Form.Item name="altLink">
-                <Input placeholder="Alternate Link (optional)" />
-            </Form.Item>
-            <Form.Item name="quantity">
-                <Input placeholder="Quantity" type="number" defaultValue={1} />
-            </Form.Item>
-            {school && listType === "schoolList" && (
-                <Form.Item name="gradeLevel" label="Grade Level" rules={[{ required: true, message: 'Please select a grade level' }]}>
-                    <Select placeholder="Select grade level">
-                        {school?.gradeLevels?.map((grade) => (
-                            <Option key={grade} value={grade}>
-                                {grade}
-                            </Option>
-                        ))}
-                    </Select>
-                </Form.Item>
-            )}
-            <Form.Item>
-                <Button type="primary" htmlType="submit" loading={uploadingProduct}>
-                    Add Product
-                </Button>
-            </Form.Item>
-        </Form>
-    );
 
     const WishList = () => products && (
         <List
@@ -148,40 +63,34 @@ const ProductUploader = ({ school }) => {
         />
     )
 
-    const EntrySwitch = () => (
-        <div style={{ marginBottom: 16 }}>
-            <p strong>Don't have an Amazon product? Enter the product manually.</p>
-            <div>
-                <Switch
-                    label={usingManualEntry ? "Manual Entry" : "Using Amazon Link"}
-                    checked={usingManualEntry}
-                    onChange={(checked) => setUsingManualEntry(checked)}
-                    style={{ marginLeft: 8 }}
-                />
-                <div>
-                    <sub>{usingManualEntry ? "Switch to Amazon Link" : "Switch to Manual Entry"}</sub>
-                </div>
-            </div>
-        </div>
-    )
-
-    const Uploader = () => (
-        <>
-            <EntrySwitch />
-            {usingManualEntry ? <ManualUploader /> : <AmazonUploader />}
-        </>
-    );
-
     const tabItems = [
         {
             label: 'Wishlist',
             key: 'wishlist',
-            children: [<Uploader key="uploader" />, <WishList key="wishlist" />],
+            children: [
+                <SwitchUploader
+                    form={form}
+                    listType={"wishlist"}
+                    onSubmitAmazonProduct={onSubmitAmazonProduct}
+                    onSubmitManualProduct={onSubmitManualProduct}
+                    uploadingProduct={uploadingProduct}
+                />,
+                <WishList key="wishlist" />
+            ],
         },
         {
             label: 'Consumables',
             key: 'consumables',
-            children: [<Uploader key="uploader" />, <Consumables key="consumables" />]
+            children: [
+                <SwitchUploader
+                    form={form}
+                    listType={"consumables"}
+                    onSubmitAmazonProduct={onSubmitAmazonProduct}
+                    onSubmitManualProduct={onSubmitManualProduct}
+                    uploadingProduct={uploadingProduct}
+                />,
+                <Consumables key="consumables" />
+            ]
         },
     ]
 
@@ -193,7 +102,14 @@ const ProductUploader = ({ school }) => {
                 <div style={{ padding: "1rem 0" }} key="school-link">
                     <Link href={`/school/${school._id}`}>Go to shared School List <CaretRightOutlined /></Link>
                 </div>,
-                <Uploader key="uploader" />,
+                <SwitchUploader
+                    form={form}
+                    school={school}
+                    listType={"schoolList"}
+                    onSubmitAmazonProduct={onSubmitAmazonProduct}
+                    onSubmitManualProduct={onSubmitManualProduct}
+                    uploadingProduct={uploadingProduct}
+                />,
                 <SchoolList key="schoolList" />]
         })
     }

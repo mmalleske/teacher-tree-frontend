@@ -6,8 +6,8 @@ import { UserContext } from "../contexts/UserContext";
 import useProducts from '../hooks/useProducts';
 const { Option } = Select;
 
-const SwitchUploader = ({ school, listType, onSubmitAmazonProduct, onSubmitManualProduct, uploadingProduct }) => {
-  const [form] = Form.useForm();
+const SwitchUploader = ({ form, school, listType, onSubmitAmazonProduct, onSubmitManualProduct, uploadingProduct }) => {
+  // const [form] = Form.useForm();
   const [usingManualEntry, setUsingManualEntry] = useState(false);
 
   const validateAmazonLink = (rule, value) => {
@@ -16,6 +16,16 @@ const SwitchUploader = ({ school, listType, onSubmitAmazonProduct, onSubmitManua
     }
     return Promise.resolve();
   };
+
+  const handleSubmitAmazonProduct = () => {
+    onSubmitAmazonProduct();
+    // form.resetFields();
+  }
+
+  const handleSubmitManualProduct = () => {
+    onSubmitManualProduct();
+    // form.resetFields();
+  }
 
   const AmazonUploader = () => (
     <Form form={form} onFinish={onSubmitAmazonProduct}>

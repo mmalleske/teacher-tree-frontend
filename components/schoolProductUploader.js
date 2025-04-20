@@ -105,6 +105,7 @@ const SchoolProductUploader = ({ school }) => {
             >
                 {/* <Uploader /> */}
                 <SwitchUploader
+                    form={form}
                     school={school}
                     listType={"schoolList"}
                     onSubmitAmazonProduct={onSubmitAmazonProduct}
