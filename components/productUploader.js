@@ -121,8 +121,6 @@ const ProductUploader = ({ school }) => {
         </Form>
     );
 
-
-
     const WishList = () => products && (
         <List
             dataSource={products.filter(product => product.listType === 'wishlist' || !product.listType)}

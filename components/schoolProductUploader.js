@@ -4,6 +4,7 @@ import axios from 'axios';
 import Product from './product';
 import { UserContext } from "../contexts/UserContext";
 import useProducts from '../hooks/useProducts';
+import SwitchUploader from './SwitchUploader';
 
 const { Option } = Select;
 
@@ -210,7 +211,14 @@ const SchoolProductUploader = ({ school }) => {
                 footer={null} // Disable default modal buttons
                 destroyOnClose // Destroy form on close to reset fields
             >
-                <Uploader />
+                {/* <Uploader /> */}
+                <SwitchUploader
+                    school={school}
+                    listType={"schoolList"}
+                    onSubmitAmazonProduct={onSubmitAmazonProduct}
+                    onSubmitManualProduct={onSubmitManualProduct}
+                    uploadingProduct={uploadingProduct}
+                />
             </Modal>
         </>
     );
