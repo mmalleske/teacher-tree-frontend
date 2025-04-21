@@ -13,6 +13,7 @@
     "antd": "^5.7.0",
     "aws-sdk": "^2.1441.0",
     "axios": "^1.4.0",
+    "file-saver": "^2.0.5",
     "formik": "^2.4.2",
     "i": "^0.3.7",
     "js-cookie": "^3.0.5",
@@ -32,6 +33,7 @@
     "react-preview-link": "^1.0.1",
     "react-social-icons": "^6.3.0",
     "sass": "^1.66.1",
+    "xlsx": "^0.18.5",
     "yup": "^1.2.0"
   },
   "devDependencies": {

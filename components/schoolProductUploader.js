@@ -1,9 +1,45 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { List, Form, Input, Button, message, Select, Modal, Card, Col, Row, Divider } from 'antd';
-import axios from 'axios';
+import React, { useState, useContext } from 'react';
+import { List, Form, Button, Select, Modal, Menu, Col, Row, Divider, Dropdown } from 'antd';
 import Product from './product';
 import { UserContext } from "../contexts/UserContext";
 import useProducts from '../hooks/useProducts';
+import SwitchUploader from './SwitchUploader';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { DownloadOutlined } from '@ant-design/icons';
+
+const exportToExcel = (products, fileName = "school_list.xlsx") => {
+    const workbook = XLSX.utils.book_new();
+
+    // Group products by gradeLevel
+    const grouped = products.reduce((acc, product) => {
+        const grade = product.gradeLevel || "Unspecified";
+        if (!acc[grade]) acc[grade] = [];
+        acc[grade].push(product);
+        return acc;
+    }, {});
+
+    // Create a sheet for each grade
+    Object.entries(grouped).forEach(([gradeLevel, group]) => {
+        const sheetData = group.map(product => ({
+            Title: product.title,
+            Quantity: product.quantity,
+            Purchased: product.quantityPurchased,
+            Description: product.description || '',
+            ProductLink: product.affiliateLink || product.altLink || '',
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(sheetData);
+        // Sheet name must be <= 31 chars and not contain special chars like : \ / ? * [ ]
+        const cleanSheetName = gradeLevel.substring(0, 31).replace(/[:\\/?*[\]]/g, '-');
+        XLSX.utils.book_append_sheet(workbook, worksheet, cleanSheetName);
+    });
+
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, fileName);
+};
+
 
 const { Option } = Select;
 
@@ -12,11 +48,13 @@ const SchoolProductUploader = ({ school }) => {
     const { user } = useContext(UserContext);
     const [isModalVisible, setIsModalVisible] = useState(false); // Modal visibility state
     const [selectedGradeLevel, setSelectedGradeLevel] = useState(school.gradeLevels[0]); // Filter by grade level
+    const [usingManualEntry, setUsingManualEntry] = useState(false);
 
     const {
         products,
         fetchProducts,
         uploadAmazonProduct,
+        uploadManualProduct,
         fetchingProducts,
         uploadingProduct,
     } = useProducts({ userId: user?.userId, schoolId: school._id, fetchSchoolList: true });
@@ -29,90 +67,56 @@ const SchoolProductUploader = ({ school }) => {
     };
 
     const onSubmitManualProduct = async (values) => {
-        await uploadAmazonProduct({ values, listType: 'schoolList', schoolId: school._id });
+        await uploadManualProduct({ values, listType: 'schoolList', schoolId: school._id });
         form.resetFields();
         fetchProducts();
         setIsModalVisible(false); // Close the modal after successful upload
     };
 
-    const validateAmazonLink = (rule, value) => {
-        if (!value.includes('amazon.com')) {
-            return Promise.reject('Please provide a valid Amazon link');
-        }
-        return Promise.resolve();
-    };
-
-    const AmazonUploader = () => (
-        <Form form={form} onFinish={onSubmitAmazonProduct}>
-            <Form.Item
-                name="amazonLink"
-                rules={[
-                    { required: true, message: 'Please enter an Amazon link' },
-                    { validator: validateAmazonLink },
-                ]}
-            >
-                <Input placeholder="Amazon Link" />
-            </Form.Item>
-            <Form.Item name="quantity">
-                <Input placeholder="Quantity" type="number" defaultValue={1} />
-            </Form.Item>
-            <Form.Item name="gradeLevel" label="Grade Level" rules={[{ required: true, message: 'Please select a grade level' }]}>
-                <Select
-                    placeholder="Select grade level"
-                    value={selectedGradeLevel}
-                    onChange={(value) => setSelectedGradeLevel(value)} // Update the selected grade level
-                >
-                    {school?.gradeLevels?.map((grade) => (
-                        <Option key={grade} value={grade}>
-                            {grade}
-                        </Option>
-                    ))}
-                </Select>
-            </Form.Item>
-            <Form.Item>
-                <Button type="primary" htmlType="submit" loading={uploadingProduct}>
-                    Add Product
-                </Button>
-            </Form.Item>
-        </Form>
-    );
-
-    const ManualUploader = () => (
-        <Form form={form} onFinish={onSubmitManualProduct}>
-            <Form.Item
-                name="amazonLink"
-                rules={[
-                    { required: true, message: 'Please enter an Amazon link' },
-                    { validator: validateAmazonLink },
-                ]}
-            >
-                <Input placeholder="Amazon Link" />
-            </Form.Item>
-            <Form.Item name="quantity">
-                <Input placeholder="Quantity" type="number" defaultValue={1} />
-            </Form.Item>
-            <Form.Item>
-                <Button type="primary" htmlType="submit" loading={uploadingProduct}>
-                    Add Product
-                </Button>
-            </Form.Item>
-        </Form>
-    );
-
     // Filter products by grade level
     const filteredProducts = products?.filter((product) => product.gradeLevel === selectedGradeLevel);
 
-    const SchoolList = () => (
-        <List
-            dataSource={[...filteredProducts].reverse()} // Reverse the filtered products array
-            renderItem={(product) => (
-                <Product product={product} fetchProducts={fetchProducts} schoolListView />
-            )}
-            locale={{ emptyText: "No products uploaded to this school list yet." }}
+    const exportMenu = (
+        <Menu
+            items={[
+                {
+                    key: 'grade',
+                    label: `Export ${selectedGradeLevel} grade level list to Excel`,
+                    onClick: () => exportToExcel(filteredProducts, `${selectedGradeLevel} Grade Product List.xlsx`),
+                    disabled: filteredProducts.length === 0,
+                },
+                {
+                    key: 'all',
+                    label: 'Export all grade level lists to Excel',
+                    onClick: () => exportToExcel(products),
+                    disabled: products.length === 0,
+                },
+            ]}
         />
     );
 
-    const Uploader = AmazonUploader; // You can switch to ManualUploader here if you want a different form
+    const SchoolList = () => (
+        <>
+            <Row gutter={[16, 16]}>
+                <Col>
+                    <Dropdown overlay={exportMenu} placement="bottomLeft" trigger={['click']}>
+                        <Button type="primary" icon={<DownloadOutlined />}>
+                            Export to Excel
+                        </Button>
+                    </Dropdown>
+                </Col>
+            </Row>
+
+
+            <List
+                dataSource={[...filteredProducts].reverse()}
+                renderItem={(product) => (
+                    <Product product={product} fetchProducts={fetchProducts} schoolListView />
+                )}
+                locale={{ emptyText: "No products uploaded to this school list yet." }}
+            />
+        </>
+    );
 
     // Function to show modal
     const showModal = () => {
@@ -146,7 +150,7 @@ const SchoolProductUploader = ({ school }) => {
                 </Col>
                 {/* Button to open modal */}
                 <Col lg={6} xs={24}>
-                    <Button style={{ width: "100%"}} type="primary" onClick={showModal}>
+                    <Button style={{ width: "100%" }} type="primary" onClick={showModal}>
                         Add Product
                     </Button>
                 </Col>
@@ -166,7 +170,15 @@ const SchoolProductUploader = ({ school }) => {
                 footer={null} // Disable default modal buttons
                 destroyOnClose // Destroy form on close to reset fields
             >
-                <Uploader />
+                {/* <Uploader /> */}
+                <SwitchUploader
+                    form={form}
+                    school={school}
+                    listType={"schoolList"}
+                    onSubmitAmazonProduct={onSubmitAmazonProduct}
+                    onSubmitManualProduct={onSubmitManualProduct}
+                    uploadingProduct={uploadingProduct}
+                />
             </Modal>
         </>
     );

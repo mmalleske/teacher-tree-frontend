@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { List, Form, Input, Button, message, Select, Tabs, Card } from 'antd';
+import { List, Form, Input, Button, message, Select, Tabs, Card, Switch } from 'antd';
 import axios from 'axios';
 import Product from './product';
 import { UserContext } from "../contexts/UserContext";
@@ -7,20 +7,18 @@ import useProducts from '../hooks/useProducts';
 import useSchools from '../hooks/useSchools';
 import Link from "next/link"
 import { CaretRightOutlined } from '@ant-design/icons';
-
-
-const { Option } = Select;
+import SwitchUploader from './SwitchUploader';
 
 const ProductUploader = ({ school }) => {
     const [form] = Form.useForm();
     const { user } = useContext(UserContext);
     const [listType, setListType] = useState('wishlist');
 
-
     const {
         products,
         fetchProducts,
         uploadAmazonProduct,
+        uploadManualProduct,
         fetchingProducts,
         uploadingProduct,
     } = useProducts({ userId: user?.userId });
@@ -32,73 +30,11 @@ const ProductUploader = ({ school }) => {
     };
 
     const onSubmitManualProduct = async (values) => {
-        await uploadAmazonProduct({ values, listType });
+        console.log("add manual product")
+        await uploadManualProduct({ values, listType, schoolId: listType === "schoolList" && school?._id });
         form.resetFields();
         fetchProducts();
     };
-
-    const validateAmazonLink = (rule, value) => {
-        if (!value.includes('amazon.com')) {
-            return Promise.reject('Please provide a valid Amazon link');
-        }
-        return Promise.resolve();
-    };
-
-    const AmazonUploader = () => (
-        <Form form={form} onFinish={onSubmitAmazonProduct}>
-            <Form.Item
-                name="amazonLink"
-                rules={[
-                    { required: true, message: 'Please enter an Amazon link' },
-                    { validator: validateAmazonLink },
-                ]}
-            >
-                <Input placeholder="Amazon Link" />
-            </Form.Item>
-            <Form.Item name="quantity">
-                <Input placeholder='Quantity' type='number' defaultValue={1} />
-            </Form.Item>
-            {school && listType === "schoolList" && (
-                <Form.Item name="gradeLevel" label="Grade Level" rules={[{ required: true, message: 'Please select a grade level' }]}>
-                    <Select placeholder="Select grade level">
-                        {school?.gradeLevels?.map((grade) => (
-                            <Option key={grade} value={grade}>
-                                {grade}
-                            </Option>
-                        ))}
-                    </Select>
-                </Form.Item>
-            )}
-            <Form.Item>
-                <Button type="primary" htmlType="submit" loading={uploadingProduct}>
-                    Add Product
-                </Button>
-            </Form.Item>
-        </Form>
-    )
-
-    const ManualUploader = () => (
-        <Form form={form} onFinish={onFinish}>
-            <Form.Item
-                name="amazonLink"
-                rules={[
-                    { required: true, message: 'Please enter an Amazon link' },
-                    { validator: validateAmazonLink },
-                ]}
-            >
-                <Input placeholder="Amazon Link" />
-            </Form.Item>
-            <Form.Item name="quantity">
-                <Input placeholder='Quantity' type='number' defaultValue={1} />
-            </Form.Item>
-            <Form.Item>
-                <Button type="primary" htmlType="submit" loading={uploadingProduct}>
-                    Add Product
-                </Button>
-            </Form.Item>
-        </Form>
-    )
-
 
     const WishList = () => products && (
         <List
@@ -127,18 +63,36 @@ const ProductUploader = ({ school }) => {
         />
     )
 
-    const Uploader = AmazonUploader;
-
     const tabItems = [
         {
             label: 'Wishlist',
             key: 'wishlist',
-            children: [<Uploader key="uploader" />, <WishList key="wishlist" />],
+            children: [
+                <SwitchUploader
+                    key="uploader"
+                    form={form}
+                    listType={"wishlist"}
+                    onSubmitAmazonProduct={onSubmitAmazonProduct}
+                    onSubmitManualProduct={onSubmitManualProduct}
+                    uploadingProduct={uploadingProduct}
+                />,
+                <WishList key="wishlist" />
+            ],
         },
         {
             label: 'Consumables',
             key: 'consumables',
-            children: [<Uploader key="uploader" />, <Consumables key="consumables" />]
+            children: [
+                <SwitchUploader
+                    key="uploader"
+                    form={form}
+                    listType={"consumables"}
+                    onSubmitAmazonProduct={onSubmitAmazonProduct}
+                    onSubmitManualProduct={onSubmitManualProduct}
+                    uploadingProduct={uploadingProduct}
+                />,
+                <Consumables key="consumables" />
+            ]
         },
     ]
 
@@ -150,7 +104,15 @@ const ProductUploader = ({ school }) => {
                 <div style={{ padding: "1rem 0" }} key="school-link">
                     <Link href={`/school/${school._id}`}>Go to shared School List <CaretRightOutlined /></Link>
                 </div>,
-                <Uploader key="uploader" />,
+                <SwitchUploader
+                    key="uploader"
+                    form={form}
+                    school={school}
+                    listType={"schoolList"}
+                    onSubmitAmazonProduct={onSubmitAmazonProduct}
+                    onSubmitManualProduct={onSubmitManualProduct}
+                    uploadingProduct={uploadingProduct}
+                />,
                 <SchoolList key="schoolList" />]
         })
     }

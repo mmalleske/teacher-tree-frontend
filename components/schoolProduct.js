@@ -69,14 +69,14 @@ const SchoolProduct = ({ product, onProductUpdate, onProductDelete, fetchProduct
         <List.Item className={styles.productItem}>
             <div className={styles.productItemInfo}>
                 {product.affiliateLink ? (
-                    <a target="_blank" rel="noopener noreferrer" href={product.affiliateLink}>
-                        {product.imageUrl ? <img src={product.imageUrl} alt={product.title} /> : <Avatar icon={<GiftOutlined />} />}
-                        <p>{' '}{product.title}</p>
+                    <a target="_blank" rel="noopener noreferrer" href={product.affiliateLink || product.altLink}>
+                        {product.imageUrl ? <img src={product.imageUrl} alt={product.title} /> : <Avatar style={{marginRight: "12px"}} icon={<GiftOutlined />} />}
+                        <p>{product.title}</p>
                     </a>
                 ) : (
                     <>
-                        <Avatar icon={<GiftOutlined />} />
-                        <p>{' '}{product.title}</p>
+                        <Avatar icon={<GiftOutlined />} style={{marginRight: "12px"}} />
+                        <p>{product.title}</p>
                     </>
                 )}
                 {product.gradeLevel && <p><strong>Grade Level: </strong>{product.gradeLevel}</p>}
@@ -130,6 +130,7 @@ const SchoolProduct = ({ product, onProductUpdate, onProductDelete, fetchProduct
                         <Option value="3">3rd Grade</Option>
                         <Option value="4">4th Grade</Option>
                         <Option value="5">5th Grade</Option>
+                        <Option value="5">6th Grade</Option>
                     </Select>
                 </div>
             )}
