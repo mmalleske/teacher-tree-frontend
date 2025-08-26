@@ -24,7 +24,7 @@ const ProductList = ({ userId }) => {
 
     const WishList = () => products && (
         <List
-            dataSource={products.filter(product => product.listType !== 'consumables' || !product.listType)}
+            dataSource={products.filter(product => product.listType === 'wishlist' || !product.listType)}
             renderItem={(product) => (
                 <Product product={product} readOnly fetchProducts={fetchProducts} />
             )}
