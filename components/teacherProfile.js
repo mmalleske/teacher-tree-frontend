@@ -13,7 +13,7 @@ const TeacherProfile = ({ teacherProfile, donor = null, readOnly, refreshProfile
 
     useEffect(() => {
         if(!!teacherProfile?.schoolIds.length) {
-            fetchSchool(teacherProfile.schoolIds[0])
+            fetchSchool("67eb5583cce981af4ed91e7e")
         }
     },[])
 
