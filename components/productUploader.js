@@ -21,7 +21,8 @@ const ProductUploader = ({ school }) => {
         uploadManualProduct,
         fetchingProducts,
         uploadingProduct,
-    } = useProducts({ userId: user?.userId });
+    // } = useProducts({ userId: user?.userId });
+} = useProducts({ userId: "654ef93e93224d3f27cc87b4" });
 
     const onSubmitAmazonProduct = async (values) => {
         await uploadAmazonProduct({ values, listType, schoolId: listType === "schoolList" && school?._id });

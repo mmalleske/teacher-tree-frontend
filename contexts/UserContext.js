@@ -10,9 +10,14 @@ export const UserProvider = ({ children }) => {
     const router = useRouter();
 
     useEffect(() => {
+        if (!router.isReady) return;
+
         const token = Cookies.get('authToken'); // Retrieve the token using js-cookie
         if (!token) {
-            if(router.pathname !== "/forgotPassword" || router.pathname !== "/resetPassword") {
+            const isPublicAuthPage =
+                router.pathname === '/forgotPassword' ||
+                router.pathname === '/resetPassword';
+            if (!isPublicAuthPage) {
                 router.push('/login'); // Redirect to login if token is not present
             }
             return;
@@ -25,7 +30,7 @@ export const UserProvider = ({ children }) => {
             console.error('Error decoding token:', error);
             router.push('/login'); // Redirect to login if token is invalid
         }
-    }, []);
+    }, [router.isReady, router.pathname]);
 
     return (
         <UserContext.Provider value={{ user, setUser }}>
