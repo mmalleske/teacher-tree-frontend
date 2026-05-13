@@ -50,18 +50,39 @@
 import { useState, useCallback } from 'react';
 import axios from 'axios';
 
+const trimParam = (value) => {
+    if (value == null) return undefined;
+    if (typeof value !== 'string') return value;
+    const trimmed = value.trim();
+    return trimmed === '' ? undefined : trimmed;
+};
+
 const useTeacherSearch = () => {
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const searchTeachers = async ({ firstName, lastName, schoolDistrict, school, gradeLevel, state }) => {
+    const searchTeachers = async ({
+        firstName,
+        lastName,
+        schoolDistrict,
+        school,
+        gradeLevel,
+        state,
+    }) => {
         setLoading(true);
         setError(null);
 
         try {
             const response = await axios.get(`${process.env.API_BASE_URL}/teachers/search`, {
-                params: { firstName, lastName, schoolDistrict, school, gradeLevel, state },
+                params: {
+                    firstName: trimParam(firstName),
+                    lastName: trimParam(lastName),
+                    schoolDistrict: trimParam(schoolDistrict),
+                    school: trimParam(school),
+                    gradeLevel: trimParam(gradeLevel),
+                    state: trimParam(state),
+                },
             });
 
             setResults(response.data.results.filter(result => result?.firstName || result?.lastName));
@@ -77,9 +98,11 @@ const useTeacherSearch = () => {
         setLoading(true);
         setError(null);
 
+        const q = trimParam(searchText);
+
         try {
             const response = await axios.get(`${process.env.API_BASE_URL}/teachers/searchSuggestions`, {
-                params: { searchText },
+                params: { searchText: q },
             });
 
             return response.data.results; // return results for use in the component
